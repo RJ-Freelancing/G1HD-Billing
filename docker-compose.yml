@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+
+  app:
+    image: node:8-alpine
+    container_name: g1hd-app
+    network_mode: host
+    working_dir: /app
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    user: 1000:1000
+    command: sh -c "yarn && yarn start"
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    network_mode: host
+    environment:
+     - ME_CONFIG_MONGODB_ENABLE_ADMIN=false
+     - ME_CONFIG_MONGODB_AUTH_USERNAME=rj
+     - ME_CONFIG_MONGODB_AUTH_PASSWORD=Vpk4E3EnDhN4wF4F
+     - ME_CONFIG_MONGODB_SERVER=ds135433.mlab.com
+     - ME_CONFIG_MONGODB_PORT=35433
+     - ME_CONFIG_MONGODB_AUTH_DATABASE=g1hd
