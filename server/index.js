@@ -8,7 +8,7 @@ import userRoutes from './routes/userRoutes'
 const app = express()
 
 // MongoDB
-mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true })
+mongoose.connect(process.env.MONGO_URL)
 mongoose.set('debug', true)
 
 // Enable CORS
