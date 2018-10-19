@@ -5,7 +5,8 @@ services:
   client:
     image: node:8-alpine
     container_name: g1hd-client
-    network_mode: host
+    ports:
+      - 3000:3000
     working_dir: /app
     volumes:
       - ./client/:/app
@@ -17,7 +18,8 @@ services:
   server:
     image: node:8-alpine
     container_name: g1hd-server
-    network_mode: host
+    ports:
+      - 3001:3001
     working_dir: /app
     volumes:
       - ./server/:/app
@@ -29,7 +31,7 @@ services:
   mongo-express:
     image: mongo-express
     container_name: mongo-express
-    ports: 
+    ports:
       - 3002:8081
     environment:
      - ME_CONFIG_MONGODB_ENABLE_ADMIN=false
