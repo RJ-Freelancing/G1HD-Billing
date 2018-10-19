@@ -1,6 +1,6 @@
 {
-  "short_name": "G1HD",
-  "name": "G1HD Billing Dashboard",
+  "short_name": "React App",
+  "name": "Create React App Sample",
   "icons": [
     {
       "src": "favicon.ico",

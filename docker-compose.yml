@@ -2,13 +2,25 @@ version: '3'
 
 services:
 
-  app:
+  client:
     image: node:8-alpine
-    container_name: g1hd-app
+    container_name: g1hd-client
     network_mode: host
     working_dir: /app
     volumes:
-      - .:/app
+      - ./client/:/app
+    env_file:
+      - .env
+    user: 1000:1000
+    command: sh -c "yarn && yarn start"
+
+  server:
+    image: node:8-alpine
+    container_name: g1hd-server
+    network_mode: host
+    working_dir: /app
+    volumes:
+      - ./server/:/app
     env_file:
       - .env
     user: 1000:1000
@@ -17,7 +29,8 @@ services:
   mongo-express:
     image: mongo-express
     container_name: mongo-express
-    network_mode: host
+    ports: 
+      - 3002:8081
     environment:
      - ME_CONFIG_MONGODB_ENABLE_ADMIN=false
      - ME_CONFIG_MONGODB_AUTH_USERNAME=rj
