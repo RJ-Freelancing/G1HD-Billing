@@ -60,7 +60,7 @@ pipeline {
         script {
           try {
             sh 'docker run --name mongo-testing -d mongo 2>commandResult'
-            sh 'docker run --rm -v ${PWD}/server/:/app --user 1000:1000 -w /app --link mongo-testing:mongo -e JWT_SECRET=testing -e MONGO_URL=mongodb://mongo/g1hd node:8-alpine sh -c \\\\\\\"yarn test-report\\\\\\\" 2>commandResult'
+            sh '''docker run --rm -v ${PWD}/server/:/app --user 1000:1000 -w /app --link mongo-testing:mongo -e JWT_SECRET=testing -e MONGO_URL=mongodb://mongo/g1hd node:8-alpine sh -c \\"yarn test-report\\" 2>commandResult'''
           } catch (e) {
             if (!errorMessage) {
               errorMessage = "Failed while testing.\n\n\n\n${e.message}"
