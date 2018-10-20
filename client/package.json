@@ -1,7 +1,9 @@
 {
-  "name": "g1hd",
+  "name": "g1hd_app",
   "version": "0.1.0",
+  "description": "Billing dashboard service for G1HD-Billing",
   "private": true,
+  "license": "Apache-2.0",
   "dependencies": {
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
