@@ -43,8 +43,9 @@ pipeline {
         withSonarQubeEnv('sonarScanner'){
           sh """\
             ${scannerHome}/bin/sonar-scanner -e \
-            -Dsonar.projectName=${env.SITE_NAME}:${currentBranch} \
-            -Dsonar.projectKey=${env.SITE_NAME}:${currentBranch} \
+            -Dsonar.projectName=${env.SITE_NAME} \
+            -Dsonar.projectKey=${env.SITE_NAME} \
+            -Dsonar.branch=${currentBranch}
             -Dsonar.sources=. \
           """
         }
@@ -59,12 +60,12 @@ pipeline {
         script {
           try {
             sh 'docker run --name mongo-testing -d mongo 2>commandResult'
-            sh 'docker run --rm -v ${PWD}/server/:/app --user 1000:1000 -w /app --link mongo-testing:mongo -e JWT_SECRET=testing -e MONGO_URL=mongodb://mongo/g1hd node:8-alpine sh -c "yarn test-report" 2>commandResult'
+            sh 'docker run --rm -v ${PWD}/server/:/app --user 1000:1000 -w /app --link mongo-testing:mongo -e JWT_SECRET=testing -e MONGO_URL=mongodb://mongo/g1hd node:8-alpine sh -c \\\\\\\"yarn test-report\\\\\\\" 2>commandResult'
           } catch (e) {
             if (!errorMessage) {
               errorMessage = "Failed while testing.\n\n\n\n${e.message}"
             }
-            sh 'ls server/coverage -al'
+            sh 'ls ./server/coverage -al'
             // currentBuild.currentResult = 'UNSTABLE'
           }
         }
@@ -72,11 +73,11 @@ pipeline {
       post {
         always {
           // Publish junit test results
-          junit testResults: '${PWD}/server/coverage/junit.xml', allowEmptyResults: true
+          junit testResults: './server/coverage/junit.xml', allowEmptyResults: true
           // Publish clover.xml and html(if generated) test coverge report
           step([
             $class: 'CloverPublisher',
-            cloverReportDir: '${PWD}/server/coverage',
+            cloverReportDir: './server/coverage',
             cloverReportFileName: 'clover.xml',
             failingTarget: [methodCoverage: 1, conditionalCoverage: 1, statementCoverage: 1]
           ])
