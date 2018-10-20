@@ -62,12 +62,10 @@ pipeline {
             sh 'docker run --name mongo-testing -d mongo'
             sh 'cd server && docker build -t server-test -f Dockerfile.test .'
             sh 'cd server && docker run --name=server-test-container --link mongo-testing:mongo -e API_PORT=3001 -e JWT_SECRET=testing -e MONGO_URL=mongodb://mongo/g1hd server-test 2>commandResult'
-            sh 'docker cp server-test-container:/app/coverage ./server/coverage'
           } catch (e) {
             if (!errorMessage) {
               errorMessage = "Failed while testing.\n\n${readFile('commandResult').trim()}\n\n${e.message}"
             }
-            sh 'docker cp server-test-container:/app/coverage ./server/coverage'
             currentBuild.currentResult = 'UNSTABLE'
           }
         }
@@ -75,6 +73,7 @@ pipeline {
       post {
         always {
           // Publish junit test results
+          sh 'docker cp server-test-container:/app/coverage ./server/coverage'
           junit testResults: 'server/coverage/junit.xml', allowEmptyResults: true
           // Publish clover.xml and html(if generated) test coverge report
           step([
