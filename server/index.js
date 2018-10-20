@@ -5,10 +5,10 @@ import mongoose from 'mongoose'
 import passport from './_helpers/passport'
 import userRoutes from './routes/userRoutes'
 import exampleRoutes from './routes/exampleRoutes'
+import clientRoutes from './routes/clientRoutes'
 
 
 const app = express()
-
 // MongoDB
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true })
 mongoose.set('debug', process.env.NODE_ENV==='development')
@@ -37,6 +37,7 @@ app.use('^(?!/auth)', passport.authenticate('jwt', { session: false }))
 // Routes
 app.use('/auth', userRoutes)
 app.use('/example', exampleRoutes)
+app.use('/clients', clientRoutes)
 
 // Catch 404 Errors
 app.use((req, res, next) => {

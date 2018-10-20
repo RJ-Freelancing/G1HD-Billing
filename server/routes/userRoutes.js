@@ -1,7 +1,7 @@
 import passport from '../_helpers/passport'
 import { validateBody } from '../validations'
 import { schemas } from '../validations/userValidation'
-import { regsiter, login, remove } from '../controllers/userController'
+import { register, login, remove } from '../controllers/userController'
 
 
 const passportSignIn = passport.authenticate('local', { session: false })
@@ -12,7 +12,7 @@ const router = require('express-promise-router')()
 router.route('/register')
   .post(
     validateBody(schemas.userRegisterSchema),
-    regsiter
+    register
   )
 
 router.route('/login')

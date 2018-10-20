@@ -11,7 +11,7 @@ const getToken = user => {
   }, process.env.JWT_SECRET)
 }
 
-export async function regsiter(req, res, next) {
+export async function register(req, res, next) {
   const { email, password, passwordConfirmation } = req.value.body
   const existingUser = await User.findOne({ email })
   if (existingUser)
