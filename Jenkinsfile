@@ -78,7 +78,7 @@ pipeline {
       post {
         always {
           // Publish junit test results
-          junit testResults: './server/coverage/junit.xml', allowEmptyResults: true
+          junit testResults: 'server/coverage/junit.xml', allowEmptyResults: true
           // Publish clover.xml and html(if generated) test coverge report
           step([
             $class: 'CloverPublisher',
