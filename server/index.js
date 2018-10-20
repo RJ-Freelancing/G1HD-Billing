@@ -51,6 +51,7 @@ app.use((err, req, res, next) => {
   res.status(status).json({error: err.message})
 })
 
+
 // Start the server
 const port = process.env.API_PORT
 app.listen(port, () => console.log(`Server is listening on port ${port}`))
