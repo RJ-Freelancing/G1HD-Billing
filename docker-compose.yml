@@ -28,7 +28,7 @@ services:
     user: 1000:1000
     command: sh -c "yarn && yarn start"
 
-  mongo-express:
+  mongo:
     image: mongo-express
     container_name: mongo-express
     ports:
