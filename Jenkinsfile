@@ -78,7 +78,7 @@ pipeline {
           script {
             if (!errorMessage && currentBuild.resultIsWorseOrEqualTo('UNSTABLE')) {
               errorMessage = "Failing Tests."
-              currentBuild.currentResult = 'UNSTABLE'
+              // currentBuild.currentResult = 'UNSTABLE'
             }
           }
           // Publish clover.xml and html(if generated) test coverge report
@@ -91,7 +91,7 @@ pipeline {
           script {
             if (!errorMessage && currentBuild.resultIsWorseOrEqualTo('UNSTABLE')) {
               errorMessage = "Insufficent Test Coverage."
-              currentBuild.currentResult = 'UNSTABLE'
+              // currentBuild.currentResult = 'UNSTABLE'
             }
           }
         }
