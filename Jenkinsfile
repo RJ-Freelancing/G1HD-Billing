@@ -59,7 +59,7 @@ pipeline {
         // Test
         script {
           try {
-            sh 'docker run --name mongo-testing -d mongo 2>commandResult'
+            sh 'docker run --name mongo-testing -d mongo'
             sh 'cd server && docker build -t server-test -f Dockerfile.test . 2>commandResult'
             sh 'cd server && docker run --name=server-test-container --link mongo-testing:mongo -e API_PORT=3001 -e JWT_SECRET=testing -e MONGO_URL=mongodb://mongo/g1hd server-test 2>commandResult'
           } catch (e) {
@@ -73,7 +73,7 @@ pipeline {
       post {
         always {
           // Publish junit test results
-          sh 'docker cp server-test-container:/app/coverage ./server/coverage'
+          sh 'docker cp server-test-container:/app/coverage ./server/coverage 2>commandResult'
           junit testResults: 'server/coverage/junit.xml', allowEmptyResults: true
           script {
             if (!errorMessage && currentBuild.resultIsWorseOrEqualTo('UNSTABLE')) {
@@ -132,6 +132,7 @@ pipeline {
       sh 'docker image prune -af'
       sh 'docker volume prune -f'
       sh 'docker network prune -f'
+      echo "FINAL BUILD MESSAGE: $errorMessage"
     }
   }
 }
