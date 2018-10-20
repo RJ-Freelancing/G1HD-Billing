@@ -21,7 +21,7 @@ pipeline {
     SITE_NAME = 'g1hd' // Name will be used for tagging along with getBuildTag/suffix/prefix
     PRODUCTION_BRANCH = 'master' // Source branch used for production
     DEVELOPMENT_BRANCH = 'dev' // Source branch used for development
-    SLACK_CHANNEL = '#builds' // Slack channel to send build notifications
+    SLACK_CHANNEL = '#g1hd' // Slack channel to send build notifications
   }
   agent any
   stages {
