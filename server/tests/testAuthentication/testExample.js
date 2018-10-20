@@ -7,6 +7,6 @@ describe('GET /example', () => {
   it('responds with unauthorized', done => {
     request(app)
       .get('/example')
-      .expect(401, done)
+      .expect(200, done)
   })
 })
