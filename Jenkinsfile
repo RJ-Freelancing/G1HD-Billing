@@ -61,10 +61,8 @@ pipeline {
           try {
             sh 'docker run --name mongo-testing -d mongo 2>commandResult'
             sh 'cd server && docker build -t server-test -f Dockerfile.test .'
-            sh 'cd server && docker run --name=server-container --link mongo-testing:mongo -e API_PORT=3001 -e JWT_SECRET=testing -e MONGO_URL=mongodb://mongo/g1hd server-test'
-            // sh '''docker run -d --name=server_test -v ${PWD}/server/:/app --user 1000:1000 -w /app --link mongo-testing:mongo -e API_PORT=3001 -e JWT_SECRET=testing -e MONGO_URL=mongodb://mongo/g1hd node:8-alpine sh -c \\"yarn test-report\\" 2>commandResult'''
-            // sh 'docker exec server_test ls'
-            sh 'docker cp server-container:/app/coverage ./server/coverage'
+            sh 'cd server && docker run --name=server-test-container --link mongo-testing:mongo -e API_PORT=3001 -e JWT_SECRET=testing -e MONGO_URL=mongodb://mongo/g1hd server-test'
+            sh 'docker cp server-test-container:/app/coverage ./server/coverage'
             sh 'ls ./server -al'
             sh 'ls ./server/coverage -al'
           } catch (e) {
@@ -73,7 +71,7 @@ pipeline {
             }
             sh 'ls ./server -al'
             sh 'ls ./server/coverage -al'
-            // currentBuild.currentResult = 'UNSTABLE'
+            currentBuild.currentResult = 'UNSTABLE'
           }
         }
       }
