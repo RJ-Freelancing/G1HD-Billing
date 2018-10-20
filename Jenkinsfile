@@ -58,11 +58,12 @@ pipeline {
         // Test
         script {
           try {
-            sh 'docker run --name mongo-testing -d mongo'
-            sh 'docker run -v ${PWD}/server/:/app --user 1000:1000 -w /app --link mongo-testing:mongo -e JWT_SECRET=testing -e MONGO_URL=mongodb://mongo-testing/g1hd node:8-alpine sh -c "yarn test-report" 2>commandResult'
+            sh 'docker run --name mongo-testing -d mongo 2>commandResult'
+            sh 'docker run -v ${PWD}/server/:/app --user 1000:1000 -w /app --link mongo-testing:mongo -e JWT_SECRET=testing -e MONGO_URL=mongodb://mongo/g1hd node:8-alpine sh -c "yarn test-report" 2>commandResult'
+            sh 'docker stop mongo-testing -y 2>commandResult'
           } catch (e) {
             if (!errorMessage) {
-              errorMessage = "Failed while testing.\n\n${readFile('commandResult').trim()}\n\n${e.message}"
+              errorMessage = "Failed while testing.\n\n\n\n${e.message}"
             }
             currentBuild.currentResult = 'UNSTABLE'
           }
@@ -118,6 +119,10 @@ pipeline {
     always {
       notifySlack message: errorMessage, channel: env.SLACK_CHANNEL
       cleanWs() // Recursively clean workspace
+      sh 'docker container prune -f'
+      sh 'docker image prune -af'
+      sh 'docker volume prune -f'
+      sh 'docker network prune -f'
     }
   }
 }
