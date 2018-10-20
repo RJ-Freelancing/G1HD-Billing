@@ -23,7 +23,7 @@ pipeline {
     DEVELOPMENT_BRANCH = 'dev' // Source branch used for development
     SLACK_CHANNEL = '#builds' // Slack channel to send build notifications
   }
-  agent { docker { image 'node:8-alpine' } }
+  agent any
   stages {
     stage ('Environment') {
       steps {
@@ -56,16 +56,14 @@ pipeline {
       when { expression { return !errorMessage; } }
       steps {
         // Test
-        dir('server'){
-          script {
-            try {
-              sh 'yarn test-report 2>commandResult'
-            } catch (e) {
-              if (!errorMessage) {
-                errorMessage = "Failed while testing.\n\n${readFile('commandResult').trim()}\n\n${e.message}"
-              }
-              currentBuild.currentResult = 'UNSTABLE'
+        script {
+          try {
+            sh 'docker-compose run -v ./server/:/app --user 1000:1000 server sh -c "yarn test-report" 2>commandResult'
+          } catch (e) {
+            if (!errorMessage) {
+              errorMessage = "Failed while testing.\n\n${readFile('commandResult').trim()}\n\n${e.message}"
             }
+            currentBuild.currentResult = 'UNSTABLE'
           }
         }
       }
