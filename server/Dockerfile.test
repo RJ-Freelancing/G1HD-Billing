@@ -1,0 +1,14 @@
+FROM node:8-alpine
+
+WORKDIR /app
+
+# Install all app dependencies
+COPY package.json .
+RUN yarn
+
+# Bundle app files
+COPY . .
+
+ENV NODE_ENV dev
+
+CMD [ "yarn", "test-report" ]
