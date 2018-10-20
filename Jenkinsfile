@@ -66,6 +66,7 @@ pipeline {
             // sh 'docker exec server_test ls'
             sh 'docker cp server-container:/app/coverage ./server/coverage'
             sh 'ls ./server -al'
+            sh 'ls ./server/coverage -al'
           } catch (e) {
             if (!errorMessage) {
               errorMessage = "Failed while testing.\n\n\n\n${e.message}"
