@@ -64,7 +64,7 @@ pipeline {
             if (!errorMessage) {
               errorMessage = "Failed while testing.\n\n\n\n${e.message}"
             }
-            sh 'ls -al'
+            sh 'ls server/coverage -al'
             // currentBuild.currentResult = 'UNSTABLE'
           }
         }
