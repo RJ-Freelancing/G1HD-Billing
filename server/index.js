@@ -1,15 +1,18 @@
 import express from 'express'
-import morgan from 'morgan'
+import helmet from 'helmet'
+import logger from './_helpers/logger'
 import mongoose from 'mongoose'
-import passport from './config/passport'
+import passport from './_helpers/passport'
 import userRoutes from './routes/userRoutes'
+import exampleRoutes from './routes/exampleRoutes'
 
 
 const app = express()
 
 // MongoDB
-mongoose.connect(process.env.MONGO_URL)
-mongoose.set('debug', true)
+mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true })
+mongoose.set('debug', process.env.NODE_ENV==='development')
+mongoose.set('useCreateIndex', true)
 
 // Enable CORS
 app.use((req, res, next) => {
@@ -19,8 +22,11 @@ app.use((req, res, next) => {
   next()
 })
 
-// Log all requests
-app.use(morgan('dev'))
+// Log all requests and responses
+if (process.env.NODE_ENV!=='testing') app.use(logger)
+
+// Secure the app by setting various HTTP headers
+app.use(helmet())
 
 // Parse incoming requests with JSON payloads
 app.use(express.json({limit: '10mb'}))
@@ -30,7 +36,7 @@ app.use('^(?!/auth)', passport.authenticate('jwt', { session: false }))
 
 // Routes
 app.use('/auth', userRoutes)
-
+app.use('/example', exampleRoutes)
 
 // Catch 404 Errors
 app.use((req, res, next) => {
@@ -48,3 +54,6 @@ app.use((err, req, res, next) => {
 // Start the server
 const port = process.env.API_PORT
 app.listen(port, () => console.log(`Server is listening on port ${port}`))
+
+// Export the app for use in tests
+export default app

@@ -12,10 +12,7 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true
-  },
-  budgetIDs: [
-    { type: String }
-  ]
+  }
 })
 
 userSchema.pre('save', async function(next){
