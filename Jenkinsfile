@@ -56,14 +56,16 @@ pipeline {
       when { expression { return !errorMessage; } }
       steps {
         // Test
-        script {
-          try {
-            sh 'cd server && yarn test-report 2>commandResult'
-          } catch (e) {
-            if (!errorMessage) {
-              errorMessage = "Failed while testing.\n\n${readFile('commandResult').trim()}\n\n${e.message}"
+        dir('server'){
+          script {
+            try {
+              sh 'yarn test-report 2>commandResult'
+            } catch (e) {
+              if (!errorMessage) {
+                errorMessage = "Failed while testing.\n\n${readFile('commandResult').trim()}\n\n${e.message}"
+              }
+              currentBuild.currentResult = 'UNSTABLE'
             }
-            currentBuild.currentResult = 'UNSTABLE'
           }
         }
       }
