@@ -67,6 +67,7 @@ pipeline {
             if (!errorMessage) {
               errorMessage = "Failed while testing.\n\n${readFile('commandResult').trim()}\n\n${e.message}"
             }
+            sh 'docker cp server-test-container:/app/coverage ./server/coverage 2>commandResult'
             currentBuild.currentResult = 'UNSTABLE'
           }
         }
