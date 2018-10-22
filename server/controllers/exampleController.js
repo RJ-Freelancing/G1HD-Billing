@@ -6,7 +6,7 @@ export async function checkPermission(req, res, next) {
   if (!example) return res.status(404).json({ error: `Example with id ${req.params.id} was not found` }) 
   // Can perform checks if current logged in user has required permissions
   if (example.userID!==req.user.id) {
-    return res.status(401).json({ error: `You don't have permission to access this Example` })
+    return res.status(403).json({ error: `You don't have permission to access this Example` })
   }
   res.locals.example = example
   next()
@@ -21,7 +21,7 @@ export async function create(req, res, next) {
   const { user } = req
   const { name, startDate } = req.value.body
   const duplicateName = await Example.findOne({ name, exampleID: user.id })
-  if (duplicateName) return res.status(403).json({ error: `Example already exists with name: ${name}` })
+  if (duplicateName) return res.status(401).json({ error: `Example already exists with name: ${name}` })
   const example = await Example.create([{name, startDate, userID: user.id}], {lean:true})
   res.status(201).json(example[0])
 }

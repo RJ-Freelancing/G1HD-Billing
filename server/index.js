@@ -5,7 +5,7 @@ import mongoose from 'mongoose'
 import passport from './_helpers/passport'
 import userRoutes from './routes/userRoutes'
 import exampleRoutes from './routes/exampleRoutes'
-import clientRoutes from './routes/clientRoutes'
+import authRoutes from './routes/authRoutes'
 
 
 const app = express()
@@ -35,9 +35,9 @@ app.use(express.json({limit: '10mb'}))
 app.use('^(?!/auth)', passport.authenticate('jwt', { session: false }))
 
 // Routes
-app.use('/auth', userRoutes)
+app.use('/auth', authRoutes)
+app.use('/users', userRoutes)
 app.use('/example', exampleRoutes)
-app.use('/clients', clientRoutes)
 
 // Catch 404 Errors
 app.use((req, res, next) => {

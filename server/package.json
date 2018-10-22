@@ -12,6 +12,7 @@
     "build": "NODE_ENV=production babel . -s -D -d build --presets env"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "bcryptjs": "^2.4.3",
     "express": "^4.16.2",
     "express-promise-router": "^3.0.3",

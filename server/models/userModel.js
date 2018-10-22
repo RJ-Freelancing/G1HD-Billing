@@ -1,8 +1,17 @@
 import mongoose, { Schema } from 'mongoose'
 import bcrypt from 'bcryptjs'
 
+const options = {
+  timestamps: true
+}
 
 const userSchema = new Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true
+  },
   email: {
     type: String,
     required: true,
@@ -12,8 +21,49 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true
+  },
+  firstName: {
+    type: String,
+    required: true
+  },
+  lastName: {
+    type: String,
+    required: true
+  },
+  phoneNo: {
+    type: String
+  },
+  userTypeID: {
+    type: String,
+    required: true
+  },
+  accountStatus: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
+  joinedDate: {
+    type: Date,
+    default: Date.now
+  },
+  parentID: {
+    type: String,
+    required: true
+  },
+  childIDs: [
+    {
+    type: String
+    }
+  ],
+  creditsAvailable: {
+    type: Number,
+    default: 0
+  },
+  creditsOnHold: {
+    type: Number,
+    default: 0
   }
-})
+}, options)
 
 userSchema.pre('save', async function(next){
   try {
@@ -33,5 +83,4 @@ userSchema.methods.isValidPassword = async function(loginPassword){
   }
 }
 
-
-export default mongoose.model('user', userSchema)
+export default mongoose.model('User', userSchema)

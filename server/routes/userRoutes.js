@@ -1,31 +1,36 @@
-import passport from '../_helpers/passport'
-import { validateBody } from '../validations'
+import { validateParam, validateBody } from '../validations'
 import { schemas } from '../validations/userValidation'
-import { register, login, remove } from '../controllers/userController'
+import { getAllUsers, addUser, validateID, getUser, updateUser, deleteUser } from '../controllers/userController'
+import passport from '../_helpers/passport'
 
-
-const passportSignIn = passport.authenticate('local', { session: false })
 const passportJWT = passport.authenticate('jwt', { session: false })
 
 const router = require('express-promise-router')()
 
-router.route('/register')
+  router.route('/')
+  .get(
+    getAllUsers
+  )
   .post(
-    validateBody(schemas.userRegisterSchema),
-    register
+    validateBody(schemas.addSchema),
+    addUser
   )
 
-router.route('/login')
-  .post(
-    validateBody(schemas.userLoginSchema),
-    passportSignIn,
-    login
+router.route('/:id')
+  .all(
+    validateParam(schemas.idSchema, 'id'),
+    validateID
   )
-
-router.route('/delete')
+  .get(
+    getUser
+  )
+  .patch(
+    validateBody(schemas.updateSchema),
+    updateUser
+  )
   .delete(
     passportJWT,
-    remove
+    deleteUser
   )
 
 
