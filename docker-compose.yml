@@ -6,7 +6,7 @@ services:
     image: node:8-alpine
     container_name: g1hd-client
     ports:
-      - 3000:3000
+      - 127.0.0.1:3000:3000
     working_dir: /app
     volumes:
       - ./client/:/app
@@ -19,7 +19,7 @@ services:
     image: node:8-alpine
     container_name: g1hd-server
     ports:
-      - 3001:3001
+      - 127.0.0.1:3001:3001
     working_dir: /app
     volumes:
       - ./server/:/app
@@ -32,7 +32,7 @@ services:
     image: mongo-express
     container_name: mongo-express
     ports:
-      - 3002:8081
+      - 127.0.0.1:3002:8081
     env_file:
       - .env
     environment:
