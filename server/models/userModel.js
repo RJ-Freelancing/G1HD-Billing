@@ -33,7 +33,7 @@ const userSchema = new Schema({
   phoneNo: {
     type: String
   },
-  userTypeID: {
+  userType: {
     type: String,
     required: true
   },

@@ -1,6 +1,6 @@
 import { validateParam, validateBody } from '../validations'
 import { schemas } from '../validations/userValidation'
-import { getAllUsers, addUser, validateID, getUser, updateUser, deleteUser } from '../controllers/userController'
+import { getAllUsers, addUser, validateID, getUser, updateUser, deleteUser, getChildren } from '../controllers/userController'
 import passport from '../_helpers/passport'
 
 const passportJWT = passport.authenticate('jwt', { session: false })
@@ -33,5 +33,11 @@ router.route('/:id')
     deleteUser
   )
 
+  router.route('/:id/children')
+  .get(
+    validateParam(schemas.idSchema, 'id'),
+    validateID,
+    getChildren
+  )
 
 export default router
