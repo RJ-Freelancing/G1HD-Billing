@@ -62,6 +62,6 @@ export async function deleteUser(req, res, next) {
 }
 
 export async function getChildren(req, res, next) {
-  console.log(res.locals.user.childIDs)
   const users = await userRepo.find({'_id': { $in: res.locals.user.childIDs}}, null, { sort: { firstName: 1 } })
+  res.status(200).json(users)
 }
