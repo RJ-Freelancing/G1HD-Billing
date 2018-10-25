@@ -35,9 +35,9 @@ app.use(express.json({limit: '10mb'}))
 app.use('^(?!/auth)', passport.authenticate('jwt', { session: false }))
 
 // Routes
-app.use('/auth', authRoutes)
-app.use('/users', userRoutes)
-app.use('/example', exampleRoutes)
+app.use('/api/auth', authRoutes)
+app.use('/api/users', userRoutes)
+app.use('/api/example', exampleRoutes)
 
 // Catch 404 Errors
 app.use((req, res, next) => {
