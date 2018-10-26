@@ -1,4 +1,4 @@
-version: '3'
+version: '3.3'
 
 services:
 
@@ -14,6 +14,12 @@ services:
       - .env
     user: 1000:1000
     command: sh -c "yarn && yarn start"
+    depends_on:
+      - server
+    networks:
+      - g1hd
+    links:
+      - server
 
   server:
     image: node:8-alpine
@@ -27,6 +33,8 @@ services:
       - .env
     user: 1000:1000
     command: sh -c "yarn && yarn start"
+    networks:
+      - g1hd
 
   mongo:
     image: mongo-express
@@ -42,3 +50,6 @@ services:
      - ME_CONFIG_MONGODB_SERVER=${MONGODB_SERVER}
      - ME_CONFIG_MONGODB_PORT=${MONGODB_PORT}
      - ME_CONFIG_MONGODB_AUTH_DATABASE=${MONGODB_AUTH_DATABASE}
+
+networks:
+  g1hd:

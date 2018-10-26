@@ -2,7 +2,8 @@ const initialState = {
   loading: false,
   notificationShow: false,
   notificationType: 'info',
-  notificationMessage: ''
+  notificationMessage: '',
+  mobileMenu: false
 };
 
 const general = (state = initialState, action) => {
@@ -16,6 +17,11 @@ const general = (state = initialState, action) => {
       return {
         ...state,
         notificationShow: false,
+      }
+    case 'TOGGLE_MOBILE_MENU':
+      return {
+        ...state,
+        mobileMenu: action.payload
       }
     case (action.type.match(/_SUCCESS$/) || {}).input:
       return {

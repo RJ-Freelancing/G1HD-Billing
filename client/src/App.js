@@ -1,20 +1,21 @@
 import React, { Component } from 'react'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import Button from '@material-ui/core/Button';
-import { AccessAlarm } from '@material-ui/icons';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import Wrapper from './components/common/Wrapper';
+import FourOhFour from './components/common/FourOhFour';
+import Login from './containers/Login';
+import Home from './containers/Home';
 
 
 class App extends Component {
   render() {
     return (
-      <div>
-        <CssBaseline/>
-        <h1>HELLO</h1>
-        <AccessAlarm/>
-        <Button variant="contained" color="primary">
-          Hello World
-        </Button>
-      </div>
+      <Router>
+        <Switch>
+          <Route exact path="/" component={Wrapper(Home)} />
+          <Route exact path="/login" component={Login} />
+          <Route component={FourOhFour} />
+        </Switch>
+      </Router>
     );
   }
 }

@@ -7,7 +7,7 @@ export const login = ({username, password}) => ({
       data: {username, password}
     }
   },
-  success: "Welcome Back",
+  success: `Welcome back ${username}`,
   failure: "Invalid username/password. Please try again."
 })
 
