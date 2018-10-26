@@ -1,6 +1,6 @@
 import { validateParam, validateBody } from '../validations'
 import { schemas } from '../validations/clientValidation'
-import { getAllClients, addClient, validateMAC, getClient, updateClient, deleteClient, getChildren } from '../controllers/clientController'
+import { getAllClients, addClient, validateMAC, getClient, updateClient, deleteClient } from '../controllers/clientController'
 
 const router = require('express-promise-router')()
 
@@ -28,5 +28,7 @@ router.route('/:id')
   .delete(
     deleteClient
   )
+
+  //
 
 export default router

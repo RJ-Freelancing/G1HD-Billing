@@ -13,14 +13,22 @@ export const schemas = {
     full_name: Joi.string().required(),
     phone: Joi.string().regex(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/),
     status: Joi.number(),
-    tariff_plan: Joi.number()
+    tariff_plan: Joi.number(),
+    tariff_expired_date: Joi.string().regex(/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/),
+    tariff_instead_expired : Joi.number(),
+    subscribed: Joi.number(),
+    subscribed_id: Joi.number()
   }),
   
   updateSchema: Joi.object({
     full_name: Joi.string(),
     phone: Joi.string().regex(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/),
     status: Joi.number(),
-    tariff_plan: Joi.number()
+    tariff_plan: Joi.number(),
+    tariff_expired_date: Joi.string().regex(/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/),
+    tariff_instead_expired : Joi.number(),
+    subscribed: Joi.number(),
+    subscribed_id: Joi.number()
   })
 
 }

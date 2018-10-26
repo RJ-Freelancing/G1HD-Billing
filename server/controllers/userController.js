@@ -28,12 +28,14 @@ export async function validateID(req, res, next) {
 
 export async function getAllUsers(req, res, next) {
   // Not gonna work for second hierarchy, as the req.user.childIDs is still on the same level for next level.
+  if (req.user.userType == "reseller") return res.status(403).json({error: `You have no rights to perform this action.`})
   const users = await userRepo.find({'_id': { $in: req.user.childIDs}}, null, { sort: { firstName: 1 } })
   res.status(200).json(users)
 }
 
 export async function addUser(req, res, next) {
   const { username, email, password, passwordConfirmation, firstName, lastName, phoneNo, userType, accountStatus, joinedDate, parentID, creditsAvailable, creditsOnHold } = req.value.body
+  if (req.user.userType == "reseller") return res.status(403).json({error: `You have no rights to perform this action.`})
   const existingUser = await userRepo.findOne({ username })
   if (existingUser) 
     return res.status(401).json({ error: `User already exists with username: ${username}` })
@@ -49,8 +51,10 @@ export async function getUser(req, res, next) {
 }
 
 export async function updateUser(req, res, next) {
-  const salt = await bcrypt.genSalt(10)  
-  req.body.password = await bcrypt.hash(req.body.password, salt) 
+  if (req.body.password !== undefined){
+    const salt = await bcrypt.genSalt(10)  
+    req.body.password = await bcrypt.hash(req.body.password, salt) 
+  }
   await res.locals.user.update(req.body)
   return res.status(200).json({...res.locals.user._doc, ...req.value.body})
 }
