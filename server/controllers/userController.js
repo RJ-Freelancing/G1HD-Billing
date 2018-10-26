@@ -1,10 +1,6 @@
 import userRepo from '../models/userModel'
-import axios from 'axios'
 import JWT from 'jsonwebtoken'
-
-const ministraAPI = process.env.MINISTRA_HOST+'stalker_portal/api/'
-const ministaUser = process.env.MINISTRA_USER
-const ministraPW = process.env.MINISTRA_PW
+import bcrypt from 'bcryptjs'
 
 export async function login(req, res, next) {
   const { user } = req
@@ -24,12 +20,14 @@ const getToken = user => {
 export async function validateID(req, res, next) {
   const user = await userRepo.findById(req.params.id)
   if (!user) return res.status(404).json({ error: `User with id ${req.params.id} was not found in DB` }) 
+  // Not gonna work for second hierarchy, as the req.user.childIDs is still on the same level for next level.
   if(req.user.userType == "reseller" || !req.user.childIDs.includes(req.params.id)) return res.status(403).json({error: `You have no rights to perform this action.`})
   res.locals.user = user
   next()
 }
 
 export async function getAllUsers(req, res, next) {
+  // Not gonna work for second hierarchy, as the req.user.childIDs is still on the same level for next level.
   const users = await userRepo.find({'_id': { $in: req.user.childIDs}}, null, { sort: { firstName: 1 } })
   res.status(200).json(users)
 }
@@ -51,7 +49,9 @@ export async function getUser(req, res, next) {
 }
 
 export async function updateUser(req, res, next) {
-  await res.locals.user.save(req.value.body)
+  const salt = await bcrypt.genSalt(10)  
+  req.body.password = await bcrypt.hash(req.body.password, salt) 
+  await res.locals.user.update(req.body)
   return res.status(200).json({...res.locals.user._doc, ...req.value.body})
 }
 
