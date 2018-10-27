@@ -20,7 +20,8 @@ import LogoutIcon from '@material-ui/icons/PowerSettingsNew';
 
 const styles = theme => ({
   appBar: {
-    zIndex: theme.zIndex.drawer + 1
+    zIndex: theme.zIndex.drawer + 1,
+    background: 'linear-gradient(to right top, #051937, #00205b, #00267f, #0027a3, #1121c4)',
   },
   grow: {
     flexGrow: 1,
@@ -49,7 +50,7 @@ const styles = theme => ({
     marginLeft: 0,
     width: '100%',
     [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing.unit * 3,
+      marginLeft: theme.spacing.unit * 6,
       width: 'auto',
     },
   },
@@ -118,7 +119,7 @@ class Header extends Component {
         open={isMenuOpen}
         onClose={this.handleMenuClose}
       >
-        <MenuItem onClick={this.handleMenuClose}>
+        <MenuItem onClick={()=>this.props.gotoLink('/profile')}>
           <ListItemIcon><SettingsIcon/></ListItemIcon>
           <ListItemText primary="My account" />
         </MenuItem>

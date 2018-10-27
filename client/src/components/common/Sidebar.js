@@ -1,41 +1,58 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
-import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import Icon from '@material-ui/core/Icon';
 
 
 const styles = theme => ({
   drawerPaper: {
     width: 240,
-    border: 'none'
+    border: 'none',
+    background: 'linear-gradient(to right, #051937, #0a2755, #173574, #294394, #3f51b5)',
   },
   toolbar: {
     ...theme.mixins.toolbar,
-    minHeight: '57px !important'
+    minHeight: '65px !important'
   },
+  menu: {
+    minHeight: 60, 
+    cursor: 'pointer',
+  },
+  menuItem: {
+    color: '#fff',
+  }
 })
 
+const menus = [
+  {label: 'Dashboard', link: '/', icon: 'dashboard'},
+  {label: 'Users', link: '/users', icon: 'person_add'},
+  {label: 'Clients', link: '/clients', icon: 'people'},
+  {label: 'Transactions', link: '/transactions', icon: 'money'},
+];
 
-const Menus = (
-  <List>
-    {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-      <ListItem button key={text}>
-        <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-        <ListItemText primary={text} />
-      </ListItem>
-    ))}
-  </List>
-)
 
 const Sidebar = (props) => {
   const { classes, mobileView } = props
   
+  const Menus = menus.map(({ label, link, icon }, idx)=>
+    <ListItem 
+      key={idx} 
+      button 
+      classes={{root: classes.menu}} 
+      onClick={()=>props.activePage===link ? {} : props.gotoLink(link)}
+      style={{background: props.activePage===link ? 'radial-gradient(circle, #150271, #1d198e, #222ead, #2243cc, #1a59ed)' : 'inherit'}}
+    >
+      <ListItemIcon classes={{root: classes.menuItem}}>
+        <Icon>{icon}</Icon>
+      </ListItemIcon>
+      <ListItemText primary={label} primaryTypographyProps={{className: classes.menuItem}}/>
+    </ListItem>
+  )
+
   return (
     <>
       {!mobileView ? 
@@ -63,8 +80,6 @@ const Sidebar = (props) => {
     </>
   )
 }
-
-
 
 
 export default withStyles(styles)(Sidebar)

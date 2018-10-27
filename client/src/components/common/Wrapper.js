@@ -71,9 +71,9 @@ export default function (ComposedComponent) {
             logout={this.props.logout} 
             loading={this.props.loading} 
             username={this.props.username}
-            mobileMenu={this.props.mobileMenu}
             toggleMobileSideBar={this.props.toggleMobileSideBar}
             mobileView={mobileView}
+            gotoLink={(link)=>this.props.history.push(link)} 
           />
           <Sidebar 
             activePage={this.props.match.path} 
