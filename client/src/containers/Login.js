@@ -17,6 +17,7 @@ const Wrapper = styled(Paper)`
   max-height: 600px;
   margin: 50px auto;
   text-align: center;
+  background: transparent !important;
 `
 
 const TextInput = styled(TextField)`
@@ -57,7 +58,7 @@ class Login extends Component {
 
   render() {  
     return (
-      <Wrapper>
+      <Wrapper elevation={24}>
         {this.props.loading && <Loading />}
         <Notification />
         <form onSubmit={this.login} style={{padding: 10}}>

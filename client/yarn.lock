@@ -6997,6 +6997,12 @@ react-lifecycles-compat@^3.0.2, react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
 
+react-number-format@^3.6.2:
+  version "3.6.2"
+  resolved "https://registry.yarnpkg.com/react-number-format/-/react-number-format-3.6.2.tgz#46fb692a88ed25808f0cb08fd12aeae4ae68295a"
+  dependencies:
+    prop-types "^15.6.0"
+
 react-redux@^5.0.7:
   version "5.0.7"
   resolved "http://registry.npmjs.org/react-redux/-/react-redux-5.0.7.tgz#0dc1076d9afb4670f993ffaef44b8f8c1155a4c8"

@@ -32,11 +32,15 @@ const general = (state = initialState, action) => {
         notificationType: 'success'
       }
     case (action.type.match(/_FAILED$/) || {}).input:
+      let notificationMessage = action.meta.previousAction.failure
+      try {
+        notificationMessage = action.error.response.data.error
+      } catch{}
       return {
         ...state,
         loading: false,
         notificationShow: true,
-        notificationMessage: action.meta.previousAction.failure,
+        notificationMessage: notificationMessage,
         notificationType: 'error'
       }
     default:

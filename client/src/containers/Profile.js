@@ -1,14 +1,53 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { isEqual } from 'lodash';
+import { format } from 'date-fns'
+import NumberFormat from 'react-number-format';
+import styled from 'styled-components'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-import Confirmation from 'components/common/Confirmation'
-import { format } from 'date-fns'
+import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import SaveIcon from '@material-ui/icons/Save';
 
-import { updateUser, deleteUser } from 'actions/auth'
+import { updateUser } from 'actions/auth'
+
+
+const Wrapper = styled.div`
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-gap: 20px;
+  margin: 20px 20px;
+  @media only screen and (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`
+
+const ProfileEditWrapper = styled(Paper)`
+  padding: 20px 20px;
+`
+
+const ProfileEdit = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 30px;
+  @media only screen and (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`
+
+const ProfileDetailsWrapper = styled(Paper)`
+  padding: 20px 20px;
+`
+
+const ProfileDetails = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+  padding: 20px 20px;
+`
+
+
 
 class Profile extends Component {
   constructor(props) {
@@ -25,100 +64,102 @@ class Profile extends Component {
     }
   }
 
-  deleteConfirmationProceed = () => this.setState({deleteConfirmation: false})
-  deleteConfirmationCancel = () => this.setState({deleteConfirmation: false})
-
-  deleteMessage = (messageID) => {
-    this.deleteConfirmationProceed = () => {
-      this.setState({deleteConfirmation: false}, ()=>{
-        this.props.deleteMessage(messageID)
-      })
-    }
-    this.setState({deleteConfirmation: true})
-  }
 
   handleTextChange = (field, value) => {
     this.setState({[field]: value})
   }
 
-  updateUser = () => {
-    this.props.updateUser(this.state._id, {...this.state})
+  updateUser = (event) => {
+    event.preventDefault()
+    const {username, email, firstName, lastName, phoneNo} = this.state
+    this.props.updateUser(this.props.auth._id, {username, email, firstName, lastName, phoneNo})
   }
 
-  deleteUser = () => {
-    this.deleteConfirmationProceed = () => {
-      this.setState({deleteConfirmation: false}, ()=>{
-        this.props.deleteUser(this.state._id)
-      })
-    }
-    this.setState({deleteConfirmation: true})
+  checkValidation = () => {
+    const usernameEmpty = this.state.username==="";
+    return usernameEmpty
   }
 
   render() {
     return (
-      <div>
-        <Typography variant="display1" noWrap>
-            My Account
-        </Typography>
-        <br/>
-        <TextField
-          label="Username"
-          type="username"
-          value={this.state.username}
-          onChange={()=>this.handleTextChange('username')}
-        />
-        <br/>
-        <TextField
-          label="Email"
-          type="email"
-          value={this.state.email}
-          onChange={()=>this.handleTextChange('email')}
-        />
-        <br/>
-        <TextField
-          label="First Name"
-          value={this.state.firstName}
-          onChange={()=>this.handleTextChange('firstName')}
-        />
-        <br/>
-        <TextField
-          label="Last Name"
-          value={this.state.lastName}
-          onChange={()=>this.handleTextChange('lastName')}
-        />
-        <br/>
-        <TextField
-          label="Telephone"
-          value={this.state.phoneNo}
-          onChange={()=>this.handleTextChange('phoneNo')}
-        />
-        <br/>
-        <TextField
-          label="Account Type"
-          value={this.state.userType}
-          disabled
-        />
-        <br/>
-        <TextField
-          label="Date Joined"
-          value={format(Date.parse(this.state.createdAt), 'd MMMM YYYY')}
-          onChange={()=>this.handleTextChange('createdAt')}
-        />
-        <br/>
-        <TextField
-          label="Last Updated"
-          value={format(Date.parse(this.state.updatedAt), 'd MMMM YYYY')}
-          disabled
-        />
-        <br/>
-        <IconButton color="secondary" aria-label="delete" onClick={()=>this.deleteMessage()}><DeleteIcon /></IconButton>
-        <Confirmation
-          open={this.state.deleteConfirmation}
-          confirmationDelete={this.deleteConfirmationProceed}
-          confirmationCancel={this.deleteConfirmationCancel}
-          message="Are you sure you want to delete your account?"
-        />
-      </div>
+      <Wrapper>
+        <ProfileEditWrapper elevation={24}>
+          <Typography variant="display1" noWrap>
+              Edit Profile
+          </Typography>
+          <br/>
+          <form onSubmit={this.updateUser} style={{padding: 10}}>
+            <ProfileEdit>
+              <TextField
+                label="Username"
+                type="username"
+                value={this.state.username}
+                onChange={(e)=>this.handleTextChange('username', e.target.value)}
+                fullWidth
+                required
+                error={this.state.username===""}
+                helperText={this.state.username==="" ? "Required" : null}
+                disabled={this.props.loading}
+              />
+              <TextField
+                label="Email"
+                type="email"
+                value={this.state.email}
+                onChange={(e)=>this.handleTextChange('email', e.target.value)}
+                fullWidth
+                disabled={this.props.loading}
+              />
+              <TextField
+                label="First Name"
+                value={this.state.firstName}
+                onChange={(e)=>this.handleTextChange('firstName', e.target.value)}
+                fullWidth
+                disabled={this.props.loading}
+              />
+              <TextField
+                label="Last Name"
+                value={this.state.lastName}
+                onChange={(e)=>this.handleTextChange('lastName', e.target.value)}
+                fullWidth
+                disabled={this.props.loading}
+              />
+              <NumberFormat 
+                customInput={TextField} 
+                label="Telephone"
+                format="+1 (###) ###-####"
+                mask="_"
+                onValueChange={(values) => this.handleTextChange('phoneNo', values.formattedValue)}
+                value={this.state.phoneNo}
+                fullWidth
+                disabled={this.props.loading}
+              />
+            </ProfileEdit>
+            <br/><br/>
+            <Button variant="contained" type="submit" color="primary" disabled={this.props.loading || this.checkValidation()}>
+              Update&nbsp;
+              <SaveIcon />
+            </Button>
+            {/* <IconButton color="secondary" aria-label="delete" onClick={()=>this.deleteMessage()}><DeleteIcon />Delete</IconButton> */}
+          </form>
+        </ProfileEditWrapper>
+        
+        <ProfileDetailsWrapper elevation={24}>
+          <Typography variant="display1"> Account Details </Typography>
+          <br/><br/>
+          <ProfileDetails>
+            <Typography variant="title">Account Type</Typography>
+            <Typography variant="subheading">{this.state.userType}</Typography>
+            <Typography variant="title">Credits Available</Typography>
+            <Typography variant="subheading">{this.state.creditsAvailable}</Typography>
+            <Typography variant="title">Credits on Hold</Typography>
+            <Typography variant="subheading">{this.state.creditsOnHold}</Typography>
+            <Typography variant="title">Date Joined</Typography>
+            <Typography variant="subheading">{format(Date.parse(this.state.createdAt), 'd MMMM YYYY @ HH:mm:ss')}</Typography>
+            <Typography variant="title">Last Updated</Typography>
+            <Typography variant="subheading">{format(Date.parse(this.state.updatedAt), 'd MMMM YYYY @ HH:mm:ss')}</Typography>
+          </ProfileDetails>
+        </ProfileDetailsWrapper>
+      </Wrapper>
     )
   }
 }
@@ -130,7 +171,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateUser: (userID, user) => dispatch(updateUser(userID, user)),
-  deleteUser: userID => dispatch(deleteUser(userID))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile)

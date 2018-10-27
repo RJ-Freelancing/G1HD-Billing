@@ -12,7 +12,7 @@ const styles = theme => ({
   drawerPaper: {
     width: 240,
     border: 'none',
-    background: 'linear-gradient(to right, #051937, #0a2755, #173574, #294394, #3f51b5)',
+    background: 'linear-gradient(to left, #1d239b, #0e2388, #032175, #021e61, #061b4e)',
   },
   toolbar: {
     ...theme.mixins.toolbar,
@@ -47,7 +47,7 @@ const Sidebar = (props) => {
         props.toggleMobileSideBar(false)
         if (props.activePage!==link) props.gotoLink(link)
       }}
-      style={{background: props.activePage===link ? 'radial-gradient(circle, #150271, #1d198e, #222ead, #2243cc, #1a59ed)' : 'inherit'}}
+      style={{background: props.activePage===link ? 'radial-gradient(circle, #9553eb, #714ad0, #5040b5, #2f3598, #082a7c)' : 'inherit'}}
     >
       <ListItemIcon classes={{root: classes.menuItem}}>
         <Icon>{icon}</Icon>
