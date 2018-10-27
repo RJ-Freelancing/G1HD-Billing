@@ -12,20 +12,20 @@ import Typography from '@material-ui/core/Typography'
 
 
 const Wrapper = styled.div`
-  max-width: 400px
-  max-height: 600px
-  background: transparent !important
-  margin: 50px auto
-  text-align: center
+  max-width: 400px;
+  max-height: 600px;
+  background: transparent !important;
+  margin: 50px auto;
+  text-align: center;
 `
 
 const TextInput = styled(TextField)`
-  margin: 10px 0 !important
+  margin: 10px 0 !important;
 `
 
 const LoginButton = styled(Button)`
-  margin: 10px 0 !important
-  max-width: 70%
+  margin: 10px 0 !important;
+  max-width: 70%;
 `
 
 class Login extends Component {
@@ -84,7 +84,7 @@ class Login extends Component {
             value={this.state.password}
             required
           />
-          <LoginButton type="submit" color="primary" fullWidth>
+          <LoginButton variant="contained" type="submit" color="primary" fullWidth>
             Login
           </LoginButton>
         </form>
