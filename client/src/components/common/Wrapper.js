@@ -86,16 +86,15 @@ export default function (ComposedComponent) {
             mobileView={mobileView}
           />
           <ContentDiv>
-          <ReactCSSTransitionGroup
-          transitionName="wrapper"
-          transitionAppear={true}
-          transitionAppearTimeout={500}
-          transitionEnterTimeout={500}
-          transitionLeaveTimeout={300}>
-
-                     <ComposedComponent {...this.props} mobileView key={this.props.location.pathname}/>
-
-        </ReactCSSTransitionGroup>
+            <ReactCSSTransitionGroup
+              transitionName="wrapper"
+              transitionAppear={true}
+              transitionAppearTimeout={500}
+              transitionEnterTimeout={500}
+              transitionLeaveTimeout={300}
+            >
+              <ComposedComponent {...this.props} mobileView key={this.props.location.pathname}/>
+            </ReactCSSTransitionGroup>
           </ContentDiv>
           {this.props.loading && <Loading />}
           <Notification />

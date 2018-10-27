@@ -53,7 +53,6 @@ class Profile extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      deleteConfirmation: false,
       ...props.auth
     }
   }
@@ -135,7 +134,7 @@ class Profile extends Component {
               />
             </ProfileEdit>
             <br/><br/>
-            <Button variant="contained" type="submit" color="primary" disabled={this.props.loading || this.checkValidation()}>
+            <Button variant="contained" type="submit" color="primary" disabled={this.props.loading || this.checkValidation() || isEqual(this.props.auth, this.state)}>
               Update&nbsp;
               <SaveIcon />
             </Button>
