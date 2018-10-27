@@ -63,7 +63,6 @@ class Profile extends Component {
     }
   }
 
-
   handleTextChange = (field, value) => {
     this.setState({[field]: value})
   }
