@@ -34,7 +34,7 @@ export const schemas = {
     accountStatus: Joi.boolean(),
     joinedDate: Joi.date().iso(),
     parentID: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
-    childIDs: Joi.array().items(Joi.string().regex(/^[0-9a-fA-F]{24}$/)).unique(),
+    childIDs: Joi.array().items(Joi.string().regex(/^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$|^[0-9a-fA-F]{24}$/)).unique(),
     creditsAvailable: Joi.number(),
     creditsOnHold: Joi.number()
   }),

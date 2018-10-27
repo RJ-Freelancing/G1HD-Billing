@@ -6,6 +6,7 @@ import passport from './_helpers/passport'
 import userRoutes from './routes/userRoutes'
 import exampleRoutes from './routes/exampleRoutes'
 import authRoutes from './routes/authRoutes'
+import clientRoutes from './routes/clientRoutes'
 
 
 const app = express()
