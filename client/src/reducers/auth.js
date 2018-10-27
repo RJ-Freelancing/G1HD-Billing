@@ -9,8 +9,7 @@ const auth = (state = initialState, action) => {
     case 'LOGIN_SUCCESS':
       return {
         ...state,
-        _id: action.payload.data.user._id,
-        username: action.payload.data.user.username,
+        ...action.payload.data.user,
         token: action.payload.data.token,
       }
     case 'LOGIN_FAILED':
