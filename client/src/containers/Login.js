@@ -7,14 +7,14 @@ import { login } from '../actions/auth'
 import Logo from '../assets/logo.png'
 import Notification from '../components/common/Notification'
 import Loading from '../components/common/Loading'
+import Paper from '@material-ui/core/Paper';
 
 import Typography from '@material-ui/core/Typography'
 
 
-const Wrapper = styled.div`
+const Wrapper = styled(Paper)`
   max-width: 400px;
   max-height: 600px;
-  background: transparent !important;
   margin: 50px auto;
   text-align: center;
 `

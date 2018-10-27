@@ -31,7 +31,7 @@ const menus = [
   {label: 'Dashboard', link: '/', icon: 'dashboard'},
   {label: 'Users', link: '/users', icon: 'person_add'},
   {label: 'Clients', link: '/clients', icon: 'people'},
-  {label: 'Transactions', link: '/transactions', icon: 'money'},
+  {label: 'Transactions', link: '/transactions', icon: 'attach_money'},
 ];
 
 
@@ -43,7 +43,10 @@ const Sidebar = (props) => {
       key={idx} 
       button 
       classes={{root: classes.menu}} 
-      onClick={()=>props.activePage===link ? {} : props.gotoLink(link)}
+      onClick={()=>{
+        props.toggleMobileSideBar(false)
+        if (props.activePage!==link) props.gotoLink(link)
+      }}
       style={{background: props.activePage===link ? 'radial-gradient(circle, #150271, #1d198e, #222ead, #2243cc, #1a59ed)' : 'inherit'}}
     >
       <ListItemIcon classes={{root: classes.menuItem}}>
