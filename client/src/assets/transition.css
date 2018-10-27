@@ -1,0 +1,26 @@
+.wrapper-enter {
+  opacity: 0.01;
+}
+
+.wrapper-enter.wrapper-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.wrapper-leave {
+  opacity: 1;
+}
+
+.wrapper-leave.wrapper-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}
+
+.wrapper-appear {
+  opacity: 0.01;
+}
+
+.wrapper-appear.wrapper-appear-active {
+  opacity: 1;
+  transition: opacity .5s ease-in;
+}

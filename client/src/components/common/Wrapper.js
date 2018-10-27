@@ -7,14 +7,16 @@ import Sidebar from './Sidebar'
 import Notification from './Notification'
 import Loading from './Loading'
 import { logout } from '../../actions/auth'
-import { toggleMobileSideBar } from '../../actions/general';
+import { toggleMobileSideBar } from '../../actions/general'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
+import 'assets/transition.css'
 
 export default function (ComposedComponent) {
   class PageWrap extends Component {
 
     constructor(props) {
-      super(props);
+      super(props)
       this.state = {
         mobileView: false,
         height: window.innerHeight,
@@ -40,8 +42,8 @@ export default function (ComposedComponent) {
     }
 
     updateDimensions = () => {
-      let mobileView = window.innerWidth<=768;
-      this.setState({ height: window.innerHeight, width: window.innerWidth, mobileView });
+      let mobileView = window.innerWidth<=768
+      this.setState({ height: window.innerHeight, width: window.innerWidth, mobileView })
     }
     
     render() {
@@ -57,11 +59,11 @@ export default function (ComposedComponent) {
       `
       
       const ContentDiv = styled.div`
-        flex-grow: 1;
-        min-width: 0px;
-        padding: 16px;
-        margin-left: ${mobileView ? 'inherit' : '240px'};
-        padding-top: 75px;
+        flex-grow: 1
+        min-width: 0px
+        padding: 16px
+        margin-left: ${mobileView ? 'inherit' : '240px'}
+        padding-top: 75px
       `
 
       return (
@@ -84,7 +86,16 @@ export default function (ComposedComponent) {
             mobileView={mobileView}
           />
           <ContentDiv>
-            <ComposedComponent {...this.props} mobileView />
+          <ReactCSSTransitionGroup
+          transitionName="wrapper"
+          transitionAppear={true}
+          transitionAppearTimeout={500}
+          transitionEnterTimeout={500}
+          transitionLeaveTimeout={300}>
+
+                     <ComposedComponent {...this.props} mobileView key={this.props.location.pathname}/>
+
+        </ReactCSSTransitionGroup>
           </ContentDiv>
           {this.props.loading && <Loading />}
           <Notification />
