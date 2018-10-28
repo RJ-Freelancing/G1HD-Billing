@@ -24,12 +24,12 @@ export async function validateMAC(req, res, next) {
     })
   if (res.locals.client.status!=='OK') return res.status(404).json({ error: `client with mac Address ${req.params.id} was not found in the system`})
   // Limiting access only for reseller for now
-  if(req.user.userType != "reseller" || !req.user.childIDs.includes(req.params.id)) return res.status(403).json({error: `You have no rights to perform this action.`})
+  if(req.user.userType != "reseller" || !req.user.childUserNames.includes(req.params.id)) return res.status(403).json({error: `You have no rights to perform this action.`})
   next()
 }
 
 export async function getAllClients(req, res, next) {
- await axios.get(ministraAPI+'accounts/'+req.user.childIDs, config)
+ await axios.get(ministraAPI+'accounts/'+req.user.childUserNames, config)
     .then(response => {
       res.locals.clients = response.data
     })
