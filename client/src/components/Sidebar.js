@@ -27,18 +27,28 @@ const styles = theme => ({
   }
 })
 
+const permissions = {
+  'super-admin': ['/', '/admins', '/super-resellers', '/resellers', '/clients', '/transactions'],
+  'admin': ['/', '/super-resellers', '/resellers', '/clients', '/transactions'],
+  'super-reseller': ['/', '/resellers', '/clients', '/transactions'],
+  'reseller': ['/', '/clients', '/transactions']
+}
+
 const menus = [
   {label: 'Dashboard', link: '/', icon: 'dashboard'},
-  {label: 'Users', link: '/users', icon: 'person_add'},
-  {label: 'Clients', link: '/clients', icon: 'people'},
+  {label: 'Admins', link: '/admins', icon: 'local_library'},
+  {label: 'Super Resellers', link: '/super-resellers', icon: 'group'},
+  {label: 'Resellers', link: '/resellers', icon: 'person'},
+  {label: 'Clients', link: '/clients', icon: 'airplay'},
   {label: 'Transactions', link: '/transactions', icon: 'attach_money'},
 ];
 
 
 const Sidebar = (props) => {
-  const { classes, mobileView } = props
+  const { classes, mobileView, userType } = props
   
-  const Menus = menus.map(({ label, link, icon }, idx)=>
+  const Menus = menus.map(({ label, link, icon }, idx)=> 
+    userType && permissions[userType].includes(link) && 
     <ListItem 
       key={idx} 
       button 

@@ -84,6 +84,7 @@ export default function (ComposedComponent) {
             mobileMenu={this.props.mobileMenu}
             toggleMobileSideBar={this.props.toggleMobileSideBar}
             mobileView={mobileView}
+            userType={this.props.userType}
           />
           <ContentDiv>
             <ReactCSSTransitionGroup
@@ -106,6 +107,7 @@ export default function (ComposedComponent) {
   const mapStateToProps = state => ({
     token: state.auth.token,
     username: state.auth.username,
+    userType: state.auth.userType,
     loading: state.general.loading,
     mobileMenu: state.general.mobileMenu
   })

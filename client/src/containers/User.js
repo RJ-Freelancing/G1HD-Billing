@@ -183,7 +183,7 @@ export default class Client extends Component {
           title='Users'
           rows={rows}
           data={data}
-          orderBy='username'
+          orderBy='creditsAvailable'
         />
       </div>
     )

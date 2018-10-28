@@ -82,7 +82,7 @@ class Profile extends Component {
     return (
       <Wrapper>
         <ProfileEditWrapper elevation={24}>
-          <Typography variant="display1" noWrap>
+          <Typography variant="h4" noWrap>
               Edit Profile
           </Typography>
           <br/>
@@ -141,7 +141,7 @@ class Profile extends Component {
         </ProfileEditWrapper>
         
         <ProfileDetailsWrapper elevation={24}>
-          <Typography variant="display1"> Account Details </Typography>
+          <Typography variant="h4"> Account Details </Typography>
           <br/><br/>
           <ProfileDetails>
             <Typography variant="subtitle2">Account Type</Typography>

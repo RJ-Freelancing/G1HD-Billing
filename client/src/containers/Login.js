@@ -62,7 +62,7 @@ class Login extends Component {
         {this.props.loading && <Loading />}
         <Notification />
         <form onSubmit={this.login} style={{padding: 10}}>
-          <Typography variant='title'>G1HD Billing</Typography>
+          <Typography variant='h6'>G1HD Billing</Typography>
           <img src={Logo} alt="Logo" style={{maxWidth: 200, padding: 10}}/>
           <TextInput
             name="username"

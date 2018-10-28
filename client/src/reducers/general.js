@@ -20,7 +20,7 @@ const general = (state = initialState, action) => {
       }
     case 'TOGGLE_MOBILE_MENU':
       return {
-        ...state,
+        ...initialState,
         mobileMenu: action.payload
       }
     case (action.type.match(/_SUCCESS$/) || {}).input:
