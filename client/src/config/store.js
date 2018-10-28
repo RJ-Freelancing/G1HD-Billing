@@ -1,8 +1,8 @@
 import { createStore, applyMiddleware, compose } from 'redux'
 import { persistStore } from 'redux-persist'
 import axiosMiddleware from 'redux-axios-middleware';
-import { client, middlewareConfig } from './axios';
-import persistedReducer from '../reducers'
+import { client, middlewareConfig } from 'config/axios';
+import persistedReducer from 'reducers'
 
 
 let storeEnhancers;

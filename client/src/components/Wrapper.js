@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import CssBaseline from '@material-ui/core/CssBaseline'
-import Header from './Header'
-import Sidebar from './Sidebar'
-import Notification from './Notification'
-import Loading from './Loading'
-import { logout } from '../../actions/auth'
-import { toggleMobileSideBar } from '../../actions/general'
+import Header from 'components/Header'
+import Sidebar from 'components/Sidebar'
+import Notification from 'components/Notification'
+import Loading from 'components/Loading'
+import { logout } from 'actions/auth'
+import { toggleMobileSideBar } from 'actions/general'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
 import 'assets/transition.css'
@@ -63,7 +63,7 @@ export default function (ComposedComponent) {
         min-width: 0px
         padding: 16px
         margin-left: ${mobileView ? 'inherit' : '240px'}
-        padding-top: 75px
+        padding-top: 70px
       `
 
       return (

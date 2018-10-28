@@ -137,7 +137,6 @@ class Profile extends Component {
               Update&nbsp;
               <SaveIcon />
             </Button>
-            {/* <IconButton color="secondary" aria-label="delete" onClick={()=>this.deleteMessage()}><DeleteIcon />Delete</IconButton> */}
           </form>
         </ProfileEditWrapper>
         
@@ -145,16 +144,16 @@ class Profile extends Component {
           <Typography variant="display1"> Account Details </Typography>
           <br/><br/>
           <ProfileDetails>
-            <Typography variant="title">Account Type</Typography>
-            <Typography variant="subheading">{this.state.userType}</Typography>
-            <Typography variant="title">Credits Available</Typography>
-            <Typography variant="subheading">{this.state.creditsAvailable}</Typography>
-            <Typography variant="title">Credits on Hold</Typography>
-            <Typography variant="subheading">{this.state.creditsOnHold}</Typography>
-            <Typography variant="title">Date Joined</Typography>
-            <Typography variant="subheading">{format(Date.parse(this.state.createdAt), 'd MMMM YYYY @ HH:mm:ss')}</Typography>
-            <Typography variant="title">Last Updated</Typography>
-            <Typography variant="subheading">{format(Date.parse(this.state.updatedAt), 'd MMMM YYYY @ HH:mm:ss')}</Typography>
+            <Typography variant="subtitle2">Account Type</Typography>
+            <Typography variant="body2">{this.state.userType}</Typography>
+            <Typography variant="subtitle2">Credits Available</Typography>
+            <Typography variant="body2">{this.state.creditsAvailable}</Typography>
+            <Typography variant="subtitle2">Credits on Hold</Typography>
+            <Typography variant="body2">{this.state.creditsOnHold}</Typography>
+            <Typography variant="subtitle2">Date Joined</Typography>
+            <Typography variant="body2">{format(Date.parse(this.state.createdAt), 'd MMMM YYYY @ HH:mm:ss')}</Typography>
+            <Typography variant="subtitle2">Last Updated</Typography>
+            <Typography variant="body2">{format(Date.parse(this.state.updatedAt), 'd MMMM YYYY @ HH:mm:ss')}</Typography>
           </ProfileDetails>
         </ProfileDetailsWrapper>
       </Wrapper>

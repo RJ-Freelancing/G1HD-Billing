@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import Wrapper from './components/common/Wrapper';
-import FourOhFour from './components/common/FourOhFour';
-import Login from './containers/Login';
-import Profile from './containers/Profile';
-import Dashboard from './containers/Dashboard';
-import User from './containers/User';
-import Client from './containers/Client';
-import Transaction from './containers/Transaction';
+import Wrapper from 'components/Wrapper';
+import FourOhFour from 'components/FourOhFour';
+import Login from 'containers/Login';
+import Profile from 'containers/Profile';
+import Dashboard from 'containers/Dashboard';
+import User from 'containers/User';
+import Client from 'containers/Client';
+import Transaction from 'containers/Transaction';
 
 
 class App extends Component {

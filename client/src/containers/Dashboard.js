@@ -5,7 +5,7 @@ import Paper from '@material-ui/core/Paper';
 
 const Wrapper = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, 450px);
+  grid-template-columns: repeat(auto-fit, 350px);
   grid-gap: 40px;
   margin: 20px 20px;
   justify-content: center
