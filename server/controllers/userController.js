@@ -17,31 +17,58 @@ const getToken = user => {
   }, process.env.JWT_SECRET)
 }
 
-export async function validateID(req, res, next) {
-  const user = await userRepo.findById(req.params.id)
-  if (!user) return res.status(404).json({ error: `User with id ${req.params.id} was not found in DB` }) 
-  // Not gonna work for second hierarchy, as the req.user.childIDs is still on the same level for next level.
-  if(req.user.userType == "reseller" || !req.user.childIDs.includes(req.params.id)) return res.status(403).json({error: `You have no rights to perform this action.`})
+export async function validateUsername(req, res, next) {
+  const user = await userRepo.findOne({ username : req.params.username})
+  if (!user) return res.status(404).json({ error: `User with username ${req.params.username} was not found in DB` }) 
+  if(req.user.userType == "reseller" || !req.user.childUsernames.includes(req.params.username)) return res.status(403).json({error: `You have no rights to perform this action.`})
   res.locals.user = user
   next()
 }
 
 export async function getAllUsers(req, res, next) {
-  // Not gonna work for second hierarchy, as the req.user.childIDs is still on the same level for next level.
   if (req.user.userType == "reseller") return res.status(403).json({error: `You have no rights to perform this action.`})
-  const users = await userRepo.find({'_id': { $in: req.user.childIDs}}, null, { sort: { firstName: 1 } })
-  res.status(200).json(users)
+  var admins = []
+  var superResellers = []
+  var resellers = []
+  if (req.user.userType == "super-admin") {
+    var childAdmins = req.user.childUsernames
+    var childSuperResellers = []
+    var childResellers = []
+    admins = await userRepo.find({username: { $in: childAdmins}}, null, { sort: { firstName: 1 } })
+    for(var i = 0; i < admins.length; i++){
+      childSuperResellers = [...childSuperResellers, ...admins[i].childUsernames] 
+    }
+    superResellers = await userRepo.find({username: { $in: childSuperResellers}}, null, { sort: { firstName: 1 } })
+    for(var i = 0; i < superResellers.length; i++){ 
+      childResellers = [...childResellers, ...superResellers[i].childUsernames] 
+    }
+    resellers = await userRepo.find({username: { $in: childResellers}}, null, { sort: { firstName: 1 } })
+  }
+  if (req.user.userType == "admin") {
+    var childSuperResellers = req.user.childUsernames
+    var childResellers = []
+    superResellers = await userRepo.find({username: { $in: childSuperResellers}}, null, { sort: { firstName: 1 } })
+    for(var i = 0; i < superResellers.length; i++){ 
+      childResellers = [...childResellers, ...superResellers[i].childUsernames] 
+    }
+    resellers = await userRepo.find({username: { $in: childResellers}}, null, { sort: { firstName: 1 } })
+  }
+  if (req.user.userType == "super-reseller") {
+    var childResellers = req.user.childUsernames
+    resellers = await userRepo.find({username: { $in: childResellers}}, null, { sort: { firstName: 1 } })
+  }
+  res.status(201).json({admins, superResellers, resellers})
 }
 
 export async function addUser(req, res, next) {
-  const { username, email, password, passwordConfirmation, firstName, lastName, phoneNo, userType, accountStatus, joinedDate, parentID, creditsAvailable, creditsOnHold } = req.value.body
+  const { username, email, password, passwordConfirmation, firstName, lastName, phoneNo, userType, accountStatus, joinedDate, parentUsername, creditsAvailable, creditsOnHold } = req.value.body
   if (req.user.userType == "reseller") return res.status(403).json({error: `You have no rights to perform this action.`})
   const existingUser = await userRepo.findOne({ username })
   if (existingUser) 
     return res.status(401).json({ error: `User already exists with username: ${username}` })
   if (password !== passwordConfirmation)
     return res.status(403).json({ error: `Password and PasswordConfirmation do not match` })
-  const user = await userRepo.create([{username, email, password, firstName, lastName, phoneNo, userType, accountStatus, joinedDate, parentID, creditsAvailable, creditsOnHold}], {lean:true})
+  const user = await userRepo.create([{username, email, password, firstName, lastName, phoneNo, userType, accountStatus, joinedDate, parentUsername, creditsAvailable, creditsOnHold}], {lean:true})
   const token = getToken(user)
   res.status(201).json({ user, token })
 }
@@ -66,6 +93,6 @@ export async function deleteUser(req, res, next) {
 }
 
 export async function getChildren(req, res, next) {
-  const users = await userRepo.find({'_id': { $in: res.locals.user.childIDs}}, null, { sort: { firstName: 1 } })
+  const users = await userRepo.find({username: { $in: res.locals.user.childUsernames}}, null, { sort: { firstName: 1 } })
   res.status(200).json(users)
 }

@@ -46,11 +46,11 @@ const userSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  parentID: {
+  parentUsername: {
     type: String,
     required: true
   },
-  childIDs: [
+  childUsernames: [
     {
     type: String
     }
