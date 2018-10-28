@@ -27,37 +27,26 @@ export async function validateUsername(req, res, next) {
 
 export async function getAllUsers(req, res, next) {
   if (req.user.userType == "reseller") return res.status(403).json({error: `You have no rights to perform this action.`})
-  var admins = []
-  var superResellers = []
-  var resellers = []
+  let admins = []
+  let superResellers = []
+  let resellers = []
+  let clients = []
   if (req.user.userType == "super-admin") {
-    var childAdmins = req.user.childUsernames
-    var childSuperResellers = []
-    var childResellers = []
-    admins = await userRepo.find({username: { $in: childAdmins}}, null, { sort: { firstName: 1 } })
-    for(var i = 0; i < admins.length; i++){
-      childSuperResellers = [...childSuperResellers, ...admins[i].childUsernames] 
-    }
-    superResellers = await userRepo.find({username: { $in: childSuperResellers}}, null, { sort: { firstName: 1 } })
-    for(var i = 0; i < superResellers.length; i++){ 
-      childResellers = [...childResellers, ...superResellers[i].childUsernames] 
-    }
-    resellers = await userRepo.find({username: { $in: childResellers}}, null, { sort: { firstName: 1 } })
+    admins = await userRepo.find({username: { $in: req.user.childUsernames}}, null, { sort: { creditsAvailable: 1 } })
+    superResellers = await getChildren(admins)
+    resellers = await getChildren(superResellers)
+    clients = await getClients()
   }
   if (req.user.userType == "admin") {
-    var childSuperResellers = req.user.childUsernames
-    var childResellers = []
-    superResellers = await userRepo.find({username: { $in: childSuperResellers}}, null, { sort: { firstName: 1 } })
-    for(var i = 0; i < superResellers.length; i++){ 
-      childResellers = [...childResellers, ...superResellers[i].childUsernames] 
-    }
-    resellers = await userRepo.find({username: { $in: childResellers}}, null, { sort: { firstName: 1 } })
+    superResellers = await userRepo.find({username: { $in: req.user.childUsernames}}, null, { sort: { creditsAvailable: 1 } })
+    resellers = await getChildren(superResellers)
+    clients = await getClients()
   }
   if (req.user.userType == "super-reseller") {
-    var childResellers = req.user.childUsernames
-    resellers = await userRepo.find({username: { $in: childResellers}}, null, { sort: { firstName: 1 } })
+    resellers = await userRepo.find({username: { $in: req.user.childUsernames}}, null, { sort: { creditsAvailable: 1 } })
+    clients = await getClients()
   }
-  res.status(201).json({admins, superResellers, resellers})
+  res.status(201).json({admins, superResellers, resellers, clients})
 }
 
 export async function addUser(req, res, next) {
@@ -92,7 +81,13 @@ export async function deleteUser(req, res, next) {
   return res.status(200).json(`User with username: ${username} successfully deleted.`)
 }
 
-export async function getChildren(req, res, next) {
-  const users = await userRepo.find({username: { $in: res.locals.user.childUsernames}}, null, { sort: { firstName: 1 } })
-  res.status(200).json(users)
+async function getChildren(parents) {
+  // given a list of parentObjects, return all direct childObjects of each parent
+  const childUsernames = [].concat(...parents.map(parent=>parent.childUsernames))
+  return await userRepo.find({username: { $in: childUsernames}}, null, { sort: { creditsAvailable: 1 } })
+}
+
+async function getClients() {
+  // call mnistra API and get all clients
+  return []
 }

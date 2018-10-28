@@ -29,11 +29,5 @@ router.route('/:username')
     deleteUser
   )
 
-  // router.route('/:username/children')
-  // .get(
-  //   validateParam(schemas.idSchema, 'username'),
-  //   validateID,
-  //   getChildren
-  // )
 
 export default router
