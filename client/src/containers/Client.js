@@ -180,10 +180,11 @@ export default class Client extends Component {
     return (
       <div>
         <Table
-          title='Users'
+          title='Clients'
           rows={rows}
           data={data}
           orderBy='creditsAvailable'
+          mobileView={false}
         />
       </div>
     )

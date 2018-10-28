@@ -54,7 +54,7 @@ const Sidebar = (props) => {
       button 
       classes={{root: classes.menu}} 
       onClick={()=>{
-        props.toggleMobileSideBar(false)
+        mobileView && props.toggleMobileSideBar(false)
         if (props.activePage!==link) props.gotoLink(link)
       }}
       style={{background: props.activePage===link ? 'radial-gradient(circle, #9553eb, #714ad0, #5040b5, #2f3598, #082a7c)' : 'inherit'}}

@@ -17,6 +17,7 @@ import Button from '@material-ui/core/Button'
 import SearchIcon from '@material-ui/icons/Search'
 import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
+import IconButton from '@material-ui/core/IconButton';
 
 
 
@@ -110,7 +111,7 @@ const toolbarStyles = theme => ({
 })
 
 let EnhancedTableToolbar = props => {
-  const { classes, title } = props
+  const { classes, title, mobileView } = props
 
   return (
     <Toolbar>
@@ -133,13 +134,15 @@ let EnhancedTableToolbar = props => {
         fullWidth
       />
       <div className={classes.spacer} />
-      <div className={classes.actions}>
+      <div>
         <Tooltip title="Add New">
-          <Button aria-label="Add New" variant='contained' color="primary">
-            <AddIcon />
-            <Typography variant="subtitle1" noWrap color="inherit">
-              Add New
-            </Typography>
+          <Button aria-label="Add New" variant={mobileView ? 'fab' : 'contained'} color="primary" mini={mobileView}>
+            <AddIcon/>
+            {!mobileView &&
+              <Typography variant="subtitle1" noWrap color="inherit">
+                Add New
+              </Typography>
+            }
           </Button>
         </Tooltip>
       </div>
@@ -194,12 +197,12 @@ class EnhancedTable extends React.Component {
 
 
   render() {
-    const { classes } = this.props
+    const { classes, mobileView } = this.props
     const { data, order, orderBy, rowsPerPage, page } = this.state
 
     return (
       <Paper className={classes.root}>
-        <EnhancedTableToolbar title={this.props.title}/>
+        <EnhancedTableToolbar title={this.props.title} mobileView={mobileView}/>
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
             <EnhancedTableHead
@@ -224,7 +227,9 @@ class EnhancedTable extends React.Component {
                       })}
                       <TableCell>
                         <Tooltip title="Edit">
-                          <Button aria-label="Edit"> <EditIcon color="primary" /> </Button>
+                          <IconButton aria-label="Edit" style={{padding: 9}}>
+                            <EditIcon fontSize="small" color="primary"/>
+                          </IconButton>
                         </Tooltip>
                       </TableCell>
                     </TableRow>

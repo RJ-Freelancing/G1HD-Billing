@@ -175,15 +175,16 @@ const data = [
 ]
 
 
-export default class Client extends Component {
+export default class Admin extends Component {
   render() {
     return (
       <div>
         <Table
-          title='Users'
+          title='Admins'
           rows={rows}
           data={data}
           orderBy='creditsAvailable'
+          mobileView={false}
         />
       </div>
     )
