@@ -38,7 +38,7 @@ app.use('^(?!/api/auth)', passport.authenticate('jwt', { session: false }))
 // Routes
 app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)
-// app.use('/api/clients', clientRoutes)
+app.use('/api/clients', clientRoutes)
 app.use('/api/example', exampleRoutes)
 
 // Catch 404 Errors

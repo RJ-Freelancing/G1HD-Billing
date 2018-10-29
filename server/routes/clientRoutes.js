@@ -29,6 +29,4 @@ router.route('/:id')
     deleteClient
   )
 
-  //
-
 export default router
