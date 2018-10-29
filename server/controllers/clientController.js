@@ -24,20 +24,15 @@ export async function validateMAC(req, res, next) {
     })
   if (res.locals.client.status!=='OK') return res.status(404).json({ error: `client with mac Address ${req.params.id} was not found in the system`})
   // Limiting access only for reseller for now
-  if(req.user.userType != "reseller" || !req.user.childUserNames.includes(req.params.id)) return res.status(403).json({error: `You have no rights to perform this action.`})
+  if(req.user.userType != "reseller" || !req.user.childUsernames.includes(req.params.id)) return res.status(403).json({error: `You have no rights to perform this action.`})
   next()
 }
 
 export async function getAllClients(req, res, next) {
- await axios.get(ministraAPI+'accounts/'+req.user.childUserNames, config)
-    .then(response => {
-      res.locals.clients = response.data
-    })
-    .catch(error => {
-      console.log("Ministra API Error : " + error)
-    })
-  if (res.locals.clients.status!=='OK') return res.status(404).json({ error: `One or more mac Address are incorrect`})
-  res.status(200).json(res.locals.clients.results)
+  const macAdresses = await (req.user.childUsernames.length == 0 ? "1" : req.user.childUsernames)
+  const clients = await getMultipleClients(macAdresses)
+  if (clients.status!=='OK') return res.status(404).json({ error: `One or more mac Addresses are incorrect`})
+  res.status(200).json(clients.results)
 }
 
 export async function addClient(req, res, next) {
@@ -92,3 +87,14 @@ export async function deleteClient(req, res, next) {
   return res.status(200).json(`Client with mac Address: ${req.params.id} successfully deleted.`)
 }
 
+export async function getMultipleClients(macAddresses){
+  var responseData
+  await axios.get(ministraAPI+'accounts/'+macAddresses, config)
+  .then(response => {
+    responseData = response.data
+  })
+  .catch(error => {
+    console.log("Ministra API Error : " + error)
+  })
+  return responseData
+}

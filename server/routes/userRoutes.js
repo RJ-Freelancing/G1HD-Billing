@@ -29,5 +29,4 @@ router.route('/:username')
     deleteUser
   )
 
-
 export default router

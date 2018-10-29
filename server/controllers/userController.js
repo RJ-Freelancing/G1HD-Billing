@@ -1,6 +1,7 @@
 import userRepo from '../models/userModel'
 import JWT from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
+import { getMultipleClients } from '../controllers/clientController'
 
 export async function login(req, res, next) {
   const { user } = req
@@ -20,7 +21,7 @@ const getToken = user => {
 export async function validateUsername(req, res, next) {
   const user = await userRepo.findOne({ username : req.params.username})
   if (!user) return res.status(404).json({ error: `User with username ${req.params.username} was not found in DB` }) 
-  if(req.user.userType == "reseller" || !req.user.childUsernames.includes(req.params.username)) return res.status(403).json({error: `You have no rights to perform this action.`})
+  if(req.user.userType == "reseller" && req.user.username !== req.params.username) return res.status(403).json({error: `You have no rights to perform this action.`})
   res.locals.user = user
   next()
 }
@@ -33,18 +34,18 @@ export async function getAllUsers(req, res, next) {
   let clients = []
   if (req.user.userType == "super-admin") {
     admins = await userRepo.find({username: { $in: req.user.childUsernames}}, null, { sort: { creditsAvailable: 1 } })
-    superResellers = await getChildren(admins)
-    resellers = await getChildren(superResellers)
-    clients = await getClients()
+    superResellers = await getChildren(admins, 0)
+    resellers = await getChildren(superResellers, 0)
+    clients = await getChildren(resellers, 2)
   }
   if (req.user.userType == "admin") {
     superResellers = await userRepo.find({username: { $in: req.user.childUsernames}}, null, { sort: { creditsAvailable: 1 } })
-    resellers = await getChildren(superResellers)
-    clients = await getClients()
+    resellers = await getChildren(superResellers, 0)
+    clients = await getChildren(resellers, 1)
   }
   if (req.user.userType == "super-reseller") {
     resellers = await userRepo.find({username: { $in: req.user.childUsernames}}, null, { sort: { creditsAvailable: 1 } })
-    clients = await getClients()
+    clients = await getChildren(resellers, 1)
   }
   res.status(200).json({admins, superResellers, resellers, clients})
 }
@@ -76,18 +77,22 @@ export async function updateUser(req, res, next) {
 }
 
 export async function deleteUser(req, res, next) {
+  if (req.user.userType == "reseller") return res.status(403).json({error: `Only your super-reseller/admin can delete your account.`})
   const username = res.locals.user.username
   await res.locals.user.remove()
   return res.status(200).json(`User with username: ${username} successfully deleted.`)
 }
 
-async function getChildren(parents) {
+async function getChildren(parents, isMinistra) {
   // given a list of parentObjects, return all direct childObjects of each parent
   const childUsernames = [].concat(...parents.map(parent=>parent.childUsernames))
-  return await userRepo.find({username: { $in: childUsernames}}, null, { sort: { creditsAvailable: 1 } })
-}
-
-async function getClients() {
-  // call mnistra API and get all clients
-  return []
+  if (isMinistra == 0) {
+    return await userRepo.find({username: { $in: childUsernames}}, null, { sort: { creditsAvailable: 1 } })
+  }
+  else {
+    const macAdresses = await (isMinistra == 2 ? "" : (childUsernames.length == 0 ? "1" : childUsernames))
+    const clients = await getMultipleClients(macAdresses)
+    if (clients.status!=='OK') return []
+    return await clients.results
+  }
 }
