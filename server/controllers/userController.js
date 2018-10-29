@@ -46,7 +46,7 @@ export async function getAllUsers(req, res, next) {
     resellers = await userRepo.find({username: { $in: req.user.childUsernames}}, null, { sort: { creditsAvailable: 1 } })
     clients = await getClients()
   }
-  res.status(201).json({admins, superResellers, resellers, clients})
+  res.status(200).json({admins, superResellers, resellers, clients})
 }
 
 export async function addUser(req, res, next) {

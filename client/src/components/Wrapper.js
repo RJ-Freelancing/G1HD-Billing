@@ -9,8 +9,13 @@ import Loading from 'components/Loading'
 import { logout } from 'actions/auth'
 import { toggleMobileSideBar } from 'actions/general'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import { Offline } from "react-detect-offline";
+import OfflinePopup from 'components/OfflinePopup'
 
 import 'assets/transition.css'
+
+import { getUsers } from 'actions/users'
+
 
 export default function (ComposedComponent) {
   class PageWrap extends Component {
@@ -31,6 +36,7 @@ export default function (ComposedComponent) {
 
     componentDidMount = () => {
       window.addEventListener("resize", this.updateDimensions)
+      // this.props.getUsers()
     }
 
     componentDidUpdate = () => {
@@ -71,7 +77,6 @@ export default function (ComposedComponent) {
           <CssBaseline />
           <Header 
             logout={this.props.logout} 
-            loading={this.props.loading} 
             username={this.props.username}
             toggleMobileSideBar={this.props.toggleMobileSideBar}
             mobileView={mobileView}
@@ -80,7 +85,6 @@ export default function (ComposedComponent) {
           <Sidebar 
             activePage={this.props.match.path} 
             gotoLink={(link)=>this.props.history.push(link)} 
-            loading={this.props.loading}
             mobileMenu={this.props.mobileMenu}
             toggleMobileSideBar={this.props.toggleMobileSideBar}
             mobileView={mobileView}
@@ -94,11 +98,15 @@ export default function (ComposedComponent) {
               transitionEnterTimeout={500}
               transitionLeaveTimeout={300}
             >
-              <ComposedComponent {...this.props} mobileView key={this.props.location.pathname}/>
+              <ComposedComponent location={this.props.location.pathname}/>
             </ReactCSSTransitionGroup>
           </ContentDiv>
           {this.props.loading && <Loading />}
           <Notification />
+          <Offline polling={{interval:30000}}>
+            <Loading />
+            <OfflinePopup/>
+          </Offline>
         </RootDiv>
       )
     }
@@ -114,7 +122,8 @@ export default function (ComposedComponent) {
 
   const mapDispatchToProps = dispatch => ({
     logout: () => dispatch(logout()),
-    toggleMobileSideBar: (open) => dispatch(toggleMobileSideBar(open))
+    toggleMobileSideBar: (open) => dispatch(toggleMobileSideBar(open)),
+    getUsers: () => dispatch(getUsers())
   })
 
   return connect(mapStateToProps, mapDispatchToProps)(PageWrap)

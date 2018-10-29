@@ -10,7 +10,7 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
 
-import { updateUser } from 'actions/auth'
+import { updateUser } from 'actions/users'
 
 
 const Wrapper = styled.div`

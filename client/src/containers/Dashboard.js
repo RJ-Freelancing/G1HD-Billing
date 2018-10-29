@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import Paper from '@material-ui/core/Paper';
+import { connect } from 'react-redux'
+
+import { getUsers } from 'actions/users'
 
 
 const Wrapper = styled.div`
@@ -17,7 +20,13 @@ const DashboardItem = styled(Paper)`
 
 
 
-export default class Dashboard extends Component {
+class Dashboard extends Component {
+  componentDidMount = () => {
+    // console.log('GONNA CALL MOUNT');
+
+    // this.props.getUsers()
+  }
+
   render() {
     return (
       <Wrapper>
@@ -31,3 +40,19 @@ export default class Dashboard extends Component {
     )
   }
 }
+
+
+
+const mapStateToProps = state => ({
+  mobileMenu: state.general.mobileMenu,
+  admins: state.users.admins,
+  'super-resellers': state.users['super-resellers'],
+  resellers: state.users.resellers,
+  clients: state.users.clients,
+})
+
+const mapDispatchToProps = dispatch => ({
+  getUsers: () => dispatch(getUsers())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)
