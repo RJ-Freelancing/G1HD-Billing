@@ -92,7 +92,7 @@ async function getChildren(parents, isMinistra) {
   else {
     const macAdresses = await (isMinistra == 2 ? "" : (childUsernames.length == 0 ? "1" : childUsernames))
     const clients = await getMultipleClients(macAdresses)
-    if (clients.status!=='OK') return []
+    if (!clients || clients.status!=='OK') return []
     return await clients.results
   }
 }

@@ -12,6 +12,7 @@ import SaveIcon from '@material-ui/icons/Save';
 
 import { updateUser } from 'actions/users'
 
+const validPhoneNo = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
 
 const Wrapper = styled.div`
   display: grid;
@@ -75,7 +76,8 @@ class Profile extends Component {
 
   checkValidation = () => {
     const usernameEmpty = this.state.username==="";
-    return usernameEmpty
+    const phoneNoInvalid = this.state.phoneNo && !this.state.phoneNo.match(validPhoneNo);
+    return usernameEmpty || phoneNoInvalid
   }
 
   render() {
@@ -124,12 +126,14 @@ class Profile extends Component {
               <NumberFormat 
                 customInput={TextField} 
                 label="Telephone"
-                format="+1 (###) ###-####"
+                format="###-###-####"
                 mask="_"
                 onValueChange={(values) => this.handleTextChange('phoneNo', values.formattedValue)}
                 value={this.state.phoneNo}
                 fullWidth
                 disabled={this.props.loading}
+                error={!this.state.phoneNo.match(validPhoneNo)}
+                helperText={!this.state.phoneNo.match(validPhoneNo) ? "Invalid Telephone" : null}
               />
             </ProfileEdit>
             <br/><br/>
