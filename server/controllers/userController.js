@@ -36,16 +36,16 @@ export async function getAllUsers(req, res, next) {
     admins = await userRepo.find({username: { $in: req.user.childUsernames}}, null, { sort: { creditsAvailable: 1 } })
     superResellers = await getChildren(admins, 0)
     resellers = await getChildren(superResellers, 0)
-    // clients = await getChildren(resellers, 2)
+    clients = await getChildren(resellers, 2)
   }
   if (req.user.userType == "admin") {
     superResellers = await userRepo.find({username: { $in: req.user.childUsernames}}, null, { sort: { creditsAvailable: 1 } })
     resellers = await getChildren(superResellers, 0)
-    // clients = await getChildren(resellers, 1)
+    clients = await getChildren(resellers, 1)
   }
   if (req.user.userType == "super-reseller") {
     resellers = await userRepo.find({username: { $in: req.user.childUsernames}}, null, { sort: { creditsAvailable: 1 } })
-    // clients = await getChildren(resellers, 1)
+    clients = await getChildren(resellers, 1)
   }
   res.status(200).json({admins, superResellers, resellers, clients})
 }
