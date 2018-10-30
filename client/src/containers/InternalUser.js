@@ -1,19 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import Dashboard from 'containers/Dashboard';
-import Admin from 'containers/Admin';
-import SuperReseller from 'containers/SuperReseller';
-import Reseller from 'containers/Reseller';
-import Client from 'containers/Client';
-
+import Table from 'components/Table'
+import { format } from 'date-fns'
+import { startCase } from 'lodash';
 import { getUsers } from 'actions/users'
-
-const locations = {
-  '/': <Dashboard/>,
-  '/admins': <Admin/>,
-  '/super-resellers': <SuperReseller/>,
-  '/resellers': <Reseller/>
-}
 
 const rows = [
   { field: 'username', numeric: false, label: 'Username' },
@@ -34,27 +24,47 @@ const rows = [
 class InternalUser extends Component {
   
   componentDidMount = () => {
-    console.log('COMPONENT DID MOUNT');
-    // this.props.getUsers()
+    this.props.getUsers()
   }
+
+  getTableData = (urlPath) => {    
+    const users = this.props[urlPath.substr(1)]
+    let displayData = []
+    for (let user of users) {
+      let userData = {}
+      for (let row of rows) {
+        if (row.field==='createdAt') {
+          userData[row.field] = format(Date.parse(user[row.field]), 'd MMMM YYYY')
+        } else {
+          userData[row.field] = user[row.field]
+        }
+      }
+      displayData.push({...userData})
+    }
+    return displayData
+  } 
   
-  render() {     
+  render() {   
     return (
-      locations[this.props.location]
+      <Table
+        title={startCase(this.props.location.substr(1))}
+        rows={rows}
+        data={this.getTableData(this.props.location)}
+        orderBy='creditsAvailable'
+        mobileView={this.props.mobileView}
+      />
     )
   }
 }
 
 const mapStateToProps = state => ({
-  mobileMenu: state.general.mobileMenu,
   admins: state.users.admins,
-  'super-resellers': state.users['super-resellers'],
-  resellers: state.users.resellers,
-  clients: state.users.clients,
+  superResellers: state.users.superResellers,
+  resellers: state.users.resellers
 })
 
 const mapDispatchToProps = dispatch => ({
-  getUsers: () => dispatch(getUsers())
+  getUsers: () => dispatch(getUsers()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(InternalUser)

@@ -10,11 +10,11 @@ export const getUsers = () => ({
   failure: "Something went wrong while retrieving users!"
 })
 
-export const updateUser = (userID, user) => ({
+export const updateUser = (username, user) => ({
   types: ['LOADING', 'UPDATE_USER_SUCCESS', 'UPDATE_USER_FAILED'],
   payload: {
     request:{
-      url: `/users/${userID}`,
+      url: `/users/${username}`,
       method: 'PATCH',
       data: user
     }

@@ -46,7 +46,7 @@ class Dashboard extends Component {
 const mapStateToProps = state => ({
   mobileMenu: state.general.mobileMenu,
   admins: state.users.admins,
-  'super-resellers': state.users['super-resellers'],
+  superResellers: state.users.superResellers,
   resellers: state.users.resellers,
   clients: state.users.clients,
 })

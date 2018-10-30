@@ -20,6 +20,11 @@ const auth = (state = initialState, action) => {
       return {
         ...initialState
       }
+    case 'UPDATE_USER_SUCCESS':   
+      return {
+        ...state,
+        ...action.payload.data
+      }
     default:
       return state
   }

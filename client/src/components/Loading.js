@@ -1,5 +1,6 @@
 import React from 'react'
 import styled, { keyframes } from 'styled-components'
+import { connect } from 'react-redux'
 
 
 const ball1 = keyframes`
@@ -78,4 +79,13 @@ const Loader = styled.div`
   }
 `
 
-export default () => <Loader/>
+const Loading = (props) => {
+  if (props.loading) return <Loader/>
+  else return <></>
+}
+
+const mapStateToProps = state => ({
+  loading: state.general.loading
+})
+
+export default connect(mapStateToProps)(Loading)

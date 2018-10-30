@@ -14,7 +14,6 @@ import OfflinePopup from 'components/OfflinePopup'
 
 import 'assets/transition.css'
 
-import { getUsers } from 'actions/users'
 
 
 export default function (ComposedComponent) {
@@ -36,7 +35,6 @@ export default function (ComposedComponent) {
 
     componentDidMount = () => {
       window.addEventListener("resize", this.updateDimensions)
-      // this.props.getUsers()
     }
 
     componentDidUpdate = () => {
@@ -98,10 +96,10 @@ export default function (ComposedComponent) {
               transitionEnterTimeout={500}
               transitionLeaveTimeout={300}
             >
-              <ComposedComponent location={this.props.location.pathname}/>
+              <ComposedComponent location={this.props.location.pathname} mobileView={this.state.mobileView} />
             </ReactCSSTransitionGroup>
           </ContentDiv>
-          {this.props.loading && <Loading />}
+          <Loading />
           <Notification />
           <Offline polling={{interval:30000}}>
             <Loading />
@@ -116,14 +114,12 @@ export default function (ComposedComponent) {
     token: state.auth.token,
     username: state.auth.username,
     userType: state.auth.userType,
-    loading: state.general.loading,
-    mobileMenu: state.general.mobileMenu
+    mobileMenu: state.general.mobileMenu,
   })
 
   const mapDispatchToProps = dispatch => ({
     logout: () => dispatch(logout()),
-    toggleMobileSideBar: (open) => dispatch(toggleMobileSideBar(open)),
-    getUsers: () => dispatch(getUsers())
+    toggleMobileSideBar: (open) => dispatch(toggleMobileSideBar(open))
   })
 
   return connect(mapStateToProps, mapDispatchToProps)(PageWrap)

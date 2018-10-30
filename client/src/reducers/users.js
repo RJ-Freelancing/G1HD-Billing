@@ -1,6 +1,6 @@
 const initialState = {
   'admins': [],
-  'super-resellers': [],
+  superResellers: [],
   'resellers': [],
   'clients': []
 };

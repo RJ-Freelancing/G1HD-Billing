@@ -70,7 +70,7 @@ class Profile extends Component {
   updateUser = (event) => {
     event.preventDefault()
     const {username, email, firstName, lastName, phoneNo} = this.state
-    this.props.updateUser(this.props.auth._id, {username, email, firstName, lastName, phoneNo})
+    this.props.updateUser(username, {username, email, firstName, lastName, phoneNo})
   }
 
   checkValidation = () => {
@@ -162,7 +162,6 @@ class Profile extends Component {
 }
 
 const mapStateToProps = state => ({
-  loading: state.general.loading,
   auth: state.auth
 })
 

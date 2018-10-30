@@ -24,16 +24,13 @@ const general = (state = initialState, action) => {
         mobileMenu: action.payload
       }
     case (action.type.match(/_SUCCESS$/) || {}).input:
-      if (action.meta.previousAction.success)
-        return {
-          ...state,
-          loading: false,
-          notificationShow: true,
-          notificationMessage: action.meta.previousAction.success,
-          notificationType: 'success'
-        }
-      else 
-        return initialState
+      return {
+        ...state,
+        loading: false,
+        notificationShow: Boolean(action.meta.previousAction.success),
+        notificationMessage: action.meta.previousAction.success,
+        notificationType: 'success'
+      }
     case (action.type.match(/_FAILED$/) || {}).input:
       let notificationMessage = action.meta.previousAction.failure
       try {
@@ -42,7 +39,7 @@ const general = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        notificationShow: true,
+        notificationShow: Boolean(action.meta.previousAction.failure),
         notificationMessage: notificationMessage,
         notificationType: 'error'
       }
