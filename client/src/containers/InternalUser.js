@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import Table from 'components/Table'
 import { format } from 'date-fns'
 import { startCase } from 'lodash';
-import { getUsers } from 'actions/users'
 
 const rows = [
   { field: 'username', numeric: false, label: 'Username' },
@@ -23,10 +22,6 @@ const rows = [
 
 class InternalUser extends Component {
   
-  componentDidMount = () => {
-    this.props.getUsers()
-  }
-
   getTableData = (urlPath) => {    
     const users = this.props[urlPath.substr(1)]
     let displayData = []
@@ -64,7 +59,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getUsers: () => dispatch(getUsers()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(InternalUser)

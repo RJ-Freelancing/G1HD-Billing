@@ -34,3 +34,15 @@ export const deleteUser = userID => ({
   success: `Successfully deleted account`,
   failure: "Something went wrong!"
 })
+
+export const getTransactions = () => ({
+  types: ['LOADING', 'GET_TRANSACTIONS_SUCCESS', 'GET_TRANSACTIONS_FAILED'],
+  payload: {
+    request:{
+      url: '/transactions',
+      method: 'GET',
+    }
+  },
+  success: '',
+  failure: "Something went wrong while retrieving transactions!"
+})

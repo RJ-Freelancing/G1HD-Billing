@@ -1,11 +1,14 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
+import { connect } from 'react-redux'
 import Drawer from '@material-ui/core/Drawer'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import Icon from '@material-ui/core/Icon';
+
+import { toggleMobileSideBar } from 'actions/general'
 
 
 const styles = theme => ({
@@ -95,4 +98,16 @@ const Sidebar = (props) => {
 }
 
 
-export default withStyles(styles)(Sidebar)
+
+const mapStateToProps = state => ({
+  userType: state.auth.userType,
+  mobileMenu: state.general.mobileMenu,
+})
+
+const mapDispatchToProps = dispatch => ({
+  toggleMobileSideBar: (open) => dispatch(toggleMobileSideBar(open)),
+
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Sidebar))
+

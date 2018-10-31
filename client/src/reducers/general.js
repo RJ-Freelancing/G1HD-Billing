@@ -3,7 +3,9 @@ const initialState = {
   notificationShow: false,
   notificationType: 'info',
   notificationMessage: '',
-  mobileMenu: false
+  mobileView: false,
+  mobileMenu: false,
+  lastActiveTime: null
 };
 
 const general = (state = initialState, action) => {
@@ -18,10 +20,29 @@ const general = (state = initialState, action) => {
         ...state,
         notificationShow: false,
       }
+    case 'TOGGLE_MOBILE_VIEW':
+      return {
+        ...initialState,
+        mobileView: action.payload
+      }
     case 'TOGGLE_MOBILE_MENU':
       return {
         ...initialState,
         mobileMenu: action.payload
+      }
+    case 'LOGOUT':
+      return {
+        ...initialState
+      }
+    case 'SET_LAST_ACTIVE':
+      return {
+        ...state,
+        lastActiveTime: action.payload
+      }
+    case 'CLEAR_LAST_ACTIVE':
+      return {
+        ...state,
+        lastActiveTime: null
       }
     case (action.type.match(/_SUCCESS$/) || {}).input:
       return {

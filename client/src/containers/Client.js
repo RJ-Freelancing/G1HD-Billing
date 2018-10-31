@@ -3,9 +3,6 @@ import Table from 'components/Table'
 import { connect } from 'react-redux'
 import { format } from 'date-fns'
 
-import { getUsers } from 'actions/users'
-
-
 const rows = [
   { field: 'stb_mac', numeric: false, label: 'MAC' },
   { field: 'full_name', numeric: false, label: 'Full Name' },
@@ -21,10 +18,6 @@ const rows = [
 
 
 class Client extends Component {
-
-  componentDidMount = () => {
-    this.props.getUsers()
-  }
 
   getTableData = () => {    
     let displayData = []
@@ -61,7 +54,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getUsers: () => dispatch(getUsers()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Client)

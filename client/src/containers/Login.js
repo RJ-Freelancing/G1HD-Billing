@@ -15,7 +15,7 @@ import Typography from '@material-ui/core/Typography'
 const Wrapper = styled(Paper)`
   max-width: 400px;
   max-height: 600px;
-  margin: 50px auto;
+  margin: 20vh auto;
   text-align: center;
   background: transparent !important;
 `
