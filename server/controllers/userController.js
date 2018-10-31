@@ -47,7 +47,8 @@ export async function getAllUsers(req, res, next) {
     clients = await getChildren(resellers, 1)
   }
   if (req.user.userType == "reseller") {
-    clients = await getMultipleClients(req.user.childUsernames)
+    const ministraClients = await getMultipleClients(req.user.childUsernames)
+    clients = ministraClients.results
   }
   res.status(200).json({admins, superResellers, resellers, clients})
 }

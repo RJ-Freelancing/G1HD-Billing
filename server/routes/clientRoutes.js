@@ -5,9 +5,6 @@ import { getAllClients, addClient, validateMAC, getClient, updateClient, deleteC
 const router = require('express-promise-router')()
 
   router.route('/')
-  .get(
-    getAllClients
-  )
   .post(
     validateBody(schemas.addSchema),
     addClient
