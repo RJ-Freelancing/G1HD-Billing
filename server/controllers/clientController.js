@@ -23,8 +23,6 @@ export async function validateMAC(req, res, next) {
       console.log("Ministra API Error : " + error)
     })
   if (res.locals.client.status!=='OK') return res.status(404).json({ error: `client with mac Address ${req.params.id} was not found in the system`})
-  // Limiting access only for reseller for now
-  if(req.user.userType != "reseller" || !req.user.childUsernames.includes(req.params.id)) return res.status(403).json({error: `You have no rights to perform this action.`})
   next()
 }
 

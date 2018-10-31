@@ -15,7 +15,7 @@ export const schemas = {
     status: Joi.number(),
     tariff_plan: Joi.number(),
     tariff_expired_date: Joi.string().regex(/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/),
-    tariff_instead_expired : Joi.number(),
+    tariff_instead_expired : Joi.number().default(3),
     subscribed: Joi.number(),
     subscribed_id: Joi.number()
   }),
@@ -26,7 +26,6 @@ export const schemas = {
     status: Joi.number(),
     tariff_plan: Joi.number(),
     tariff_expired_date: Joi.string().regex(/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/),
-    tariff_instead_expired : Joi.number(),
     subscribed: Joi.number(),
     subscribed_id: Joi.number()
   })
