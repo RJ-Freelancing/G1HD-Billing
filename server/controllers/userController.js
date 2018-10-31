@@ -27,7 +27,6 @@ export async function validateUsername(req, res, next) {
 }
 
 export async function getAllUsers(req, res, next) {
-  if (req.user.userType == "reseller") return res.status(403).json({error: `You have no rights to perform this action.`})
   let admins = []
   let superResellers = []
   let resellers = []
@@ -46,6 +45,9 @@ export async function getAllUsers(req, res, next) {
   if (req.user.userType == "super-reseller") {
     resellers = await userRepo.find({username: { $in: req.user.childUsernames}}, null, { sort: { creditsAvailable: 1 } })
     clients = await getChildren(resellers, 1)
+  }
+  if (req.user.userType == "reseller") {
+    clients = await getMultipleClients(req.user.childUsernames)
   }
   res.status(200).json({admins, superResellers, resellers, clients})
 }
