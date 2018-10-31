@@ -1,18 +1,11 @@
 import React, { Component } from 'react'
 import { Route, Switch } from 'react-router-dom'
-
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import Header from 'containers/Header'
 import Sidebar from 'containers/Sidebar'
-import Notification from 'components/Notification'
-import Loading from 'components/Loading'
 import { logout } from 'actions/auth'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
-import { Offline } from "react-detect-offline";
-import PopupMessage from 'components/PopupMessage'
-import NoInternetGIF from 'assets/noInternet.gif'
-
 import FourOhFour from 'components/FourOhFour'
 import Profile from 'containers/Profile'
 import Dashboard from 'containers/Dashboard';
