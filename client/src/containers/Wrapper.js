@@ -12,6 +12,8 @@ import Dashboard from 'containers/Dashboard';
 import InternalUser from 'containers/InternalUser'
 import Client from 'containers/Client'
 import Transaction from 'containers/Transaction'
+import EditInternalUser from 'containers/EditInternalUser'
+import EditClient from 'containers/EditClient'
 
 import 'assets/transition.css'
 
@@ -65,33 +67,35 @@ class Wrapper extends Component {
 
     return (
       <RootDiv>
-          <Header 
-              gotoLink={(link)=>this.props.history.push(link)} 
-            />
-            <Sidebar 
-              gotoLink={(link)=>this.props.history.push(link)} 
-              activePage={this.props.location.pathname} 
-            />
-          <ContentDiv>
-            <ReactCSSTransitionGroup
-              transitionName="wrapper"
-              transitionAppear={true}
-              transitionAppearTimeout={500}
-              transitionEnterTimeout={500}
-              transitionLeaveTimeout={300}
-            >
-              <Switch>
-                <Route exact path="/" component={Dashboard} />
-                <Route exact path="/admins" component={InternalUser} />
-                <Route exact path="/superResellers" component={InternalUser} />
-                <Route exact path="/resellers" component={InternalUser} />
-                <Route exact path="/clients" component={Client} />
-                <Route exact path="/transactions" component={Transaction} />
-                <Route exact path="/profile" component={Profile} />
-                <Route component={FourOhFour} />
-              </Switch>
-            </ReactCSSTransitionGroup>
-          </ContentDiv>
+        <Header 
+            gotoLink={(link)=>this.props.history.push(link)} 
+          />
+          <Sidebar 
+            gotoLink={(link)=>this.props.history.push(link)} 
+            activePage={this.props.location.pathname} 
+          />
+        <ContentDiv>
+          <ReactCSSTransitionGroup
+            transitionName="wrapper"
+            transitionAppear={true}
+            transitionAppearTimeout={500}
+            transitionEnterTimeout={500}
+            transitionLeaveTimeout={300}
+          >
+            <Switch>
+              <Route exact path="/" component={Dashboard} />
+              <Route exact path="/admins" component={InternalUser} />
+              <Route exact path="/superResellers" component={InternalUser} />
+              <Route exact path="/resellers" component={InternalUser} />
+              <Route exact path="/clients" component={Client} />
+              <Route exact path="/transactions" component={Transaction} />
+              <Route exact path="/profile" component={Profile} />
+              <Route path="/users/:id" component={EditInternalUser} />
+              <Route path="/clients/:id" component={EditClient} />
+              <Route component={FourOhFour} />
+            </Switch>
+          </ReactCSSTransitionGroup>
+        </ContentDiv>
       </RootDiv>
     )
   }
