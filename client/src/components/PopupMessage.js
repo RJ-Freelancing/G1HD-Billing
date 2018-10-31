@@ -15,7 +15,7 @@ const AlertDialog = ({title, description, image}) => {
         <DialogTitle id="alert-dialog-title">
           {title}
         </DialogTitle>
-        <DialogContent>
+        <DialogContent style={{textAlign: 'center'}}>
           <DialogContentText id="alert-dialog-description">
             {description}
           </DialogContentText>
