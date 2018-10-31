@@ -4,7 +4,7 @@ import logger from './_helpers/logger'
 import mongoose from 'mongoose'
 import passport from './_helpers/passport'
 import userRoutes from './routes/userRoutes'
-import exampleRoutes from './routes/exampleRoutes'
+import transactionRoutes from './routes/transactionRoutes'
 import authRoutes from './routes/authRoutes'
 import clientRoutes from './routes/clientRoutes'
 
@@ -39,7 +39,7 @@ app.use('^(?!/api/auth)', passport.authenticate('jwt', { session: false }))
 app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/clients', clientRoutes)
-app.use('/api/example', exampleRoutes)
+app.use('/api/transaction', transactionRoutes)
 
 // Catch 404 Errors
 app.use((req, res, next) => {
