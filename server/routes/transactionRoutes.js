@@ -13,9 +13,9 @@ const router = require('express-promise-router')()
     addTransaction
   )
 
-router.route('/:transactionId')
+router.route('/:id')
   .get(
-    validateParam(schemas.idSchema, 'transactionId'),
+    validateParam(schemas.idSchema, 'id'),
     validateId,
     getTransaction
   )
