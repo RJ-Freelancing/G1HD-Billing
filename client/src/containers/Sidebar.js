@@ -8,7 +8,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import Icon from '@material-ui/core/Icon';
 
-import { toggleMobileSideBar } from 'actions/general'
+import { toggleMobileSideBar, clearNotification } from 'actions/general'
 
 
 const styles = theme => ({
@@ -58,7 +58,7 @@ const Sidebar = (props) => {
       classes={{root: classes.menu}} 
       onClick={()=>{
         mobileView && props.toggleMobileSideBar(false)
-        if (props.activePage!==link) props.gotoLink(link)
+        if (props.activePage!==link) {props.gotoLink(link);props.clearNotification()}
       }}
       style={{background: props.activePage===link ? 'radial-gradient(circle, #9553eb, #714ad0, #5040b5, #2f3598, #082a7c)' : 'inherit'}}
     >
@@ -102,10 +102,12 @@ const Sidebar = (props) => {
 const mapStateToProps = state => ({
   userType: state.auth.userType,
   mobileMenu: state.general.mobileMenu,
+  mobileView: state.general.mobileView
 })
 
 const mapDispatchToProps = dispatch => ({
   toggleMobileSideBar: (open) => dispatch(toggleMobileSideBar(open)),
+  clearNotification: () => dispatch(clearNotification()),
 
 })
 

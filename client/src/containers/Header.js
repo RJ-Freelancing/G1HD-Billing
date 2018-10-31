@@ -18,10 +18,13 @@ import Notification from 'components/Notification'
 import { Offline } from "react-detect-offline";
 import Loading from 'components/Loading'
 import PopupMessage from 'components/PopupMessage'
+import NoInternetGIF from 'assets/noInternet.gif'
+import Inactivity from 'assets/inactivity.gif'
+
 
 import { logout } from 'actions/auth'
 
-import { toggleMobileSideBar } from 'actions/general'
+import { toggleMobileSideBar, clearNotification } from 'actions/general'
 
 const styles = theme => ({
   appBar: {
@@ -67,21 +70,23 @@ class Header extends Component {
   }
 
   componentWillMount = () => {
-    if (!this.props.token) this.props.logout()
+    if (!this.props.token) this.props.gotoLink('/login')
   }
 
   componentDidMount = () => {
     window.onmousemove = this.resetInactiveTimer
+    window.addEventListener("scroll", this.resetInactiveTimer, true)
     this.idleTimer = setTimeout(this.onIdle, 60000)
   }
 
   componentDidUpdate = () => {
-    if (!this.props.token) this.props.logout()
+    if (!this.props.token) this.props.gotoLink('/login')
   }
 
   componentWillUnmount = () => { 
     clearInterval(this.timer)
     clearTimeout(this.idleTimer)
+    window.removeEventListener("scroll", this.resetInactiveTimer)
   }
 
   resetInactiveTimer = () => {
@@ -95,7 +100,7 @@ class Header extends Component {
 
   progress = () => {
     const { inactivity } = this.state
-    if (inactivity >= 60) this.props.logout()
+    if (inactivity >= 60) {this.props.logout();this.props.gotoLink('/login')}
     else this.setState({ inactivity: inactivity + 1 })
   }
 
@@ -121,11 +126,11 @@ class Header extends Component {
         open={isMenuOpen}
         onClose={this.handleMenuClose}
       >
-        <MenuItem onClick={()=>this.props.gotoLink('/profile')}>
+        <MenuItem onClick={()=>{this.props.gotoLink('/profile');this.props.clearNotification()}}>
           <ListItemIcon><SettingsIcon/></ListItemIcon>
           <ListItemText primary="My account" />
         </MenuItem>
-        <MenuItem onClick={this.props.logout}>
+        <MenuItem onClick={()=>{this.props.logout();this.props.gotoLink('/login')}}>
           <ListItemIcon><LogoutIcon/></ListItemIcon>
           <ListItemText primary="Logout" />
         </MenuItem>
@@ -161,18 +166,21 @@ class Header extends Component {
         </Toolbar>
       </AppBar>
       {renderMenu}
+      <Loading />
       <Notification />
       <Offline polling={{interval:30000}}>
         <Loading />
         <PopupMessage
           title='No Active Internet Connection Detected'
           description='You can continue with your work once the connection is back.'
+          image={NoInternetGIF}
         />
       </Offline>
       {this.state.inactivity ? 
         <PopupMessage
           title="Session Idle"
           description={`You will be logged out in ${60-this.state.inactivity} seconds due to inactivity.`}
+          image={Inactivity}
         /> 
       : null}
       </>
@@ -190,6 +198,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   logout: () => dispatch(logout()),
   toggleMobileSideBar: (open) => dispatch(toggleMobileSideBar(open)),
+  clearNotification: () => dispatch(clearNotification()),
+
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Header))

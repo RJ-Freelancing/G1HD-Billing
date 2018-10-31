@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import Table from 'components/Table'
 import { format } from 'date-fns'
 import { startCase } from 'lodash';
+import { getUsers } from 'actions/users'
 
 const rows = [
   { field: 'username', numeric: false, label: 'Username' },
@@ -21,6 +22,12 @@ const rows = [
 
 
 class InternalUser extends Component {
+
+  componentDidMount = () => {   
+    if (!this.props.token) this.props.history.push('/login')
+    else this.props.getUsers()
+  }
+
   
   getTableData = (urlPath) => {    
     const users = this.props[urlPath.substr(1)]
@@ -42,9 +49,9 @@ class InternalUser extends Component {
   render() {   
     return (
       <Table
-        title={startCase(this.props.location.substr(1))}
+        title={startCase(this.props.location.pathname.substr(1))}
         rows={rows}
-        data={this.getTableData(this.props.location)}
+        data={this.getTableData(this.props.location.pathname)}
         orderBy='creditsAvailable'
         mobileView={this.props.mobileView}
       />
@@ -53,12 +60,15 @@ class InternalUser extends Component {
 }
 
 const mapStateToProps = state => ({
+  token: state.auth.token,
   admins: state.users.admins,
   superResellers: state.users.superResellers,
-  resellers: state.users.resellers
+  resellers: state.users.resellers,
+  mobileView: state.general.mobileView
 })
 
 const mapDispatchToProps = dispatch => ({
+  getUsers: () => dispatch(getUsers()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(InternalUser)

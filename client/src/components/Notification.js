@@ -13,6 +13,7 @@ import SnackbarContent from '@material-ui/core/SnackbarContent'
 import WarningIcon from '@material-ui/icons/Warning'
 import { withStyles } from '@material-ui/core/styles'
 
+import { clearNotification } from 'actions/general'
 
 const variantIcon = {
   success: CheckCircleIcon,
@@ -125,7 +126,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  clearNotification: () => dispatch({type: 'CLEAR_NOTIFICATION'})
+  clearNotification: () => dispatch(clearNotification())
 })
 
 

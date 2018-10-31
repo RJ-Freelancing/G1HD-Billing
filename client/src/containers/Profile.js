@@ -132,8 +132,8 @@ class Profile extends Component {
                 value={this.state.phoneNo}
                 fullWidth
                 disabled={this.props.loading}
-                error={!this.state.phoneNo.match(validPhoneNo)}
-                helperText={!this.state.phoneNo.match(validPhoneNo) ? "Invalid Telephone" : null}
+                error={this.state.phoneNo && !this.state.phoneNo.match(validPhoneNo)}
+                helperText={this.state.phoneNo && !this.state.phoneNo.match(validPhoneNo) ? "Invalid Telephone" : null}
               />
             </ProfileEdit>
             <br/><br/>

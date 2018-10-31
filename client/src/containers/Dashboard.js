@@ -21,10 +21,9 @@ const DashboardItem = styled(Paper)`
 
 
 class Dashboard extends Component {
-  componentDidMount = () => {
-    // console.log('GONNA CALL MOUNT');
-
-    // this.props.getUsers()
+  componentDidMount = () => {   
+    if (!this.props.token) this.props.history.push('/login')
+    else this.props.getUsers()
   }
 
   render() {
@@ -44,6 +43,7 @@ class Dashboard extends Component {
 
 
 const mapStateToProps = state => ({
+  token: state.auth.token,
   mobileMenu: state.general.mobileMenu,
   admins: state.users.admins,
   superResellers: state.users.superResellers,

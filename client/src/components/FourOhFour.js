@@ -1,12 +1,18 @@
 import React, { Component } from 'react'
+import FourOhFourImage from 'assets/404.png'
+import styled from 'styled-components'
 
+
+const Page = styled.div`
+  text-align: center;
+`
 
 class FourOhFour extends Component {
   render() {
     return (
-      <div>
-        404 Page: TODO MUST STYLE THIS PAGE
-      </div>
+      <Page>
+        <img src={FourOhFourImage} alt="404"/>
+      </Page>
     )
   }
 }

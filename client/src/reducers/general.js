@@ -4,8 +4,7 @@ const initialState = {
   notificationType: 'info',
   notificationMessage: '',
   mobileView: false,
-  mobileMenu: false,
-  lastActiveTime: null
+  mobileMenu: false
 };
 
 const general = (state = initialState, action) => {
@@ -20,15 +19,15 @@ const general = (state = initialState, action) => {
         ...state,
         notificationShow: false,
       }
-    case 'TOGGLE_MOBILE_VIEW':
-      return {
-        ...initialState,
-        mobileView: action.payload
-      }
     case 'TOGGLE_MOBILE_MENU':
       return {
-        ...initialState,
+        ...state,
         mobileMenu: action.payload
+      }
+    case 'SET_MOBILE_VIEW':
+      return {
+        ...state,
+        mobileView: action.payload
       }
     case 'LOGOUT':
       return {
@@ -45,25 +44,31 @@ const general = (state = initialState, action) => {
         lastActiveTime: null
       }
     case (action.type.match(/_SUCCESS$/) || {}).input:
-      return {
-        ...state,
-        loading: false,
-        notificationShow: Boolean(action.meta.previousAction.success),
-        notificationMessage: action.meta.previousAction.success,
-        notificationType: 'success'
-      }
+      if (Boolean(action.meta.previousAction.success))
+        return {
+          ...state,
+          loading: false,
+          notificationShow: Boolean(action.meta.previousAction.success),
+          notificationMessage: action.meta.previousAction.success,
+          notificationType: 'success'
+        }
+      else
+        return {...state, loading: false}
     case (action.type.match(/_FAILED$/) || {}).input:
       let notificationMessage = action.meta.previousAction.failure
       try {
         notificationMessage = action.error.response.data.error
       } catch{}
-      return {
-        ...state,
-        loading: false,
-        notificationShow: Boolean(action.meta.previousAction.failure),
-        notificationMessage: notificationMessage,
-        notificationType: 'error'
-      }
+      if (Boolean(action.meta.previousAction.failure))
+        return {
+          ...state,
+          loading: false,
+          notificationShow: Boolean(action.meta.previousAction.failure),
+          notificationMessage: notificationMessage,
+          notificationType: 'error'
+        }
+      else
+        return {...state, loading: false}
     default:
       return state
   }

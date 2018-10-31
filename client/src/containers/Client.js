@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Table from 'components/Table'
 import { connect } from 'react-redux'
 import { format } from 'date-fns'
+import { getUsers } from 'actions/users'
 
 const rows = [
   { field: 'stb_mac', numeric: false, label: 'MAC' },
@@ -18,6 +19,11 @@ const rows = [
 
 
 class Client extends Component {
+
+  componentDidMount = () => {   
+    if (!this.props.token) this.props.history.push('/login')
+    else this.props.getUsers()
+  }
 
   getTableData = () => {    
     let displayData = []
@@ -50,10 +56,13 @@ class Client extends Component {
 
 
 const mapStateToProps = state => ({
+  token: state.auth.token,
   clients: state.users.clients,
 })
 
 const mapDispatchToProps = dispatch => ({
+  getUsers: () => dispatch(getUsers()),
+
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Client)
