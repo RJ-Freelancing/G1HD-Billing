@@ -54,6 +54,7 @@ class InternalUser extends Component {
         data={this.getTableData(this.props.location.pathname)}
         orderBy='creditsAvailable'
         mobileView={this.props.mobileView}
+        gotoLink={(user)=>this.props.history.push(`/users/${user.username}`)} 
       />
     )
   }

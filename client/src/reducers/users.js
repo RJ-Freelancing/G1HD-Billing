@@ -18,6 +18,11 @@ const users = (state = initialState, action) => {
         ...state, 
         transactions: action.payload.data
       }
+    case 'UPDATE_CLIENT_SUCCESS':
+      // FIND UPDATED USER AND UPDATE WITH PAYLOAD
+      return {
+        ...state, 
+      }
     case 'LOGOUT':
       return {
         ...initialState

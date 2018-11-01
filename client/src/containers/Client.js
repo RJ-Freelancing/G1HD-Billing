@@ -49,6 +49,7 @@ class Client extends Component {
         data={this.getTableData()}
         orderBy='tariff_expired_date'
         mobileView={this.props.mobileView}
+        gotoLink={(client)=>this.props.history.push(`/clients/${client.stb_mac}`)}
       />
     )
   }

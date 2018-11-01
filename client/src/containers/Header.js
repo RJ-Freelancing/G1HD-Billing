@@ -76,7 +76,7 @@ class Header extends Component {
   componentDidMount = () => {
     window.onmousemove = this.resetInactiveTimer
     window.addEventListener("scroll", this.resetInactiveTimer, true)
-    this.idleTimer = setTimeout(this.onIdle, 60000)
+    this.idleTimer = setTimeout(this.onIdle, 120000)
   }
 
   componentDidUpdate = () => {
@@ -94,7 +94,7 @@ class Header extends Component {
       this.setState({ inactivity: 0 }, ()=>{
         clearInterval(this.timer)
         clearTimeout(this.idleTimer)
-        this.idleTimer = setTimeout(this.onIdle, 60000)
+        this.idleTimer = setTimeout(this.onIdle, 120000)
       })
   }
 

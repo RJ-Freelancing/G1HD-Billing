@@ -227,7 +227,7 @@ class EnhancedTable extends React.Component {
                       })}
                       <TableCell>
                         <Tooltip title="Edit">
-                          <IconButton aria-label="Edit" style={{padding: 9}}>
+                          <IconButton aria-label="Edit" style={{padding: 9}} onClick={()=>this.props.gotoLink(n)}>
                             <EditIcon fontSize="small" color="primary"/>
                           </IconButton>
                         </Tooltip>
