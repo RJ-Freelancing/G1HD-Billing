@@ -25,6 +25,6 @@ export async function getUser(req, res, next) {
   const { username } = req.params
   connection.query(`SELECT * from users WHERE mac='${username}'`, function (err, rows, fields) { 
     if (err) return res.status(200).json(err);
-    return res.status(200).json(rows)
+    return res.status(200).json(rows[0])
   }) 
 }
