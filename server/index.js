@@ -7,6 +7,7 @@ import userRoutes from './routes/userRoutes'
 import transactionRoutes from './routes/transactionRoutes'
 import authRoutes from './routes/authRoutes'
 import clientRoutes from './routes/clientRoutes'
+import ministraRoutes from './routes/ministraRoutes'
 
 
 const app = express()
@@ -40,6 +41,7 @@ app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/clients', clientRoutes)
 app.use('/api/transaction', transactionRoutes)
+app.use('/api/ministra', ministraRoutes)
 
 // Catch 404 Errors
 app.use((req, res, next) => {
