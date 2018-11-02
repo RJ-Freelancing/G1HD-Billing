@@ -3,10 +3,10 @@ import app from '../../index'
 const assert = require('assert');
 
 
-describe('GET /example', () => {
+describe('GET /api/users', () => {
   it('responds with unauthorized', done => {
     request(app)
-      .get('/example')
+      .get('/api/users')
       .expect(401, done)
   })
 })
