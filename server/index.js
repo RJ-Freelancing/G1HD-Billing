@@ -43,6 +43,15 @@ app.use('/api/clients', clientRoutes)
 app.use('/api/transaction', transactionRoutes)
 app.use('/api/ministra', ministraRoutes)
 
+
+// Serve React Frontend at '/' url
+const path = require('path');
+app.use(express.static(path.join(__dirname, 'client')));
+app.get('*', function (req, res) {
+  res.sendFile(path.join(__dirname, 'client', 'index.html'));
+});
+
+
 // Catch 404 Errors
 app.use((req, res, next) => {
   const err = new Error('Route not found')
