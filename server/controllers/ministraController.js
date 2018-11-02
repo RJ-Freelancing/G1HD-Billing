@@ -11,7 +11,7 @@ var connection = mysql.createConnection({
   database : process.env.MINISTRA_DB_NAME
 });
 
-connection.connect()
+
 
 export async function getAllUsers(req, res, next) {
   connection.query('SELECT * from users', function (err, rows, fields) { 
