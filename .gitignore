@@ -78,7 +78,7 @@ typings/
 # production
 /build
 /client/build
-dist
+/server/build
 
 # misc
 .DS_Store

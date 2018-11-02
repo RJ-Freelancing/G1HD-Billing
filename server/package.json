@@ -9,7 +9,7 @@
     "start": "nodemon --ignore tests --exec babel-node index.js",
     "test": "NODE_ENV=testing nodemon --exec nyc mocha --require babel-core/register --colors --slow 1000 tests/**/*.js",
     "test-report": "NODE_ENV=testing nyc mocha --require babel-core/register --reporter mocha-junit-reporter --reporter-options mochaFile=./coverage/junit.xml --exit tests/**/*.js",
-    "build": "NODE_ENV=production babel . -s -D -d build --presets env"
+    "build": "NODE_ENV=production babel . -s -D -d build --presets env --ignore node_modules,tests,coverage,Dockerfile.test,yarn.lock"
   },
   "dependencies": {
     "axios": "^0.18.0",
