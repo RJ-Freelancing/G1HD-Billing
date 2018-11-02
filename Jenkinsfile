@@ -12,7 +12,7 @@ def isDeploymentBranch(){
 
 def getBuildTag() {
   def currentBranch = env.GIT_BRANCH.getAt((env.GIT_BRANCH.indexOf('/')+1..-1))
-  return currentBranch==env.DEVELOPMENT_BRANCH ? ':development' : ':production';
+  return currentBranch==env.DEVELOPMENT_BRANCH ? ':staging' : ':production';
 }
 
 pipeline {
@@ -20,7 +20,7 @@ pipeline {
   environment {
     SITE_NAME = 'g1hd' // Name will be used for tagging along with getBuildTag/suffix/prefix
     PRODUCTION_BRANCH = 'master' // Source branch used for production
-    DEVELOPMENT_BRANCH = 'dev' // Source branch used for development
+    DEVELOPMENT_BRANCH = 'dev' // Source branch used for staging
     SLACK_CHANNEL = '#g1hd' // Slack channel to send build notifications
   }
   agent any
@@ -104,7 +104,7 @@ pipeline {
       steps {
         script {
           try {
-            echo "TODO: Need to decide on build step"
+            sh "docker build -t ${env.SITE_NAME}${getBuildTag()} --no-cache ."
           } catch (e) {
             if (!errorMessage) {
               errorMessage = "Failed while building.\n\n${readFile('commandResult').trim()}\n\n${e.message}"
@@ -119,7 +119,10 @@ pipeline {
       // Skip stage if an error has occured in previous stages or if not isDeploymentBranch
       when { expression { return !errorMessage && isDeploymentBranch(); } }
       steps {
-        echo "TODO: Need to decide on deploy step"
+        sh "docker image tag ${env.SITE_NAME}${getBuildTag()} registry.jana19.org/${env.SITE_NAME}${getBuildTag()}"
+        sh "docker push registry.jana19.org/${env.SITE_NAME}${getBuildTag()}"
+        sh "docker rmi ${env.SITE_NAME}${getBuildTag()}"
+        sh "docker rmi registry.jana19.org/${env.SITE_NAME}${getBuildTag()}"
       }
     }
   }

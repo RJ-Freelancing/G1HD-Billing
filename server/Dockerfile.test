@@ -9,6 +9,6 @@ RUN yarn cache clean && yarn
 # Bundle app files
 COPY . .
 
-ENV NODE_ENV dev
+ENV NODE_ENV test
 
 CMD [ "yarn", "test-report" ]
