@@ -24,6 +24,7 @@ RUN yarn cache clean && yarn
 # Bundle app files
 COPY client/. .
 
+ENV NODE_PATH src/
 # Build app
 RUN yarn build
 
