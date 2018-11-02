@@ -15,9 +15,6 @@ router.route('/:id')
     validateParam(schemas.idSchema, 'id'),
     validateMAC
   )
-  .get(
-    getClient
-  )
   .put(
     validateBody(schemas.updateSchema),
     updateClient

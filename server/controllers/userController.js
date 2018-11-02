@@ -1,7 +1,7 @@
 import userRepo from '../models/userModel'
 import JWT from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
-import { getMultipleClients } from '../controllers/clientController'
+import { getAllClients, getClients } from '../controllers/ministraController'
 
 export async function login(req, res, next) {
   const { user } = req
@@ -47,8 +47,7 @@ export async function getAllUsers(req, res, next) {
     clients = await getChildren(resellers, 1)
   }
   if (req.user.userType == "reseller") {
-    const ministraClients = await getMultipleClients(req.user.childUsernames)
-    clients = ministraClients.results
+    clients = await getClients(req.user.childUsernames)
   }
   res.status(200).json({admins, superResellers, resellers, clients})
 }
@@ -92,10 +91,13 @@ async function getChildren(parents, isMinistra) {
   if (isMinistra == 0) {
     return await userRepo.find({username: { $in: childUsernames}}, null, { sort: { creditsAvailable: 1 } })
   }
+  else if (isMinistra == 1) {
+    const macAdresses = await (childUsernames.length == 0 ? "1" : childUsernames)
+    const clients = await getClients(macAdresses)
+    return await clients
+  }
   else {
-    const macAdresses = await (isMinistra == 2 ? "" : (childUsernames.length == 0 ? "1" : childUsernames))
-    const clients = await getMultipleClients(macAdresses)
-    if (!clients || clients.status!=='OK') return []
-    return await clients.results
+    const clients = await getAllClients()
+    return await clients
   }
 }

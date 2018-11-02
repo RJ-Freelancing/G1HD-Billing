@@ -26,13 +26,6 @@ export async function validateMAC(req, res, next) {
   next()
 }
 
-export async function getAllClients(req, res, next) {
-  const macAdresses = await (req.user.childUsernames.length == 0 ? "1" : req.user.childUsernames)
-  const clients = await getMultipleClients(macAdresses)
-  if (clients.status!=='OK') return res.status(404).json({ error: `One or more mac Addresses are incorrect`})
-  res.status(200).json(clients.results)
-}
-
 export async function addClient(req, res, next) {
   const { stb_mac } = req.value.body
   await axios.get(ministraAPI+'accounts/'+stb_mac, config)
@@ -54,10 +47,6 @@ export async function addClient(req, res, next) {
     })
   if (res.locals.addedUser.status!=='OK') return res.status(404).json({ error: `Failed to add a client to the system : ${res.locals.addedUser.error}`})
   res.status(201).json("Client has been sucessfully added to the system.")
-}
-
-export async function getClient(req, res, next) {
-  res.status(200).json(res.locals.client.results)
 }
 
 export async function updateClient(req, res, next) {
@@ -83,16 +72,4 @@ export async function deleteClient(req, res, next) {
     })
   if (res.locals.deletingClient.status!=='OK') return res.status(404).json({ error: `failed to delete client ${req.params.id} : ${res.locals.deletingClient.error}`})
   return res.status(200).json(`Client with mac Address: ${req.params.id} successfully deleted.`)
-}
-
-export async function getMultipleClients(macAddresses){
-  var responseData
-  await axios.get(ministraAPI+'accounts/'+macAddresses, config)
-  .then(response => {
-    responseData = response.data
-  })
-  .catch(error => {
-    console.log("Ministra API Error : " + error)
-  })
-  return responseData
 }
