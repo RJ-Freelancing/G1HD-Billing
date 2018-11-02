@@ -52,6 +52,6 @@ RUN echo -n '{ "name": "g1hd","version": "0.1.0", "description": "g1HD Billing",
 RUN OUTPUT=$(json-merge server-package.json --parse="dependencies" client-package.json --parse="dependencies") && echo " $OUTPUT }" >> package.json
 
 # Install production and client app dependencies
-# RUN yarn cache clean && yarn
+RUN yarn cache clean && yarn
 
 CMD [ "pm2-runtime", "index.js" ]
