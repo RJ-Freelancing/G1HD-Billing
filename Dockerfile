@@ -43,19 +43,14 @@ RUN mkdir -p client
 COPY --from=clientBuilder /src/build/ client/
 
 # Use json-merge to merge package dependices from server and client
+RUN yarn global json-merge
 COPY client/package.json client-package.json
 COPY server/package.json server-package.json
-RUN echo '{
-  "name": "g1hd",
-  "version": "1.0.0",
-  "dependencies": {
-    "my_dep": "^1.0.0"
-  }
-}' > package.json
+RUN echo '{"name": "g1hd", "version": "1.0.0", "dependencies": { "my_dep": "^1.0.0" }}' > package.json
 
 RUN json-merge package.json --parse="dependencies" server-package.json --parse="devDependencies" client-package.json --parse="devDependencies"
 
 # Install production and client app dependencies
-RUN yarn
+RUN yarn cache clean && yarn
 
 CMD [ "pm2-runtime", "server.js" ]
