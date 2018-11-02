@@ -48,8 +48,8 @@ RUN yarn global add json-merge
 COPY client/package.json client-package.json
 COPY server/package.json server-package.json
 
-RUN echo -n '{ "name": "g1hd","version": "0.1.0", "description": "g1HD Billing", "license": "Apache-2.0", "private": true," dependencies":' > package.json
-RUN OUTPUT=$(json-merge server-package.json --parse="dependencies" client-package.json --parse="dependencies") && echo "$OUTPUT }" >> package.json
+RUN echo -n '{ "name": "g1hd","version": "0.1.0", "description": "g1HD Billing", "license": "Apache-2.0", "private": true, "dependencies":' > package.json
+RUN OUTPUT=$(json-merge server-package.json --parse="dependencies" client-package.json --parse="dependencies") && echo " $OUTPUT }" >> package.json
 
 # Install production and client app dependencies
 RUN yarn cache clean && yarn install --production
