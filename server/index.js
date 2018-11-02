@@ -24,7 +24,7 @@ app.use((req, res, next) => {
 })
 
 // Log all requests and responses
-if (process.env.NODE_ENV!=='testing') app.use(logger)
+if (process.env.NODE_ENV!=='test') app.use(logger)
 
 // Secure the app by setting various HTTP headers
 app.use(helmet())
@@ -42,12 +42,14 @@ app.use('/api/clients', clientRoutes)
 app.use('/api/transaction', transactionRoutes)
 
 
-// Serve React Frontend at '/' url
-const path = require('path');
-app.use(express.static(path.join(__dirname, 'client')));
-app.get('*', function (req, res) {
-  res.sendFile(path.join(__dirname, 'client', 'index.html'));
-});
+// Serve React Frontend at '/' url only in production
+if (process.env.NODE_ENV==='production') {
+  const path = require('path');
+  app.use(express.static(path.join(__dirname, 'client')));
+  app.get('*', function (req, res) {
+    res.sendFile(path.join(__dirname, 'client', 'index.html'));
+  });
+}
 
 
 // Catch 404 Errors
