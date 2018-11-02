@@ -6,14 +6,17 @@ export async function validateId(req, res, next) {
   next()
 }
 
-export async function getTransaction(req, res, next) {
+export async function getTransactionsForUser(req, res, next) {
+  // All the transactions for a child user/client
   return []
 }
 
 export async function getAllTransactions(req, res, next) {
+  // All the Transactions for the logged user
   return []
 }
 
 export async function addTransaction(req, res, next) {
+  // Make Credit Transfer calls here (Ministra and Mongo User along with Transaction)
   return []
 }

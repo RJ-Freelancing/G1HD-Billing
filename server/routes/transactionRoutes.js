@@ -1,6 +1,6 @@
 import { validateParam, validateBody } from '../validations'
 import { schemas } from '../validations/transactionValidation'
-import { getAllTransactions, addTransaction, validateId, getTransaction } from '../controllers/transactionController'
+import { getAllTransactions, addTransaction, validateId, getTransactionsForUser } from '../controllers/transactionController'
 
 const router = require('express-promise-router')()
 
@@ -17,7 +17,7 @@ router.route('/:id')
   .get(
     validateParam(schemas.idSchema, 'id'),
     validateId,
-    getTransaction
+    getTransactionsForUser
   )
 
 export default router

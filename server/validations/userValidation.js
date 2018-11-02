@@ -18,9 +18,7 @@ export const schemas = {
     userType: Joi.string().required(),
     accountStatus: Joi.boolean().required(),
     joinedDate: Joi.date().iso(),
-    parentUsername: Joi.string().required(),
-    creditsAvailable: Joi.number(),
-    creditsOnHold: Joi.number()
+    parentUsername: Joi.string().required()
   }),
   
   updateSchema: Joi.object({
@@ -34,9 +32,7 @@ export const schemas = {
     accountStatus: Joi.boolean(),
     joinedDate: Joi.date().iso(),
     parentUsername: Joi.string(),
-    childUsernames: Joi.array().items(Joi.string()).unique(),
-    creditsAvailable: Joi.number(),
-    creditsOnHold: Joi.number()
+    childUsernames: Joi.array().items(Joi.string()).unique()
   }),
 
   userLoginSchema: Joi.object({

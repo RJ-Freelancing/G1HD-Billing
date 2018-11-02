@@ -5,19 +5,22 @@ const options = {
 }
 
 const userSchema = new Schema({
-  transactionType: {
-    type: String,
+  credits: {
+    type: Number,
     required: true
   },
-  transaction: {
-    type: String,
-    required: true
+  description: {
+    type: String
   },
   transactionTs: {
     type: Date,
     default: Date.now
   },
-  originatedBy: {
+  transactionFrom: {
+    type: String,
+    required: true
+  },
+  transactionTo: {
     type: String,
     required: true
   }

@@ -8,10 +8,11 @@ export const schemas = {
   }),
 
   addSchema: Joi.object({
-    transactionType: Joi.string().required(),
-    transaction: Joi.string().required(),
+    credits: Joi.string().required(),
+    description: Joi.string().required(),
     transactionTs: Joi.date().iso().required(),
-    originatedBy: Joi.string().required()
+    transactionFrom: Joi.string().required(),
+    transactionTo: Joi.string().required()
   })
 
 }
