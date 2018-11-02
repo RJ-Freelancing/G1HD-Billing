@@ -47,11 +47,12 @@ COPY --from=clientBuilder /src/build/ client/
 RUN yarn global add json-merge
 COPY client/package.json client-package.json
 COPY server/package.json server-package.json
-RUN echo '{"name": "g1hd","version": "0.1.0", "description": "g1HD Billing", "license": "Apache-2.0", "private": true, "dependencies": { }}' > package.json
 
-RUN json-merge package.json --parse="dependencies" server-package.json --parse="devDependencies" client-package.json --parse="devDependencies"
+RUN OUTPUT=$(json-merge package.json --parse="dependencies" server-package.json --parse="dependencies" client-package.json --parse="dependencies")
+RUN echo '{"name": "g1hd","version": "0.1.0", "description": "g1HD Billing", "license": "Apache-2.0", "private": true," dependencies":' > package.json
+RUN echo $OUTPUT } >> package.json
 
 # Install production and client app dependencies
 RUN yarn cache clean && yarn
 
-CMD [ "pm2-runtime", "server.js" ]
+CMD [ "pm2-runtime", "index.js" ]
