@@ -86,7 +86,7 @@ pipeline {
             $class: 'CloverPublisher',
             cloverReportDir: './server/coverage',
             cloverReportFileName: 'clover.xml',
-            failingTarget: [methodCoverage: 1, conditionalCoverage: 1, statementCoverage: 1]
+            failingTarget: [methodCoverage: 0.5, conditionalCoverage: 0.5, statementCoverage: 0.5]
           ])
           script {
             if (!errorMessage && currentBuild.resultIsWorseOrEqualTo('UNSTABLE')) {
