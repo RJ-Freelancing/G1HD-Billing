@@ -9,6 +9,8 @@ import authRoutes from './routes/authRoutes'
 import clientRoutes from './routes/clientRoutes'
 
 
+const app = express()
+
 // Serve React Frontend at '/' url only in production
 if (process.env.NODE_ENV==='production') {
   const path = require('path');
@@ -18,8 +20,6 @@ if (process.env.NODE_ENV==='production') {
   });
 }
 
-
-const app = express()
 // MongoDB
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true })
 mongoose.set('debug', process.env.NODE_ENV==='development')
