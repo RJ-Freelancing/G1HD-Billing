@@ -11,15 +11,6 @@ import clientRoutes from './routes/clientRoutes'
 
 const app = express()
 
-// Serve React Frontend at '/' url only in production
-if (process.env.NODE_ENV==='production') {
-  const path = require('path');
-  app.use(express.static(path.join(__dirname, 'client')));
-  app.get('^((?!\/api).)*$', function (req, res) {
-    res.sendFile(path.join(__dirname, 'client', 'index.html'));
-  });
-}
-
 // MongoDB
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true })
 mongoose.set('debug', process.env.NODE_ENV==='development')
@@ -43,7 +34,7 @@ app.use(helmet())
 app.use(express.json({limit: '10mb'}))
 
 // Authenticate all routes except /auth
-app.use('^(?!/api/auth)', passport.authenticate('jwt', { session: false }))
+app.use('(api)((?!auth).)*', passport.authenticate('jwt', { session: false }))
 
 // Routes
 app.use('/api/auth', authRoutes)
@@ -51,6 +42,14 @@ app.use('/api/users', userRoutes)
 app.use('/api/clients', clientRoutes)
 app.use('/api/transaction', transactionRoutes)
 
+// Serve React Frontend at '/' url only in production
+if (process.env.NODE_ENV==='production') {
+  const path = require('path');
+  app.use(express.static(path.join(__dirname, 'client')));
+  app.get('*', function (req, res) {
+    res.sendFile(path.join(__dirname, 'client', 'index.html'));
+  });
+}
 
 // Catch 404 Errors
 app.use((req, res, next) => {
