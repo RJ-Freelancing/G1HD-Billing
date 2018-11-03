@@ -1,7 +1,3 @@
-// I just tested to get all the fields, but we only need some fields ! 
-// Also, these functions can be private. Just call them from the normal GET all users call
-
-
 import mysql from 'mysql'
 
 var connection = mysql.createConnection({

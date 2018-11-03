@@ -1,5 +1,6 @@
 import axios from 'axios'
 import querystring from 'querystring'
+import { checkPermissionRights } from '../_helpers/checkPermission'
 
 const ministraAPI = process.env.MINISTRA_HOST+'stalker_portal/api/'
 const ministaUser = process.env.MINISTRA_USER
@@ -23,6 +24,7 @@ export async function validateMAC(req, res, next) {
       console.log("Ministra API Error : " + error)
     })
   if (res.locals.client.status!=='OK') return res.status(404).json({ error: `client with mac Address ${req.params.id} was not found in the system`})
+  if(await checkPermissionRights(req.params.id, req.user, 0) == false) return res.status(403).json({ error: `You Have No Rights To Perform This Action.`})
   next()
 }
 

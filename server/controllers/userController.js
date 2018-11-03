@@ -1,7 +1,8 @@
 import userRepo from '../models/userModel'
 import JWT from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
-import { getAllClients, getClients } from '../controllers/ministraController'
+import { getAllClients, getClients } from '../_helpers/ministraHelper'
+import { checkPermissionRights } from '../_helpers/checkPermission'
 
 export async function login(req, res, next) {
   const { user } = req
@@ -21,8 +22,8 @@ const getToken = user => {
 export async function validateUsername(req, res, next) {
   const user = await userRepo.findOne({ username : req.params.username})
   if (!user) return res.status(404).json({ error: `User with username ${req.params.username} was not found in DB` }) 
-  if(req.user.userType == "reseller" && req.user.username !== req.params.username) return res.status(403).json({error: `You have no rights to perform this action.`})
   res.locals.user = user
+  if(await checkPermissionRights(user, req.user, 1) == false) return res.status(403).json({ error: `You Have No Rights To Perform This Action.`})
   next()
 }
 

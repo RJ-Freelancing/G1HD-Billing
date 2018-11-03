@@ -1,8 +1,8 @@
 import transactionRepo from '../models/transactionModel'
 
-export async function validateId(req, res, next) {
-  const transaction = await transactionRepo.findById(req.params.id)
-  if (!transaction) return res.status(404).json({ error: `Transaction with transactionId ${req.params.id} was not found in DB` }) 
+export async function checkPermission(req, res, next) {
+  const transactions = await transactionRepo.find({transactionTo: { $in: req.user.childUsernames}}, null, { sort: { creditsAvailable: 1 } })
+  if (!transactions) return res.status(404).json({ error: `Transaction with transactionId ${req.params.id} was not found in DB` }) 
   next()
 }
 
