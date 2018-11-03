@@ -9,6 +9,16 @@ import authRoutes from './routes/authRoutes'
 import clientRoutes from './routes/clientRoutes'
 
 
+// Serve React Frontend at '/' url only in production
+if (process.env.NODE_ENV==='production') {
+  const path = require('path');
+  app.use(express.static(path.join(__dirname, 'client')));
+  app.get('^(?!api).*$', function (req, res) {
+    res.sendFile(path.join(__dirname, 'client', 'index.html'));
+  });
+}
+
+
 const app = express()
 // MongoDB
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true })
@@ -40,16 +50,6 @@ app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/clients', clientRoutes)
 app.use('/api/transaction', transactionRoutes)
-
-
-// Serve React Frontend at '/' url only in production
-if (process.env.NODE_ENV==='production') {
-  const path = require('path');
-  app.use(express.static(path.join(__dirname, 'client')));
-  app.get('*', function (req, res) {
-    res.sendFile(path.join(__dirname, 'client', 'index.html'));
-  });
-}
 
 
 // Catch 404 Errors
