@@ -15,7 +15,7 @@ const app = express()
 if (process.env.NODE_ENV==='production') {
   const path = require('path');
   app.use(express.static(path.join(__dirname, 'client')));
-  app.get('^(?!api).*$', function (req, res) {
+  app.get('^(?!/api).*$', function (req, res) {
     res.sendFile(path.join(__dirname, 'client', 'index.html'));
   });
 }
