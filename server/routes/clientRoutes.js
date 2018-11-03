@@ -1,7 +1,7 @@
 import passport from '../_helpers/passport'
 import { validateParam, validateBody } from '../validations'
 import { schemas } from '../validations/clientValidation'
-import { getAllClients, addClient, validateMAC, getClient, updateClient, deleteClient } from '../controllers/clientController'
+import { addClient, validateMAC, updateClient, deleteClient } from '../controllers/clientController'
 
 
 const passportJWT = passport.authenticate('jwt', { session: false })
