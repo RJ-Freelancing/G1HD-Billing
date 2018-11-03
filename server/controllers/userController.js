@@ -55,7 +55,7 @@ export async function getAllUsers(req, res, next) {
 
 export async function addUser(req, res, next) {
   const { username, email, password, passwordConfirmation, firstName, lastName, phoneNo, userType, accountStatus, joinedDate, parentUsername, creditsAvailable, creditsOnHold } = req.value.body
-  if (req.user.userType == "reseller") return res.status(403).json({error: `You have no rights to perform this action.`})
+  if (await validParent(req.user.userType, userType) == false) return res.status(403).json({error: `You have no rights to add this user.`})
   const existingUser = await userRepo.findOne({ username })
   if (existingUser) 
     return res.status(401).json({ error: `User already exists with username: ${username}` })
@@ -84,6 +84,15 @@ export async function deleteUser(req, res, next) {
   const username = res.locals.user.username
   await res.locals.user.remove()
   return res.status(200).json(`User with username: ${username} successfully deleted.`)
+}
+
+async function validParent(currentUserType, addingUserType){
+  if(currentUserType == 'super-admin' && addingUserType == 'admin') return true
+  if(currentUserType == 'admin' && addingUserType == 'super-reseller') return true
+  if(currentUserType == 'super-reseller' && addingUserType == 'reseller') return true
+  if(currentUserType == 'reseller') return false
+  if(addingUserType == 'super-admin') return false
+  return false
 }
 
 async function getChildren(parents, isMinistra) {
