@@ -38,10 +38,11 @@ export async function addClient(req, res, next) {
     .catch(error => {
       console.log("Ministra API Error : " + error)
     })
+    const ministraPayLoad = querystring.stringify(req.value.body)+"&comment="+req.user.username
   if (res.locals.existingClient.status=='OK') return res.status(401).json({ error: `Client already exists with mac Address ${stb_mac} in the system`})
-  console.log("XXX " + req.value.body)
+  
   await axios.post(ministraAPI+'accounts/',
-  querystring.stringify(req.value.body), config)
+  ministraPayLoad, config)
     .then(response => {
       res.locals.addedUser = response.data
     })

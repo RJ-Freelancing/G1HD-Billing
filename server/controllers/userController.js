@@ -54,7 +54,8 @@ export async function getAllUsers(req, res, next) {
 }
 
 export async function addUser(req, res, next) {
-  const { username, email, password, passwordConfirmation, firstName, lastName, phoneNo, userType, accountStatus, joinedDate, parentUsername, creditsAvailable, creditsOnHold } = req.value.body
+  const { username, email, password, passwordConfirmation, firstName, lastName, phoneNo, userType, accountStatus, joinedDate, creditsAvailable, creditsOnHold } = req.value.body
+  const parentUsername = req.user.username
   if (await validParent(req.user.userType, userType) == false) return res.status(403).json({error: `You have no rights to add this user.`})
   const existingUser = await userRepo.findOne({ username })
   if (existingUser) 
