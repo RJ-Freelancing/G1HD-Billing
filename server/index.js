@@ -38,7 +38,7 @@ app.use(express.json({limit: '10mb'}))
 app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/clients', clientRoutes)
-app.use('/api/transaction', transactionRoutes)
+app.use('/api/transactions', transactionRoutes)
 
 // Serve React Frontend at '/' url only in production
 if (process.env.NODE_ENV==='production') {
