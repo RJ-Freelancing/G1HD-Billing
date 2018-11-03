@@ -12,8 +12,14 @@ import InputMask from 'react-input-mask';
 import Switch from '@material-ui/core/Switch';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import Table from 'components/Table'
+
 
 import { getUsers } from 'actions/users'
 import { updateClient } from 'actions/clients'
@@ -24,7 +30,7 @@ const validMAC = /^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/
 
 const Wrapper = styled.div`
   display: grid;
-  grid-template-columns: 3fr 2fr;
+  grid-template-columns: 2fr 2fr 3fr;
   grid-gap: 20px;
   margin: 20px 20px;
   @media only screen and (max-width: 768px) {
@@ -38,24 +44,142 @@ const ClientEditWrapper = styled(Paper)`
 
 const ClientEdit = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 30px;
+  grid-template-columns: 1fr;
+  grid-gap: 20px;
   @media only screen and (max-width: 768px) {
     grid-template-columns: 1fr;
   }
 `
 
-const ClientDetailsWrapper = styled(Paper)`
+const CreditsWrapper = styled(Paper)`
   padding: 20px 20px;
 `
 
-const ClientDetails = styled.div`
+
+const TariffWrapper = styled(Paper)`
+  padding: 20px 20px;
+`
+
+const TariffDetails = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 20px;
+`
+
+const TariffHeader = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr  
+  grid-gap: 20px;
+  @media only screen and (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`
+
+const TariffPackagesHeader = styled.div`
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 
+  grid-gap: 20px;
+  @media only screen and (max-width: 768px) {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 5px;
+  }
+  font-weight: bold;
+`
+
+const TariffPackages = styled.div`
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 
+  grid-gap: 20px;
+  @media only screen and (max-width: 768px) {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 5px;
+  }
+  height: 200px;
+  overflow-y: scroll;
+`
+
+
+const STBDetailsWrapper = styled(Paper)`
+  padding: 20px 20px;
+`
+
+const STBDetails = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 20px;
   padding: 20px 20px;
 `
 
+const TransactionWrapper = styled(Paper)`
+  padding: 20px 20px;
+  @media only screen and (max-width: 768px) {
+    grid-column: 1;
+  }
+  grid-column: 2 / -1;
+`
+
+
+
+const rows = [
+  { field: 'date', numeric: false, label: 'Date' },
+  { field: 'from', numeric: false, label: 'From' },
+  // { field: 'firstName', numeric: false, label: 'First Name' },
+  // { field: 'lastName', numeric: false, label: 'Last Name' },
+  { field: 'to', numeric: false, label: 'To' },
+  { field: 'credits', numeric: true, label: 'Credits' },
+  { field: 'description', numeric: false, label: 'Description' },
+  // { field: 'parentID', numeric: false, label: 'Parent Username' },
+  // { field: 'childrenCount', numeric: true, label: 'No of Children' },
+  // { field: 'creditsOnHold', numeric: true, label: 'Credits on Hold' },
+  // { field: 'createdAt', numeric: false, label: 'Created At' },
+  // { field: 'updatedAt', numeric: false, label: 'Updated At' }
+]
+
+
+const data = [
+  {
+    date: '2018-10-24T06:27:57.000Z',
+    from: 'resellerName',
+    to: 'clientName',
+    credits: 2,
+    description: "soething useful here",
+  },
+  {
+    date: '2018-10-24T06:27:57.000Z',
+    from: 'resellerName',
+    to: 'clientName',
+    credits: 1,
+    description: "soething useful here",
+  },
+  {
+    date: '2018-10-24T06:27:57.000Z',
+    from: 'resellerName',
+    to: 'clientName',
+    credits: 20,
+    description: "soething useful here",
+  },
+  {
+    date: '2018-10-24T06:27:57.000Z',
+    from: 'resellerName',
+    to: 'clientName',
+    credits: -10,
+    description: "soething useful here",
+  },
+  {
+    date: '2018-10-24T06:27:57.000Z',
+    from: 'resellerName',
+    to: 'clientName',
+    credits: 5,
+    description: "soething useful here",
+  },
+  {
+    date: '2018-10-24T06:27:57.000Z',
+    from: 'resellerName',
+    to: 'clientName',
+    credits: 2,
+    description: "soething useful here",
+  },
+]
 
 
 class EditClient extends Component {
@@ -73,9 +197,9 @@ class EditClient extends Component {
     else this.loadClientFromMac(this.props.match.params.id)
   }
 
-  loadClientFromMac = (stb_mac) => {
+  loadClientFromMac = (mac) => {
     let client = {};
-    client = this.props.clients.find(client=>client.stb_mac===stb_mac)
+    client = this.props.clients.find(client=>client.mac===mac)
     this.setState({client, editingClient:{...client}})
   }
 
@@ -92,14 +216,14 @@ class EditClient extends Component {
 
   updateClient = (event) => {
     event.preventDefault()
-    const { stb_mac } = this.state.editingClient
-    const { full_name, phone, status, tarriff_plan, tarriff_expired_date, subscribed, subscribed_id } = this.state.editingClient
-    this.props.updateClient(stb_mac, {full_name, phone, status, tarriff_plan, tarriff_expired_date, subscribed, subscribed_id})
+    const { mac } = this.state.editingClient
+    const { fname, phone, status, tarriff_plan, tarriff_expired_date, subscribed, subscribed_id } = this.state.editingClient
+    this.props.updateClient(mac, {fname, phone, status, tarriff_plan, tarriff_expired_date, subscribed, subscribed_id})
   }
 
   checkValidation = () => {
     const loginEmpty = this.state.editingClient.login==="";
-    const invalidMAC = this.state.editingClient.stb_mac && !this.state.editingClient.stb_mac.match(validMAC);
+    const invalidMAC = this.state.editingClient.mac && !this.state.editingClient.mac.match(validMAC);
     const phoneInvalid = this.state.editingClient.phone && !this.state.editingClient.phone.match(validPhoneNo);
     return loginEmpty || phoneInvalid || invalidMAC
   }
@@ -116,52 +240,13 @@ class EditClient extends Component {
           {this.state.editingClient &&
             <form onSubmit={this.updateClient} style={{padding: 10}}>
               <ClientEdit>
-
-                <TextField
-                  label="Login"
-                  type="username"
-                  value={this.state.editingClient.login}
-                  onChange={(e)=>this.handleTextChange('login', e.target.value)}
-                  fullWidth
-                  required
-                  error={this.state.editingClient.login===""}
-                  helperText={this.state.editingClient.login==="" ? "Required" : null}
-                  disabled={this.props.loading}
-                />
                 <TextField
                   label="Full Name"
                   type="name"
-                  value={this.state.editingClient.full_name}
-                  onChange={(e)=>this.handleTextChange('full_name', e.target.value)}
+                  value={this.state.editingClient.fname}
+                  onChange={(e)=>this.handleTextChange('fname', e.target.value)}
                   fullWidth
                   disabled={this.props.loading}
-                />
-                <InputMask mask="**:**:**:**:**:**" 
-                  value={this.state.editingClient.stb_mac}  
-                  onChange={(e)=>this.handleTextChange('stb_mac', e.target.value.toUpperCase())}
-                >
-                  {(inputProps) => (
-                    <TextField 
-                      {...inputProps} 
-                      label="MAC"
-                      fullWidth
-                      disabled={this.props.loading}
-                      error={Boolean(this.state.editingClient.stb_mac) && !this.state.editingClient.stb_mac.match(validMAC)}
-                      helperText={this.state.editingClient.stb_mac && !this.state.editingClient.stb_mac.match(validMAC) ? "Invalid MAC Given" : null}
-                    />
-                  )}
-                </InputMask>
-                <FormControlLabel
-                  label={`Account Status (${this.state.editingClient.status===1 ? 'Active' : 'Inactive'})`}
-                  control={
-                    <Switch
-                    checked={this.state.editingClient.status===1}
-                    onChange={(e)=>this.handleTextChange('status', e.target.checked ? 1 : 0)}
-                    value={this.state.editingClient.status}
-                    color="primary"
-                    disabled={this.props.loading}
-                    />
-                  }
                 />
                 <InputMask mask="999-999-9999" 
                   value={this.state.editingClient.phone}  
@@ -178,15 +263,18 @@ class EditClient extends Component {
                     />
                   )}
                 </InputMask>
-                <Select
-                  label="Tarriff Plan"
-                  value={this.state.editingClient.tariff_plan}
-                  onChange={(e)=>this.handleTextChange('tariff_plan', e.target.value)}
-                >
-                  <MenuItem value={"1"}>Plan One</MenuItem>
-                  <MenuItem value={"2"}>Plan Two</MenuItem>
-                  <MenuItem value={"3"}>Plan Three</MenuItem>
-                </Select>
+                <FormControlLabel
+                  label={`Account Status (${this.state.editingClient.status===1 ? 'Active' : 'Inactive'})`}
+                  control={
+                    <Switch
+                      checked={this.state.editingClient.status===1}
+                      onChange={(e)=>this.handleTextChange('status', e.target.checked ? 1 : 0)}
+                      value={this.state.editingClient.status}
+                      color="primary"
+                      disabled={this.props.loading}
+                    />
+                  }
+                />
               </ClientEdit>
               <br/><br/>
               <Button variant="contained" type="submit" color="primary" disabled={this.props.loading || this.checkValidation() || isEqual(this.state.editingClient, this.state.client)}>
@@ -196,11 +284,14 @@ class EditClient extends Component {
             </form>
           }
         </ClientEditWrapper>
-        <ClientDetailsWrapper elevation={24}>
+
+        <STBDetailsWrapper elevation={24}>
           <Typography variant="h4"> STB Details </Typography>
           <br/><br/>
           {this.state.client && 
-            <ClientDetails>           
+            <STBDetails>           
+              <Typography variant="subtitle2">MAC Address</Typography>
+              <Typography variant="body2">{this.state.client.mac}</Typography>
               <Typography variant="subtitle2">Receiver Status</Typography>
               <Typography variant="body2">{this.state.client.online==="1" ? 'Online' : 'Offline'}</Typography>
               <Typography variant="subtitle2">IP</Typography>
@@ -208,16 +299,92 @@ class EditClient extends Component {
               <Typography variant="subtitle2">STB Type</Typography>
               <Typography variant="body2">{this.state.client.stb_type}</Typography>
               <Typography variant="subtitle2">STB Serial</Typography>
-              <Typography variant="body2">{this.state.client.stb_sn}</Typography>
-              <Typography variant="subtitle2">Tarriff Plan</Typography>
-              <Typography variant="body2">{this.state.client.tariff_plan}</Typography>
-              <Typography variant="subtitle2">Tarriff Expiry</Typography>
-              <Typography variant="body2">{format(Date.parse(this.state.client.tariff_expired_date), 'd MMMM YYYY')}</Typography>
+              <Typography variant="body2">{this.state.client.serial_number}</Typography>
               <Typography variant="subtitle2">Last Active</Typography>
               <Typography variant="body2">{format(Date.parse(this.state.client.last_active), 'd MMMM YYYY @ HH:mm:ss')}</Typography>
-            </ClientDetails>
+            </STBDetails>
           }
-        </ClientDetailsWrapper>
+        </STBDetailsWrapper>
+
+        <TariffWrapper>
+          <Typography variant="h4"> Edit Tariff Plan</Typography>
+          <br/><br/>
+          <TariffDetails>
+            <TariffHeader>
+              <Select
+                label="Tarriff Plan"
+                value={this.state.editingClient ? this.state.editingClient.tariff_plan_id : 0}
+                // onChange={(e)=>this.handleTextChange('tariff_plan_id', e.target.value)}
+                inputProps={{ id: 'tariff' }}
+              >
+                <MenuItem value={0}>Basic</MenuItem>
+                <MenuItem value={1}>Plan One</MenuItem>
+                <MenuItem value={2}>Plan Two</MenuItem>
+                <MenuItem value={3}>Plan Three</MenuItem>
+              </Select>
+              <Typography variant="body2" style={{alignSelf: 'center', justifySelf: 'center'}}>
+                Tariff Expires on : <strong>{this.state.client ? format(Date.parse(this.state.client.tariff_expired_date), 'd MMMM YYYY') : null}</strong>
+              </Typography>
+            </TariffHeader>
+            <TariffPackagesHeader>
+              <div>Name</div><div style={{justifySelf: 'center'}}>Optional</div><div style={{justifySelf: 'center'}}>Subscribed</div>
+            </TariffPackagesHeader>
+            <TariffPackages>
+              <div>Tamil</div><div style={{justifySelf: 'center'}}>No</div><Checkbox checked={true} disabled style={{padding: 0, justifySelf: 'center'}}/>
+              <div>English</div><div style={{justifySelf: 'center'}}>No</div><Checkbox checked={true} disabled style={{padding: 0, justifySelf: 'center'}}/>
+              <div>Telugu</div><div style={{justifySelf: 'center'}}>No</div><Checkbox checked={true} disabled style={{padding: 0, justifySelf: 'center'}}/>
+              <div>Other 1</div><div style={{justifySelf: 'center'}}>No</div><Checkbox checked={true} disabled style={{padding: 0, justifySelf: 'center'}}/>
+              <div>Other 2</div><div style={{justifySelf: 'center'}}>No</div><Checkbox checked={true} disabled style={{padding: 0, justifySelf: 'center'}}/>
+              <div>Other 3</div><div style={{justifySelf: 'center'}}>No</div><Checkbox checked={true} disabled style={{padding: 0, justifySelf: 'center'}}/>
+              <div>Other 4</div><div style={{justifySelf: 'center'}}>No</div><Checkbox checked={true} disabled style={{padding: 0, justifySelf: 'center'}}/>
+              <div>Other 5</div><div style={{justifySelf: 'center'}}>No</div><Checkbox checked={true} disabled style={{padding: 0, justifySelf: 'center'}}/>
+              <div>Adult</div><div style={{justifySelf: 'center'}}>Yes</div><Checkbox style={{padding: 0, justifySelf: 'center'}}/>
+            </TariffPackages>
+          </TariffDetails>
+        </TariffWrapper>
+
+        <CreditsWrapper>
+          <Typography variant="h4"> Credits </Typography>
+          <br/><br/>
+          <TextField
+            label="Select Credits"
+            type="number"
+            inputProps={{ min: 1, max: 12, defaultValue: 1 }}
+            // value={this.state.editingClient.fname}
+            // onChange={(e)=>this.handleTextChange('fname', e.target.value)}
+            fullWidth
+            disabled={this.props.loading}
+          />
+          <br/><br/>
+          <FormControl component="fieldset">
+            <RadioGroup
+              aria-label="Gender"
+              name="gender1"
+              value="add"
+              style={{display: 'grid', gridTemplateColumns: '1fr 1fr'}}
+            >
+              <FormControlLabel value="add" control={<Radio />} label="Add" />
+              <FormControlLabel value="recover" control={<Radio />} label="Recover" />
+            </RadioGroup>
+          </FormControl>
+          <Button variant="contained" type="submit" color="primary" disabled={this.props.loading} style={{float: 'right'}}>
+            Submit&nbsp;
+            <SaveIcon />
+          </Button>
+        </CreditsWrapper>
+        <TransactionWrapper>
+          <Typography variant="h4"> Transactions </Typography>
+          {/* <br/><br/> */}
+          <Table
+            // title={'Transactions'}
+            rows={rows}
+            data={data}
+            orderBy='tariff_expired_date'
+            mobileView={this.props.mobileView}
+            tableHeight='100%'
+            viewOnly={true}
+          />
+        </TransactionWrapper>
       </Wrapper>
     )
   }

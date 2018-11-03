@@ -52,7 +52,7 @@ class EnhancedTableHead extends React.Component {
   }
 
   render() {
-    const { order, orderBy } = this.props
+    const { order, orderBy, viewOnly } = this.props
 
     return (
       <TableHead>
@@ -82,7 +82,7 @@ class EnhancedTableHead extends React.Component {
               </TableCell>
             )
           }, this)}
-          <TableCell style={{position: 'sticky', top: 0, backgroundColor: "#fff", zIndex: 10}}/>
+          {!viewOnly && <TableCell style={{position: 'sticky', top: 0, backgroundColor: "#fff", zIndex: 10}}/>}
         </TableRow>
       </TableHead>
     )
@@ -111,7 +111,7 @@ const toolbarStyles = theme => ({
 })
 
 let EnhancedTableToolbar = props => {
-  const { classes, title, mobileView } = props
+  const { classes, title, mobileView, viewOnly } = props
 
   return (
     <Toolbar>
@@ -134,18 +134,20 @@ let EnhancedTableToolbar = props => {
         fullWidth
       />
       <div className={classes.spacer} />
-      <div>
-        <Tooltip title="Add New">
-          <Button aria-label="Add New" variant={mobileView ? 'fab' : 'contained'} color="primary" mini={mobileView}>
-            <AddIcon/>
-            {!mobileView &&
-              <Typography variant="subtitle1" noWrap color="inherit">
-                Add New
-              </Typography>
-            }
-          </Button>
-        </Tooltip>
-      </div>
+      {!viewOnly && 
+        <div>
+          <Tooltip title="Add New">
+            <Button aria-label="Add New" variant={mobileView ? 'fab' : 'contained'} color="primary" mini={mobileView}>
+              <AddIcon/>
+              {!mobileView &&
+                <Typography variant="subtitle1" noWrap color="inherit">
+                  Add New
+                </Typography>
+              }
+            </Button>
+          </Tooltip>
+        </div>
+      }
     </Toolbar>
   )
 }
@@ -162,8 +164,7 @@ const styles = theme => ({
     minWidth: 1020,
   },
   tableWrapper: {
-    overflowX: 'auto',
-    height: '70vh'
+    overflowX: 'auto'
   },
 })
 
@@ -197,19 +198,20 @@ class EnhancedTable extends React.Component {
 
 
   render() {
-    const { classes, mobileView } = this.props
+    const { classes, mobileView, tableHeight, viewOnly } = this.props
     const { data, order, orderBy, rowsPerPage, page } = this.state
 
     return (
       <Paper className={classes.root}>
-        <EnhancedTableToolbar title={this.props.title} mobileView={mobileView}/>
-        <div className={classes.tableWrapper}>
+        <EnhancedTableToolbar title={this.props.title} mobileView={mobileView} viewOnly/>
+        <div className={classes.tableWrapper} style={{height: tableHeight}} >
           <Table className={classes.table} aria-labelledby="tableTitle">
             <EnhancedTableHead
               order={order}
               orderBy={orderBy}
               onRequestSort={this.handleRequestSort}
               rows={this.props.rows}
+              viewOnly
             />
             <TableBody>
               {stableSort(data, getSorting(order, orderBy))
@@ -225,13 +227,15 @@ class EnhancedTable extends React.Component {
                         const fieldProperties = this.props.rows.find(row=>row.field===field)
                         return <TableCell key={field} numeric={fieldProperties.numeric}> {value} </TableCell>
                       })}
-                      <TableCell>
-                        <Tooltip title="Edit">
-                          <IconButton aria-label="Edit" style={{padding: 9}} onClick={()=>this.props.gotoLink(n)}>
-                            <EditIcon fontSize="small" color="primary"/>
-                          </IconButton>
-                        </Tooltip>
-                      </TableCell>
+                      {!viewOnly &&
+                        <TableCell>
+                          <Tooltip title="Edit">
+                            <IconButton aria-label="Edit" style={{padding: 9}} onClick={()=>this.props.gotoLink(n)}>
+                              <EditIcon fontSize="small" color="primary"/>
+                            </IconButton>
+                          </Tooltip>
+                        </TableCell>
+                      }
                     </TableRow>
                   )
                 })}
