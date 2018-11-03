@@ -34,7 +34,7 @@ app.use(helmet())
 app.use(express.json({limit: '10mb'}))
 
 // Authenticate all routes except /auth
-app.use('(api)((?!auth).)*', passport.authenticate('jwt', { session: false }))
+app.use('/(api)((?!auth).)*', passport.authenticate('jwt', { session: false }))
 
 // Routes
 app.use('/api/auth', authRoutes)
