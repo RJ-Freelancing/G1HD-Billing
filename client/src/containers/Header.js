@@ -168,7 +168,7 @@ class Header extends Component {
       {renderMenu}
       <Loading />
       <Notification />
-      <Offline polling={{interval:30000}}>
+      <Offline polling={{interval:30000, url: '/api/users'}}>
         <Loading />
         <PopupMessage
           title='No Active Internet Connection Detected'

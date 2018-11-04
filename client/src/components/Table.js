@@ -52,12 +52,12 @@ class EnhancedTableHead extends React.Component {
   }
 
   render() {
-    const { order, orderBy, viewOnly } = this.props
+    const { order, orderBy, viewOnly, rows } = this.props
 
     return (
       <TableHead>
         <TableRow>
-          {this.props.rows.map(row => {
+          {rows.map(row => {
             return (
               <TableCell
                 key={row.field}
@@ -115,11 +115,13 @@ let EnhancedTableToolbar = props => {
 
   return (
     <Toolbar>
-      <div className={classes.title}>
-        <Typography variant="h6" id="tableTitle">
-          {title}
-        </Typography>
-      </div>
+      {!viewOnly && 
+        <div className={classes.title}>
+          <Typography variant="h6" id="tableTitle">
+            {title}
+          </Typography>
+        </div>
+      }
       <TextField
         className={classes.margin}
         id="input-with-icon-textfield"
@@ -203,7 +205,7 @@ class EnhancedTable extends React.Component {
 
     return (
       <Paper className={classes.root}>
-        <EnhancedTableToolbar title={this.props.title} mobileView={mobileView} viewOnly/>
+        <EnhancedTableToolbar title={this.props.title} mobileView={mobileView} viewOnly={this.props.viewOnly}/>
         <div className={classes.tableWrapper} style={{height: tableHeight}} >
           <Table className={classes.table} aria-labelledby="tableTitle">
             <EnhancedTableHead
@@ -211,7 +213,7 @@ class EnhancedTable extends React.Component {
               orderBy={orderBy}
               onRequestSort={this.handleRequestSort}
               rows={this.props.rows}
-              viewOnly
+              viewOnly={this.props.viewOnly}
             />
             <TableBody>
               {stableSort(data, getSorting(order, orderBy))
