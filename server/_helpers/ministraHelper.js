@@ -15,7 +15,9 @@ export function getAllClients() {
         return reject(err);
       }
       console.log('Data successfully received from Ministra Db:\n')
+      connection.pause();
       resolve(rows);
+      connection.resume();
     })
   })
 }
@@ -29,7 +31,9 @@ export function getClients(macAdresses) {
         return reject(err);
       }
       console.log('Data successfully received from Ministra Db:\n')
+      connection.pause();
       resolve(rows);
+      connection.resume();
     })
   })
 }

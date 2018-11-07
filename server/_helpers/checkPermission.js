@@ -48,3 +48,12 @@ export async function checkPermissionRights(reqestedUser, currentUser, ifUsers) 
   }
   return true
 }
+
+export async function validParent(currentUserType, addingUserType){
+  if(currentUserType == 'super-admin' && addingUserType == 'admin') return true
+  if(currentUserType == 'admin' && addingUserType == 'super-reseller') return true
+  if(currentUserType == 'super-reseller' && addingUserType == 'reseller') return true
+  if(currentUserType == 'reseller') return false
+  if(addingUserType == 'super-admin') return false
+  return false
+}

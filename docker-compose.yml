@@ -3,7 +3,7 @@ version: '3.3'
 services:
 
   client:
-    image: node:8-alpine
+    image: node:10-alpine
     container_name: g1hd-client
     ports:
       - 127.0.0.1:3000:3000
@@ -22,7 +22,7 @@ services:
       - server
 
   server:
-    image: node:8-alpine
+    image: node:10-alpine
     container_name: g1hd-server
     ports:
       - 127.0.0.1:3001:3001

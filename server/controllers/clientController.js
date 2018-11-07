@@ -1,6 +1,8 @@
 import axios from 'axios'
 import querystring from 'querystring'
 import { checkPermissionRights } from '../_helpers/checkPermission'
+import clientRepo from '../models/clientModel'
+import userRepo from '../models/userModel'
 
 const ministraAPI = process.env.MINISTRA_HOST+'stalker_portal/api/'
 const ministaUser = process.env.MINISTRA_USER
@@ -23,7 +25,10 @@ export async function validateMAC(req, res, next) {
     .catch(error => {
       console.log("Ministra API Error : " + error)
     })
-  if (res.locals.client.status!=='OK') return res.status(404).json({ error: `client with mac Address ${req.params.id} was not found in the system`})
+  if (res.locals.client.status!=='OK') return res.status(404).json({ error: `client with mac Address ${req.params.id} was not found in the ministra system`})
+  const client = await clientRepo.findOne({ clientMac : req.params.id})
+  if (!client) return res.status(404).json({ error: `Client with mac Address ${req.params.id} was not found in mongo DB` }) 
+  res.locals.mongoClient = client
   if(await checkPermissionRights(req.params.id, req.user, 0) == false) return res.status(403).json({ error: `You Have No Rights To Perform This Action.`})
   next()
 }
@@ -38,7 +43,7 @@ export async function addClient(req, res, next) {
     .catch(error => {
       console.log("Ministra API Error : " + error)
     })
-    const ministraPayLoad = querystring.stringify(req.value.body)+"&comment="+req.user.username
+    const ministraPayLoad = querystring.stringify(req.value.body)
   if (res.locals.existingClient.status=='OK') return res.status(401).json({ error: `Client already exists with mac Address ${stb_mac} in the system`})
   
   await axios.post(ministraAPI+'accounts/',
@@ -49,8 +54,17 @@ export async function addClient(req, res, next) {
     .catch(error => {
       console.log("Ministra API Error : " + error)
     })
-  if (res.locals.addedUser.status!=='OK') return res.status(404).json({ error: `Failed to add a client to the system : ${res.locals.addedUser.error}`})
-  res.status(201).json("Client has been sucessfully added to the system.")
+  if (res.locals.addedUser.status!=='OK') {
+    return res.status(404).json({ error: `Failed to add a client to the system : ${res.locals.addedUser.error}`})
+  }
+  else {
+    const clientMac = stb_mac
+    const parentUser = req.user.username
+    const expiryDate = req.value.body.tariff_expired_date
+    const client = await clientRepo.create([{clientMac, parentUser, expiryDate}], {lean:true})
+    await userRepo.findOneAndUpdate({username : parentUser},{ $push: { childUsernames : clientMac} } )
+    await res.status(201).json({client})
+  }
 }
 
 export async function updateClient(req, res, next) {
@@ -62,11 +76,17 @@ export async function updateClient(req, res, next) {
     .catch(error => {
       console.log("Ministra API Error : " + error)
     })
-  if (res.locals.updatedUser.status!=='OK') return res.status(404).json({ error: `Failed to update the client ${req.params.id} to the system : ${res.locals.updatedUser.error}`})
+  if (res.locals.updatedUser.status!=='OK') {
+    return res.status(404).json({ error: `Failed to update the client ${req.params.id} to the system : ${res.locals.updatedUser.error}`})
+  }
+  else if (req.value.body.tariff_expired_date !== undefined) {
+    await res.locals.mongoClient.update({expiryDate : req.value.body.tariff_expired_date})
+  }
   return res.status(200).json("Client has been sucessfully updated on the system.")
 }
 
 export async function deleteClient(req, res, next) {
+  await console.log("KKK : ")
   await axios.delete(ministraAPI+'accounts/'+req.params.id, config)
     .then(response => {
       res.locals.deletingClient = response.data
@@ -74,6 +94,12 @@ export async function deleteClient(req, res, next) {
     .catch(error => {
       console.log("Ministra API Error : " + error)
     })
-  if (res.locals.deletingClient.status!=='OK') return res.status(404).json({ error: `failed to delete client ${req.params.id} : ${res.locals.deletingClient.error}`})
-  return res.status(200).json(`Client with mac Address: ${req.params.id} successfully deleted.`)
+  if (res.locals.deletingClient.status!=='OK') {
+    return res.status(404).json({ error: `failed to delete client ${req.params.id} : ${res.locals.deletingClient.error}`})
+  }
+  else {
+    await userRepo.findOneAndUpdate({username : res.locals.mongoClient.parentUser},{ $pull: { childUsernames : res.locals.mongoClient.clientMac} } )
+    await res.locals.mongoClient.remove()
+    return res.status(200).json(`Client with mac Address: ${req.params.id} successfully deleted.`)
+  }
 }

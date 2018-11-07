@@ -1,8 +1,9 @@
 import userRepo from '../models/userModel'
+import clientRepo from '../models/clientModel'
 import JWT from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import { getAllClients, getClients } from '../_helpers/ministraHelper'
-import { checkPermissionRights } from '../_helpers/checkPermission'
+import { checkPermissionRights, validParent } from '../_helpers/checkPermission'
 
 export async function login(req, res, next) {
   const { user } = req
@@ -12,7 +13,7 @@ export async function login(req, res, next) {
 
 const getToken = user => {
   return JWT.sign({
-    iss: 'Budget',
+    iss: 'G1HD',
     sub: user.id,
     iat: new Date().getTime(),
     exp: new Date().setDate(new Date().getDate() + 1)
@@ -48,22 +49,23 @@ export async function getAllUsers(req, res, next) {
     clients = await getChildren(resellers, 1)
   }
   if (req.user.userType == "reseller") {
-    clients = await getClients(req.user.childUsernames)
+    clients = await getChildren(req.user.childUsernames, 3)
   }
   res.status(200).json({admins, superResellers, resellers, clients})
 }
 
 export async function addUser(req, res, next) {
-  const { username, email, password, passwordConfirmation, firstName, lastName, phoneNo, userType, accountStatus, joinedDate, creditsAvailable, creditsOnHold } = req.value.body
+  const { username, email, password, firstName, lastName, phoneNo, userType, accountStatus, joinedDate, creditsAvailable, creditsOnHold } = req.value.body
   const parentUsername = req.user.username
   if (await validParent(req.user.userType, userType) == false) return res.status(403).json({error: `You have no rights to add this user.`})
   const existingUser = await userRepo.findOne({ username })
   if (existingUser) 
     return res.status(401).json({ error: `User already exists with username: ${username}` })
-  if (password !== passwordConfirmation)
-    return res.status(403).json({ error: `Password and PasswordConfirmation do not match` })
   const user = await userRepo.create([{username, email, password, firstName, lastName, phoneNo, userType, accountStatus, joinedDate, parentUsername, creditsAvailable, creditsOnHold}], {lean:true})
-  const token = getToken(user)
+  if (!req.user.childUsernames.includes(username)){
+    await req.user.update({ $push: { childUsernames : username }} )
+  }
+    const token = getToken(user)
   res.status(201).json({ user, token })
 }
 
@@ -83,32 +85,32 @@ export async function updateUser(req, res, next) {
 export async function deleteUser(req, res, next) {
   if (req.user.userType == "reseller") return res.status(403).json({error: `Only your super-reseller/admin can delete your account.`})
   const username = res.locals.user.username
+  await req.user.update({ $pull: { childUsernames : username }} )
   await res.locals.user.remove()
   return res.status(200).json(`User with username: ${username} successfully deleted.`)
 }
 
-async function validParent(currentUserType, addingUserType){
-  if(currentUserType == 'super-admin' && addingUserType == 'admin') return true
-  if(currentUserType == 'admin' && addingUserType == 'super-reseller') return true
-  if(currentUserType == 'super-reseller' && addingUserType == 'reseller') return true
-  if(currentUserType == 'reseller') return false
-  if(addingUserType == 'super-admin') return false
-  return false
-}
-
-async function getChildren(parents, isMinistra) {
+async function getChildren(list, isMinistra) {
   // given a list of parentObjects, return all direct childObjects of each parent
-  const childUsernames = [].concat(...parents.map(parent=>parent.childUsernames))
+  const childUsernames = [].concat(...list.map(parent=>parent.childUsernames))
   if (isMinistra == 0) {
     return await userRepo.find({username: { $in: childUsernames}}, null, { sort: { creditsAvailable: 1 } })
   }
   else if (isMinistra == 1) {
     const macAdresses = await (childUsernames.length == 0 ? "1" : childUsernames)
-    const clients = await getClients(macAdresses)
-    return await clients
+    const ministraClients = await getClients(macAdresses)
+    const mongoClients = await clientRepo.find({ clientMac : { $in : macAdresses }})
+    return {ministraClients, mongoClients}
+  }
+  else if (isMinistra == 2) {
+    const ministraClients = await getAllClients()
+    const mongoClients = await clientRepo.find({})
+    return {ministraClients, mongoClients}
   }
   else {
-    const clients = await getAllClients()
-    return await clients
+    const macAdresses = await (list.length == 0 ? "1" : list)
+    const ministraClients = await getClients(macAdresses)
+    const mongoClients = await clientRepo.find({ clientMac : { $in : macAdresses }})
+    return {ministraClients, mongoClients}
   }
 }
