@@ -85,7 +85,7 @@ export async function updateUser(req, res, next) {
 export async function deleteUser(req, res, next) {
   if (req.user.userType == "reseller") return res.status(403).json({error: `Only your super-reseller/admin can delete your account.`})
   const username = res.locals.user.username
-  await req.user.update({ $pull: { childUsernames : username }} )
+  await userRepo.findOneAndUpdate({username : res.locals.user.parentUsername},{ $pull: { childUsernames : username} } )
   await res.locals.user.remove()
   return res.status(200).json(`User with username: ${username} successfully deleted.`)
 }
