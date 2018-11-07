@@ -76,7 +76,7 @@ class Header extends Component {
   componentDidMount = () => {
     window.onmousemove = this.resetInactiveTimer
     window.addEventListener("scroll", this.resetInactiveTimer, true)
-    this.idleTimer = setTimeout(this.onIdle, 120000)
+    // this.idleTimer = setTimeout(this.onIdle, 120000)
   }
 
   componentDidUpdate = () => {
@@ -168,7 +168,7 @@ class Header extends Component {
       {renderMenu}
       <Loading />
       <Notification />
-      <Offline polling={{interval:30000, url: '/api/users'}}>
+      <Offline polling={{interval:30000, url: '/api'}}>
         <Loading />
         <PopupMessage
           title='No Active Internet Connection Detected'
