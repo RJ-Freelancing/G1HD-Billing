@@ -12,10 +12,6 @@ const userSchema = new Schema({
   description: {
     type: String
   },
-  transactionTs: {
-    type: Date,
-    default: Date.now
-  },
   transactionFrom: {
     type: String,
     required: true
