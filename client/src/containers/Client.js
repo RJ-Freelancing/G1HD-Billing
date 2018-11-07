@@ -51,6 +51,7 @@ class Client extends Component {
         orderBy='tariff_expired_date'
         mobileView={this.props.mobileView}
         gotoLink={(client)=>this.props.history.push(`/clients/${client.mac}`)}
+        addNew={()=>this.props.history.push('/clients/new')}
         tableHeight='70vh'
       />
     )

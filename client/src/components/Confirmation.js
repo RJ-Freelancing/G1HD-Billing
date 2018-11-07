@@ -27,7 +27,7 @@ export default (props) => {
         <Button onClick={props.confirmationCancel} color="inherit">
           Cancel
         </Button>
-        <Button onClick={props.confirmationDelete} color="secondary" autoFocus disabled={props.disabled}>
+        <Button onClick={props.confirmationProceed} color="secondary" autoFocus disabled={props.disabled}>
           Proceed
         </Button>
       </DialogActions>

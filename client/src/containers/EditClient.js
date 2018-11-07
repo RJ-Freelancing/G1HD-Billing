@@ -8,21 +8,22 @@ import TextField from '@material-ui/core/TextField'
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
+import DeleteIcon from '@material-ui/icons/Delete';
 import InputMask from 'react-input-mask';
 import Switch from '@material-ui/core/Switch';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Table from 'components/Table'
+import Confirmation from 'components/Confirmation';
 
 
 import { getUsers } from 'actions/users'
-import { updateClient } from 'actions/clients'
+import { updateClient, deleteClient } from 'actions/clients'
 
 
 const validPhoneNo = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
@@ -188,7 +189,8 @@ class EditClient extends Component {
     super(props)
     this.state = {
       client: null,
-      editingClient: null
+      editingClient: null,
+      deleteConfirmation: false,
     }
   }
 
@@ -226,6 +228,25 @@ class EditClient extends Component {
     const invalidMAC = this.state.editingClient.mac && !this.state.editingClient.mac.match(validMAC);
     const phoneInvalid = this.state.editingClient.phone && !this.state.editingClient.phone.match(validPhoneNo);
     return loginEmpty || phoneInvalid || invalidMAC
+  }
+
+  deleteConfirmationProceed = () => this.setState({deleteConfirmation: false})
+  deleteConfirmationCancel = () => this.setState({deleteConfirmation: false})
+
+  deleteClient = (event) => {
+    event.preventDefault()
+    this.deleteConfirmationProceed = () => {
+      this.setState({deleteConfirmation: false}, ()=>{
+        this.props.deleteClient(this.state.client.mac)
+        .then(clientDeleteResponse => {
+          if (clientDeleteResponse.type==='DELETE_CLIENT_SUCCESS') {
+            this.props.getUsers()
+            .then(()=>this.props.history.push('/clients'))
+          }
+        })
+      })
+    }
+    this.setState({deleteConfirmation: true})
   }
 
   render() {   
@@ -281,6 +302,10 @@ class EditClient extends Component {
                 Update&nbsp;
                 <SaveIcon />
               </Button>
+              <Button variant="contained" type="submit" color="secondary" disabled={this.props.loading} style={{float: 'right'}} onClick={this.deleteClient}>
+                Delete&nbsp;
+                <DeleteIcon />
+              </Button>
             </form>
           }
         </ClientEditWrapper>
@@ -306,7 +331,7 @@ class EditClient extends Component {
           }
         </STBDetailsWrapper>
 
-        <TariffWrapper>
+        <TariffWrapper elevation={24}>
           <Typography variant="h4"> Edit Tariff Plan</Typography>
           <br/><br/>
           <TariffDetails>
@@ -343,7 +368,7 @@ class EditClient extends Component {
           </TariffDetails>
         </TariffWrapper>
 
-        <CreditsWrapper>
+        <CreditsWrapper elevation={24}>
           <Typography variant="h4"> Credits </Typography>
           <br/><br/>
           <TextField
@@ -372,7 +397,7 @@ class EditClient extends Component {
             <SaveIcon />
           </Button>
         </CreditsWrapper>
-        <TransactionWrapper>
+        <TransactionWrapper elevation={24}>
           <Typography variant="h4"> Transactions </Typography>
           {/* <br/><br/> */}
           <Table
@@ -385,6 +410,12 @@ class EditClient extends Component {
             viewOnly={true}
           />
         </TransactionWrapper>
+        <Confirmation
+          open={this.state.deleteConfirmation}
+          message="Are you sure you want to delete this client ?"
+          confirmationProceed={this.deleteConfirmationProceed}
+          confirmationCancel={this.deleteConfirmationCancel}
+        />
       </Wrapper>
     )
   }
@@ -398,6 +429,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateClient: (mac, client) => dispatch(updateClient(mac, client)),
+  deleteClient: (mac) => dispatch(deleteClient(mac)),
   getUsers: () => dispatch(getUsers()),
 })
 

@@ -111,7 +111,7 @@ const toolbarStyles = theme => ({
 })
 
 let EnhancedTableToolbar = props => {
-  const { classes, title, mobileView, viewOnly } = props
+  const { classes, title, mobileView, viewOnly, addNew } = props
 
   return (
     <Toolbar>
@@ -139,7 +139,7 @@ let EnhancedTableToolbar = props => {
       {!viewOnly && 
         <div>
           <Tooltip title="Add New">
-            <Button aria-label="Add New" variant={mobileView ? 'fab' : 'contained'} color="primary" mini={mobileView}>
+            <Button aria-label="Add New" variant={mobileView ? 'fab' : 'contained'} color="primary" mini={mobileView} onClick={addNew}>
               <AddIcon/>
               {!mobileView &&
                 <Typography variant="subtitle1" noWrap color="inherit">
@@ -200,12 +200,17 @@ class EnhancedTable extends React.Component {
 
 
   render() {
-    const { classes, mobileView, tableHeight, viewOnly } = this.props
+    const { classes, mobileView, tableHeight, title, viewOnly, addNew } = this.props
     const { data, order, orderBy, rowsPerPage, page } = this.state
 
     return (
-      <Paper className={classes.root}>
-        <EnhancedTableToolbar title={this.props.title} mobileView={mobileView} viewOnly={this.props.viewOnly}/>
+      <Paper className={classes.root} elevation={5}>
+        <EnhancedTableToolbar 
+          title={title} 
+          mobileView={mobileView} 
+          viewOnly={viewOnly}
+          addNew={addNew}
+        />
         <div className={classes.tableWrapper} style={{height: tableHeight}} >
           <Table className={classes.table} aria-labelledby="tableTitle">
             <EnhancedTableHead
