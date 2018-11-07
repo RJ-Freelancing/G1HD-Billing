@@ -232,8 +232,8 @@ class EditClient extends Component {
   updateClient = (event) => {
     event.preventDefault()
     const { mac } = this.state.editingClient
-    const { fname, phone, status, tarriff_plan, tarriff_expired_date, subscribed, subscribed_id } = this.state.editingClient
-    this.props.updateClient(mac, {fname, phone, status, tarriff_plan, tarriff_expired_date, subscribed, subscribed_id})
+    const { fname, phone } = this.state.editingClient
+    this.props.updateClient(mac, {full_name:fname, phone})
   }
 
   checkValidation = () => {
