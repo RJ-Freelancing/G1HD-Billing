@@ -20,10 +20,12 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Table from 'components/Table'
 import Confirmation from 'components/Confirmation';
+import { startCase } from 'lodash';
 
 
 import { getUsers } from 'actions/users'
-import { updateClient, deleteClient } from 'actions/clients'
+import { updateClient, deleteClient, updateCredits } from 'actions/clients'
+import { getTariffPlans } from 'actions/general'
 
 
 const validPhoneNo = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
@@ -89,14 +91,18 @@ const TariffPackagesHeader = styled.div`
 
 const TariffPackages = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 
   grid-gap: 20px;
-  @media only screen and (max-width: 768px) {
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-gap: 5px;
-  }
   height: 200px;
   overflow-y: scroll;
+`
+
+const TariffPackageRow = styled.div`
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 
+  grid-gap: 0px;
+  @media only screen and (max-width: 768px) {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 `
 
 
@@ -191,12 +197,19 @@ class EditClient extends Component {
       client: null,
       editingClient: null,
       deleteConfirmation: false,
+      credits: {
+        value: 1,
+        action: "add"
+      }
     }
   }
 
   componentDidMount = () => {   
     if (!this.props.token) this.props.history.push('/login')
-    else this.loadClientFromMac(this.props.match.params.id)
+    else {
+      this.props.getTariffPlans()
+      this.loadClientFromMac(this.props.match.params.id)
+    }
   }
 
   loadClientFromMac = (mac) => {
@@ -247,6 +260,16 @@ class EditClient extends Component {
       })
     }
     this.setState({deleteConfirmation: true})
+  }
+
+  updateCredits = () => {
+
+    this.props.updateCredits({
+      credits: this.state.credits.action==="add" ? this.state.credits.value : this.state.credits.value*-1,
+      description: `${startCase(this.state.credits.action)}ed ${this.state.credits.value} credits`,
+      transactionFrom: this.props.authUsername,
+      transactionTo: this.state.client.mac
+    })
   }
 
   render() {   
@@ -309,7 +332,86 @@ class EditClient extends Component {
             </form>
           }
         </ClientEditWrapper>
+        <CreditsWrapper elevation={24}>
+          <Typography variant="h4"> Credits </Typography>
+          <br/><br/>
+          <TextField
+            label="Select Credits"
+            type="number"
+            inputProps={{ min: 1, max: 12 }}
+            value={this.state.credits.value}
+            onChange={(e)=>this.setState({credits: {...this.state.credits, value: e.target.value}})}
+            fullWidth
+            disabled={this.props.loading}
+          />
+          <br/><br/>
+          <FormControl component="fieldset">
+            <RadioGroup
+              aria-label="Gender"
+              name="gender1"
+              value={this.state.credits.action}
+              style={{display: 'grid', gridTemplateColumns: '1fr 1fr'}}
+              onChange={(e)=>this.setState({credits: {...this.state.credits, action: e.target.value}})}
+            >
+              <FormControlLabel value="add" control={<Radio />} label="Add" />
+              <FormControlLabel value="recover" control={<Radio />} label="Recover" />
+            </RadioGroup>
+          </FormControl>
+          <Button variant="contained" type="submit" color="primary" disabled={this.props.loading} style={{float: 'right'}} onClick={()=>this.updateCredits()}>
+            Submit&nbsp;
+            <SaveIcon />
+          </Button>
+          <br/><br/><br/>
+          <div style={{textAlign: 'center'}}>
+            {/* Credits Available<br/> <div style={{fontSize: 100}}>{this.state.client && this.state.client.account_balance} </div> */}
+            Credits Available<br/> <div style={{fontSize: 50}}> 5 </div>
+          </div>
+        </CreditsWrapper>
 
+
+        <TariffWrapper elevation={24}>
+          <Typography variant="h4"> Edit Tariff Plan</Typography>
+          <br/><br/>
+          <TariffDetails>
+            <TariffHeader>
+              <Select
+                label="Tarriff Plan"
+                value={this.state.editingClient ? this.state.editingClient.tariff_plan_id : 1}
+                onChange={(e)=>this.handleTextChange('tariff_plan_id', e.target.value)}
+                inputProps={{ id: 'tariff_plan_id' }}
+              >
+                {
+                  this.props.tariffPlans.map(plan=>(
+                    <MenuItem key={plan.id} value={parseInt(plan.id)}> {plan.name} </MenuItem>
+                  ))
+                }
+              </Select>
+              <Typography variant="body2" style={{alignSelf: 'center', justifySelf: 'center'}}>
+                Tariff Expires on : <strong>{this.state.client ? format(Date.parse(this.state.client.tariff_expired_date), 'd MMMM YYYY') : null}</strong>
+              </Typography>
+            </TariffHeader>
+            <TariffPackagesHeader>
+              <div>Name</div><div style={{justifySelf: 'center'}}>Optional</div><div style={{justifySelf: 'center'}}>Subscribed</div>
+            </TariffPackagesHeader>
+            <TariffPackages>
+              {
+                this.state.editingClient &&
+                this.props.tariffPlans.find(plan=>parseInt(plan.id)===this.state.editingClient.tariff_plan_id) &&
+                this.props.tariffPlans.find(plan=>parseInt(plan.id)===this.state.editingClient.tariff_plan_id).packages.map(tariffPackage=>(
+                  <TariffPackageRow key={tariffPackage.name}>
+                    <div>{tariffPackage.name}</div>
+                    <div style={{justifySelf: 'center'}}>{tariffPackage.optional==="1" ? "Yes": "No"}</div>
+                    <Checkbox 
+                      checked={tariffPackage.optional==="1" ? false: true} 
+                      disabled={tariffPackage.optional==="1" ? false: true}  
+                      style={{padding: 10, justifySelf: 'center', height: 15}}
+                    />
+                  </TariffPackageRow>
+                ))
+              }
+            </TariffPackages>
+          </TariffDetails>
+        </TariffWrapper>
         <STBDetailsWrapper elevation={24}>
           <Typography variant="h4"> STB Details </Typography>
           <br/><br/>
@@ -331,72 +433,6 @@ class EditClient extends Component {
           }
         </STBDetailsWrapper>
 
-        <TariffWrapper elevation={24}>
-          <Typography variant="h4"> Edit Tariff Plan</Typography>
-          <br/><br/>
-          <TariffDetails>
-            <TariffHeader>
-              <Select
-                label="Tarriff Plan"
-                value={this.state.editingClient ? this.state.editingClient.tariff_plan_id : 0}
-                // onChange={(e)=>this.handleTextChange('tariff_plan_id', e.target.value)}
-                inputProps={{ id: 'tariff' }}
-              >
-                <MenuItem value={0}>Basic</MenuItem>
-                <MenuItem value={1}>Plan One</MenuItem>
-                <MenuItem value={2}>Plan Two</MenuItem>
-                <MenuItem value={3}>Plan Three</MenuItem>
-              </Select>
-              <Typography variant="body2" style={{alignSelf: 'center', justifySelf: 'center'}}>
-                Tariff Expires on : <strong>{this.state.client ? format(Date.parse(this.state.client.tariff_expired_date), 'd MMMM YYYY') : null}</strong>
-              </Typography>
-            </TariffHeader>
-            <TariffPackagesHeader>
-              <div>Name</div><div style={{justifySelf: 'center'}}>Optional</div><div style={{justifySelf: 'center'}}>Subscribed</div>
-            </TariffPackagesHeader>
-            <TariffPackages>
-              <div>Tamil</div><div style={{justifySelf: 'center'}}>No</div><Checkbox checked={true} disabled style={{padding: 0, justifySelf: 'center'}}/>
-              <div>English</div><div style={{justifySelf: 'center'}}>No</div><Checkbox checked={true} disabled style={{padding: 0, justifySelf: 'center'}}/>
-              <div>Telugu</div><div style={{justifySelf: 'center'}}>No</div><Checkbox checked={true} disabled style={{padding: 0, justifySelf: 'center'}}/>
-              <div>Other 1</div><div style={{justifySelf: 'center'}}>No</div><Checkbox checked={true} disabled style={{padding: 0, justifySelf: 'center'}}/>
-              <div>Other 2</div><div style={{justifySelf: 'center'}}>No</div><Checkbox checked={true} disabled style={{padding: 0, justifySelf: 'center'}}/>
-              <div>Other 3</div><div style={{justifySelf: 'center'}}>No</div><Checkbox checked={true} disabled style={{padding: 0, justifySelf: 'center'}}/>
-              <div>Other 4</div><div style={{justifySelf: 'center'}}>No</div><Checkbox checked={true} disabled style={{padding: 0, justifySelf: 'center'}}/>
-              <div>Other 5</div><div style={{justifySelf: 'center'}}>No</div><Checkbox checked={true} disabled style={{padding: 0, justifySelf: 'center'}}/>
-              <div>Adult</div><div style={{justifySelf: 'center'}}>Yes</div><Checkbox style={{padding: 0, justifySelf: 'center'}}/>
-            </TariffPackages>
-          </TariffDetails>
-        </TariffWrapper>
-
-        <CreditsWrapper elevation={24}>
-          <Typography variant="h4"> Credits </Typography>
-          <br/><br/>
-          <TextField
-            label="Select Credits"
-            type="number"
-            inputProps={{ min: 1, max: 12, defaultValue: 1 }}
-            // value={this.state.editingClient.fname}
-            // onChange={(e)=>this.handleTextChange('fname', e.target.value)}
-            fullWidth
-            disabled={this.props.loading}
-          />
-          <br/><br/>
-          <FormControl component="fieldset">
-            <RadioGroup
-              aria-label="Gender"
-              name="gender1"
-              value="add"
-              style={{display: 'grid', gridTemplateColumns: '1fr 1fr'}}
-            >
-              <FormControlLabel value="add" control={<Radio />} label="Add" />
-              <FormControlLabel value="recover" control={<Radio />} label="Recover" />
-            </RadioGroup>
-          </FormControl>
-          <Button variant="contained" type="submit" color="primary" disabled={this.props.loading} style={{float: 'right'}}>
-            Submit&nbsp;
-            <SaveIcon />
-          </Button>
-        </CreditsWrapper>
         <TransactionWrapper elevation={24}>
           <Typography variant="h4"> Transactions </Typography>
           {/* <br/><br/> */}
@@ -424,6 +460,8 @@ class EditClient extends Component {
 const mapStateToProps = state => ({
   token: state.auth.token,
   clients: state.users.clients,
+  tariffPlans: state.general.tariffPlans,
+  authUsername: state.auth.username, 
   mobileView: state.general.mobileView
 })
 
@@ -431,6 +469,8 @@ const mapDispatchToProps = dispatch => ({
   updateClient: (mac, client) => dispatch(updateClient(mac, client)),
   deleteClient: (mac) => dispatch(deleteClient(mac)),
   getUsers: () => dispatch(getUsers()),
+  getTariffPlans: () => dispatch(getTariffPlans()),
+  updateCredits: (transaction) => dispatch(updateCredits(transaction))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditClient)

@@ -16,7 +16,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 
 import { getUsers } from 'actions/users'
-import { addClient, addCredits } from 'actions/clients'
+import { addClient, updateCredits } from 'actions/clients'
 import { getTariffPlans } from 'actions/general'
 
 
@@ -85,7 +85,7 @@ class AddClient extends Component {
     .then(clientAddResponse => {
       if (clientAddResponse.type==='ADD_CLIENT_SUCCESS') {
         if (this.state.newClient.credits > 0) {
-          this.props.addCredits({
+          this.props.updateCredits({
             credits: this.state.newClient.credits,
             description: "Add initial credits for new client",
             transactionFrom: this.props.authUsername,
@@ -243,7 +243,7 @@ const mapDispatchToProps = dispatch => ({
   addClient: (client) => dispatch(addClient(client)),
   getUsers: () => dispatch(getUsers()),
   getTariffPlans: () => dispatch(getTariffPlans()),
-  addCredits: (transaction) => dispatch(addCredits(transaction))
+  updateCredits: (transaction) => dispatch(updateCredits(transaction))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddClient)

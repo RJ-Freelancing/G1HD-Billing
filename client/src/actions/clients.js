@@ -39,7 +39,7 @@ export const deleteClient = (mac) => ({
 })
 
 
-export const addCredits = (transaction) => ({
+export const updateCredits = (transaction) => ({
   types: ['LOADING', 'ADD_CREDIT_SUCCESS', 'ADD_CREDIT_FAILED'],
   payload: {
     request:{
@@ -48,6 +48,6 @@ export const addCredits = (transaction) => ({
       data: transaction
     }
   },
-  success: `Successfully added credits`,
+  success: `Successfully updated credits`,
   failure: "Something went wrong while adding credits!"
 })

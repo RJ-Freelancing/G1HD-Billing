@@ -162,9 +162,6 @@ const styles = theme => ({
     width: '100%',
     marginTop: theme.spacing.unit * 3
   },
-  table: {
-    minWidth: 1020,
-  },
   tableWrapper: {
     overflowX: 'auto'
   },
@@ -212,7 +209,7 @@ class EnhancedTable extends React.Component {
           addNew={addNew}
         />
         <div className={classes.tableWrapper} style={{height: tableHeight}} >
-          <Table className={classes.table} aria-labelledby="tableTitle">
+          <Table aria-labelledby="tableTitle">
             <EnhancedTableHead
               order={order}
               orderBy={orderBy}
