@@ -100,17 +100,26 @@ async function getChildren(list, isMinistra) {
     const macAdresses = await (childUsernames.length == 0 ? "1" : childUsernames)
     const ministraClients = await getClients(macAdresses)
     const mongoClients = await clientRepo.find({ clientMac : { $in : macAdresses }})
-    return {ministraClients, mongoClients}
+    return mergeArrayObjectsByKey(mongoClients, ministraClients, 'clientMac', 'mac')
+    // return {ministraClients, mongoClients}
   }
   else if (isMinistra == 2) {
     const ministraClients = await getAllClients()
     const mongoClients = await clientRepo.find({})
-    return {ministraClients, mongoClients}
+    return mergeArrayObjectsByKey(mongoClients, ministraClients, 'clientMac', 'mac')
+    // return {ministraClients, mongoClients}
   }
   else {
     const macAdresses = await (list.length == 0 ? "1" : list)
     const ministraClients = await getClients(macAdresses)
     const mongoClients = await clientRepo.find({ clientMac : { $in : macAdresses }})
-    return {ministraClients, mongoClients}
+    return mergeArrayObjectsByKey(mongoClients, ministraClients, 'clientMac', 'mac')
+    // return {ministraClients, mongoClients}
   }
+}
+
+
+
+function mergeArrayObjectsByKey(obj1Array, obj2Array, key1, key2) {
+  return obj1Array.map(obj1=>({...obj1._doc, ...(obj2Array.find(obj2=>obj2[key2]==obj1[key1]))}))
 }
