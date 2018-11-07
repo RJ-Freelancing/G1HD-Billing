@@ -16,8 +16,8 @@ export const schemas = {
     tariff_plan: Joi.number(),
     tariff_expired_date: Joi.string().regex(/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/),
     tariff_instead_expired : Joi.number().default(3),
-    subscribed: Joi.number(),
-    subscribed_id: Joi.number()
+    subscribed: Joi.array().items(Joi.number()).unique(), // Looks like API Doesnt Support
+    subscribed_id: Joi.array().items(Joi.number()).unique() // Looks like API Doesnt Support
   }),
   
   updateSchema: Joi.object({
@@ -26,8 +26,8 @@ export const schemas = {
     status: Joi.number(),
     tariff_plan: Joi.number(),
     tariff_expired_date: Joi.string().regex(/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/),
-    subscribed: Joi.array().items(Joi.number()).unique(),
-    subscribed_id: Joi.array().items(Joi.number()).unique(),
+    subscribed: Joi.array().items(Joi.number()).unique(), // Looks like API Doesnt Support
+    subscribed_id: Joi.array().items(Joi.number()).unique(), // Looks like API Doesnt Support
     comment: Joi.string()
   })
 

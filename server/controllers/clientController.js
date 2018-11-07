@@ -82,11 +82,10 @@ export async function updateClient(req, res, next) {
   else if (req.value.body.tariff_expired_date !== undefined) {
     await res.locals.mongoClient.update({expiryDate : req.value.body.tariff_expired_date})
   }
-  return res.status(200).json("Client has been sucessfully updated on the system.")
+  return res.status(200).json(req.params.id)
 }
 
 export async function deleteClient(req, res, next) {
-  await console.log("KKK : ")
   await axios.delete(ministraAPI+'accounts/'+req.params.id, config)
     .then(response => {
       res.locals.deletingClient = response.data
@@ -100,6 +99,6 @@ export async function deleteClient(req, res, next) {
   else {
     await userRepo.findOneAndUpdate({username : res.locals.mongoClient.parentUser},{ $pull: { childUsernames : res.locals.mongoClient.clientMac} } )
     await res.locals.mongoClient.remove()
-    return res.status(200).json(`Client with mac Address: ${req.params.id} successfully deleted.`)
+    return res.status(200).json(req.params.id)
   }
 }
