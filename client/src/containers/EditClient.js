@@ -285,6 +285,13 @@ class EditClient extends Component {
             <form onSubmit={this.updateClient} style={{padding: 10}}>
               <ClientEdit>
                 <TextField
+                  label="Username"
+                  type="username"
+                  value={this.state.client.login}
+                  fullWidth
+                  disabled
+                />
+                <TextField
                   label="Full Name"
                   type="name"
                   value={this.state.editingClient.fname}
@@ -440,7 +447,7 @@ class EditClient extends Component {
             // title={'Transactions'}
             rows={rows}
             data={data}
-            orderBy='tariff_expired_date'
+            orderBy='date'
             mobileView={this.props.mobileView}
             tableHeight='100%'
             viewOnly={true}

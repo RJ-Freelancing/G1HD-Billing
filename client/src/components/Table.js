@@ -111,7 +111,7 @@ const toolbarStyles = theme => ({
 })
 
 let EnhancedTableToolbar = props => {
-  const { classes, title, mobileView, viewOnly, addNew } = props
+  const { classes, title, mobileView, viewOnly, addNew, canAdd } = props
 
   return (
     <Toolbar>
@@ -136,7 +136,7 @@ let EnhancedTableToolbar = props => {
         fullWidth
       />
       <div className={classes.spacer} />
-      {!viewOnly && 
+      {!viewOnly && canAdd &&
         <div>
           <Tooltip title="Add New">
             <Button aria-label="Add New" variant={mobileView ? 'fab' : 'contained'} color="primary" mini={mobileView} onClick={addNew}>
@@ -197,7 +197,7 @@ class EnhancedTable extends React.Component {
 
 
   render() {
-    const { classes, mobileView, tableHeight, title, viewOnly, addNew } = this.props
+    const { classes, mobileView, tableHeight, title, viewOnly, addNew, canAdd } = this.props
     const { data, order, orderBy, rowsPerPage, page } = this.state
 
     return (
@@ -206,6 +206,7 @@ class EnhancedTable extends React.Component {
           title={title} 
           mobileView={mobileView} 
           viewOnly={viewOnly}
+          canAdd={canAdd}
           addNew={addNew}
         />
         <div className={classes.tableWrapper} style={{height: tableHeight}} >

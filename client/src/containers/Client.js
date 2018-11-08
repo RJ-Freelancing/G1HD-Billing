@@ -53,6 +53,7 @@ class Client extends Component {
         gotoLink={(client)=>this.props.history.push(`/clients/${client.mac}`)}
         addNew={()=>this.props.history.push('/clients/new')}
         tableHeight='70vh'
+        canAdd={this.props.authUserType==='reseller'}
       />
     )
   }
@@ -61,6 +62,7 @@ class Client extends Component {
 
 const mapStateToProps = state => ({
   token: state.auth.token,
+  authUserType: state.auth.userType,
   clients: state.users.clients,
 })
 

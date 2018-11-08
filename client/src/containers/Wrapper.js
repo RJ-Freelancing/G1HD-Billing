@@ -16,7 +16,7 @@ import EditInternalUser from 'containers/EditInternalUser'
 import EditClient from 'containers/EditClient'
 import AddClient from 'containers/AddClient'
 
-import 'assets/transition.css'
+// import 'assets/transition.css'
 
 import { setMobileView } from 'actions/general'
 
@@ -51,19 +51,19 @@ class Wrapper extends Component {
   render() {
   
     const RootDiv = styled.div`
-      flex-grow: 1,
-      z-index: 1,
-      overflow: hidden,
-      position: relative,
-      display: flex
+      flex-grow: 1;
+      z-index: 1;
+      overflow: hidden;
+      position: relative;
+      display: flex;
     `
     
     const ContentDiv = styled.div`
-      flex-grow: 1
-      min-width: 0px
-      padding: 16px
+      flex-grow: 1;
+      min-width: 0px;
+      padding: 16px;
       margin-left: ${this.props.mobileView ? 'inherit' : '240px'}
-      padding-top: 70px
+      padding-top: 70px;
     `
 
     return (
@@ -76,13 +76,13 @@ class Wrapper extends Component {
             activePage={this.props.location.pathname} 
           />
         <ContentDiv>
-          <ReactCSSTransitionGroup
+          {/* <ReactCSSTransitionGroup
             transitionName="wrapper"
             transitionAppear={true}
             transitionAppearTimeout={500}
             transitionEnterTimeout={500}
             transitionLeaveTimeout={300}
-          >
+          > */}
             <Switch>
               <Route exact path="/" component={Dashboard} />
               <Route exact path="/admins" component={InternalUser} />
@@ -96,7 +96,7 @@ class Wrapper extends Component {
               <Route path="/clients/:id" component={EditClient} />
               <Route component={FourOhFour} />
             </Switch>
-          </ReactCSSTransitionGroup>
+          {/* </ReactCSSTransitionGroup> */}
         </ContentDiv>
       </RootDiv>
     )
