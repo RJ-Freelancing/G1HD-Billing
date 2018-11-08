@@ -340,39 +340,43 @@ class EditClient extends Component {
           }
         </ClientEditWrapper>
         <CreditsWrapper elevation={24}>
-          <Typography variant="h4"> Credits </Typography>
-          <br/><br/>
-          <TextField
-            label="Select Credits"
-            type="number"
-            inputProps={{ min: 1, max: 12 }}
-            value={this.state.credits.value}
-            onChange={(e)=>this.setState({credits: {...this.state.credits, value: e.target.value}})}
-            fullWidth
-            disabled={this.props.loading}
-          />
-          <br/><br/>
-          <FormControl component="fieldset">
-            <RadioGroup
-              aria-label="Gender"
-              name="gender1"
-              value={this.state.credits.action}
-              style={{display: 'grid', gridTemplateColumns: '1fr 1fr'}}
-              onChange={(e)=>this.setState({credits: {...this.state.credits, action: e.target.value}})}
-            >
-              <FormControlLabel value="add" control={<Radio />} label="Add" />
-              <FormControlLabel value="recover" control={<Radio />} label="Recover" />
-            </RadioGroup>
-          </FormControl>
-          <Button variant="contained" type="submit" color="primary" disabled={this.props.loading} style={{float: 'right'}} onClick={()=>this.updateCredits()}>
-            Submit&nbsp;
-            <SaveIcon />
-          </Button>
-          <br/><br/><br/>
-          <div style={{textAlign: 'center'}}>
-            {/* Credits Available<br/> <div style={{fontSize: 100}}>{this.state.client && this.state.client.account_balance} </div> */}
-            Credits Available<br/> <div style={{fontSize: 50}}> 5 </div>
-          </div>
+            <Typography variant="h4"> Credits </Typography>
+            <br/><br/>
+            {this.state.client && this.props.authUsername===this.state.client.parentUsername  &&
+              <div>
+                <TextField
+                  label="Select Credits"
+                  type="number"
+                  inputProps={{ min: 1, max: 12 }}
+                  value={this.state.credits.value}
+                  onChange={(e)=>this.setState({credits: {...this.state.credits, value: e.target.value}})}
+                  fullWidth
+                  disabled={this.props.loading}
+                />
+                <br/><br/>
+                <FormControl component="fieldset">
+                  <RadioGroup
+                    aria-label="Gender"
+                    name="gender1"
+                    value={this.state.credits.action}
+                    style={{display: 'grid', gridTemplateColumns: '1fr 1fr'}}
+                    onChange={(e)=>this.setState({credits: {...this.state.credits, action: e.target.value}})}
+                  >
+                    <FormControlLabel value="add" control={<Radio />} label="Add" />
+                    <FormControlLabel value="recover" control={<Radio />} label="Recover" />
+                  </RadioGroup>
+                </FormControl>
+                <Button variant="contained" type="submit" color="primary" disabled={this.props.loading} style={{float: 'right'}} onClick={()=>this.updateCredits()}>
+                  Submit&nbsp;
+                  <SaveIcon />
+                </Button>
+              </div>
+            }
+            <br/><br/><br/>
+            <div style={{textAlign: 'center'}}>
+              {/* Credits Available<br/> <div style={{fontSize: 100}}>{this.state.client && this.state.client.account_balance} </div> */}
+              Credits Available<br/> <div style={{fontSize: 50}}> 5 </div>
+            </div>
         </CreditsWrapper>
 
 
