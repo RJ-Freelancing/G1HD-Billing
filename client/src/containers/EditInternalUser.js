@@ -180,11 +180,13 @@ class EditInternalUser extends Component {
       this.confirmationProceed = () => {
         this.setState({confirmation: false}, ()=>{
           this.props.updateUser(username, {email, password: this.state.newPassword, firstName, lastName, phoneNo, accountStatus})
+          .then(()=>this.props.getUsers())
         })
       }
       this.setState({confirmation: true, confirmationMessage: "You are changing the user's password. Are you sure you want to continue ?"})
     } else {
       this.props.updateUser(username, {email, firstName, lastName, phoneNo, accountStatus})
+      .then(()=>this.props.getUsers())
     }
   }
 
@@ -387,7 +389,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   getUsers: () => dispatch(getUsers()),
-  updateUser: (user) => dispatch(updateUser(user)),
+  updateUser: (username, user) => dispatch(updateUser(username, user)),
   updateCredits: (transaction) => dispatch(updateCredits(transaction)),
   deleteUser: (username) => dispatch(deleteUser(username))
 })
