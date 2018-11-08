@@ -347,7 +347,9 @@ class EditInternalUser extends Component {
           <br/><br/><br/>
           <div style={{textAlign: 'center'}}>
             {/* Credits Available<br/> <div style={{fontSize: 100}}>{this.state.user && this.state.user.account_balance} </div> */}
-            Credits Available<br/> <div style={{fontSize: 50}}> 5 </div>
+            Credits Available<br/> <div style={{fontSize: 50}}> 15 </div>
+            <br/><br/>
+            Credits On Hold<br/> <div style={{fontSize: 50}}> 5 </div>
           </div>
         </CreditsWrapper>
         <TransactionWrapper elevation={24}>
