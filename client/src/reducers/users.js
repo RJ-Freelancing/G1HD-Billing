@@ -19,6 +19,7 @@ const users = (state = initialState, action) => {
         transactions: action.payload.data
       }
     case 'ADD_CLIENT_SUCCESS':
+    case 'ADD_USER_SUCCESS':
       return {
         ...state, 
         // clients: [...state.clients, action.payload.data]

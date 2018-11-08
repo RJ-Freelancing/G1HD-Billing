@@ -44,7 +44,7 @@ export async function getAllUsers(req, res, next) {
     resellers = await getChildren(superResellers, 0)
     clients = await getChildren(resellers, 1)
   }
-  if (req.user.userType == "super-reseller") {
+  if (req.user.userType == "superReseller") {
     resellers = await userRepo.find({username: { $in: req.user.childUsernames}}, null, { sort: { creditsAvailable: 1 } })
     clients = await getChildren(resellers, 1)
   }
@@ -55,13 +55,13 @@ export async function getAllUsers(req, res, next) {
 }
 
 export async function addUser(req, res, next) {
-  const { username, email, password, firstName, lastName, phoneNo, userType, accountStatus, joinedDate, creditsAvailable, creditsOnHold } = req.value.body
+  const { username, email, password, firstName, lastName, phoneNo, userType, accountStatus, creditsAvailable, creditsOnHold } = req.value.body
   const parentUsername = req.user.username
   if (await validParent(req.user.userType, userType) == false) return res.status(403).json({error: `You have no rights to add this user.`})
   const existingUser = await userRepo.findOne({ username })
   if (existingUser) 
     return res.status(401).json({ error: `User already exists with username: ${username}` })
-  const user = await userRepo.create([{username, email, password, firstName, lastName, phoneNo, userType, accountStatus, joinedDate, parentUsername, creditsAvailable, creditsOnHold}], {lean:true})
+  const user = await userRepo.create([{username, email, password, firstName, lastName, phoneNo, userType, accountStatus, parentUsername, creditsAvailable, creditsOnHold}], {lean:true})
   if (!req.user.childUsernames.includes(username)){
     await req.user.update({ $push: { childUsernames : username }} )
   }
@@ -83,7 +83,7 @@ export async function updateUser(req, res, next) {
 }
 
 export async function deleteUser(req, res, next) {
-  if (req.user.userType == "reseller") return res.status(403).json({error: `Only your super-reseller/admin can delete your account.`})
+  if (req.user.userType == "reseller") return res.status(403).json({error: `Only your superReseller/admin can delete your account.`})
   const username = res.locals.user.username
   await userRepo.findOneAndUpdate({username : res.locals.user.parentUsername},{ $pull: { childUsernames : username} } )
   await res.locals.user.remove()

@@ -4,6 +4,7 @@ import Table from 'components/Table'
 import { format } from 'date-fns'
 import { startCase } from 'lodash';
 import { getUsers } from 'actions/users'
+import { isEqual } from 'lodash';
 
 const rows = [
   { field: 'username', numeric: false, label: 'Username' },
@@ -66,6 +67,7 @@ class InternalUser extends Component {
         mobileView={this.props.mobileView}
         gotoLink={(user)=>this.props.history.push(`/users/${user.username}`)} 
         canAdd={this.checkPermissionToAdd(this.props.location.pathname.substr(1))}
+        addNew={()=>this.props.history.push('/users/new')}
       />
     )
   }

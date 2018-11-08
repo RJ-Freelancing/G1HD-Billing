@@ -9,7 +9,7 @@ export async function checkPermissionRights(reqestedUser, currentUser, ifUsers) 
       if(!currentUser.childUsernames.includes(reqestedUser)) return false
     }
   }
-  if (currentUser.userType == "super-reseller"){
+  if (currentUser.userType == "superReseller"){
     if(ifUsers == 1){
       if (currentUser.userType == reqestedUser.userType) {
         if(currentUser.username !== reqestedUser.username) return false
@@ -32,7 +32,7 @@ export async function checkPermissionRights(reqestedUser, currentUser, ifUsers) 
         if(currentUser.username !== reqestedUser.username) return false
       }
       else {
-        if(reqestedUser.userType == 'super-reseller'){
+        if(reqestedUser.userType == 'superReseller'){
           if(!currentUser.childUsernames.includes(reqestedUser.username)) return false
         }
         else {
@@ -51,8 +51,8 @@ export async function checkPermissionRights(reqestedUser, currentUser, ifUsers) 
 
 export async function validParent(currentUserType, addingUserType){
   if(currentUserType == 'super-admin' && addingUserType == 'admin') return true
-  if(currentUserType == 'admin' && addingUserType == 'super-reseller') return true
-  if(currentUserType == 'super-reseller' && addingUserType == 'reseller') return true
+  if(currentUserType == 'admin' && addingUserType == 'superReseller') return true
+  if(currentUserType == 'superReseller' && addingUserType == 'reseller') return true
   if(currentUserType == 'reseller') return false
   if(addingUserType == 'super-admin') return false
   return false

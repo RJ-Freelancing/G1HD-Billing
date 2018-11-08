@@ -42,10 +42,6 @@ const userSchema = new Schema({
     required: true,
     default: false
   },
-  joinedDate: {
-    type: Date,
-    default: Date.now
-  },
   parentUsername: {
     type: String,
     required: true

@@ -10,7 +10,7 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
 
-import { updateUser } from 'actions/users'
+import { updateProfile } from 'actions/users'
 
 const validPhoneNo = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
 
@@ -68,10 +68,10 @@ class Profile extends Component {
     this.setState({[field]: value})
   }
 
-  updateUser = (event) => {
+  updateProfile = (event) => {
     event.preventDefault()
     const {username, email, firstName, lastName, phoneNo} = this.state
-    this.props.updateUser(username, {username, email, firstName, lastName, phoneNo})
+    this.props.updateProfile(username, {username, email, firstName, lastName, phoneNo})
   }
 
   checkValidation = () => {
@@ -88,7 +88,7 @@ class Profile extends Component {
               Edit Profile
           </Typography>
           <br/>
-          <form onSubmit={this.updateUser} style={{padding: 10}}>
+          <form onSubmit={this.updateProfile} style={{padding: 10}}>
             <ProfileEdit>
               <TextField
                 label="Username"
@@ -170,7 +170,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateUser: (userID, user) => dispatch(updateUser(userID, user)),
+  updateProfile: (userID, user) => dispatch(updateProfile(userID, user)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile)

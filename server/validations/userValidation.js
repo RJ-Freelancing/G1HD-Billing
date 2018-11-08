@@ -16,7 +16,6 @@ export const schemas = {
     phoneNo: Joi.string().regex(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/),
     userType: Joi.string().required(),
     accountStatus: Joi.boolean().required(),
-    joinedDate: Joi.date().iso()
   }),
   
   updateSchema: Joi.object({
@@ -28,7 +27,6 @@ export const schemas = {
     phoneNo: Joi.string().regex(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/),
     userType: Joi.string(),
     accountStatus: Joi.boolean(),
-    joinedDate: Joi.date().iso()
   }),
 
   userLoginSchema: Joi.object({

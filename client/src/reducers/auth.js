@@ -20,7 +20,7 @@ const auth = (state = initialState, action) => {
       return {
         ...initialState
       }
-    case 'UPDATE_USER_SUCCESS':   
+    case 'UPDATE_PROFILE_SUCCESS':   
       return {
         ...state,
         ...action.payload.data

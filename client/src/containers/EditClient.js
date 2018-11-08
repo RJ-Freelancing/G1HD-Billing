@@ -24,7 +24,8 @@ import { startCase } from 'lodash';
 
 
 import { getUsers } from 'actions/users'
-import { updateClient, deleteClient, updateCredits } from 'actions/clients'
+import { updateClient, deleteClient } from 'actions/clients'
+import { updateCredits } from 'actions/transactions'
 import { getTariffPlans } from 'actions/general'
 
 
@@ -263,7 +264,6 @@ class EditClient extends Component {
   }
 
   updateCredits = () => {
-
     this.props.updateCredits({
       credits: this.state.credits.action==="add" ? this.state.credits.value : this.state.credits.value*-1,
       description: `${startCase(this.state.credits.action)}ed ${this.state.credits.value} credits`,

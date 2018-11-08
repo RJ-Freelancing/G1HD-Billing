@@ -16,7 +16,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 
 import { getUsers } from 'actions/users'
-import { addClient, updateCredits } from 'actions/clients'
+import { addClient } from 'actions/clients'
+import { updateCredits } from 'actions/transactions'
 import { getTariffPlans } from 'actions/general'
 
 
@@ -120,7 +121,7 @@ class AddClient extends Component {
       <Wrapper>
         <ClientEditWrapper elevation={24}>
           <Typography variant="h4" noWrap>
-            Add New Client
+            Create a new Client
           </Typography>
           <br/>
           <form onSubmit={this.addClient} style={{padding: 10}}>
