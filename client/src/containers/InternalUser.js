@@ -4,7 +4,6 @@ import Table from 'components/Table'
 import { format } from 'date-fns'
 import { startCase } from 'lodash';
 import { getUsers } from 'actions/users'
-import { isEqual } from 'lodash';
 
 const rows = [
   { field: 'username', numeric: false, label: 'Username' },
