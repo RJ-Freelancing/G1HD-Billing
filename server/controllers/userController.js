@@ -44,7 +44,7 @@ export async function getAllUsers(req, res, next) {
     resellers = await getChildren(superResellers, 0)
     clients = await getChildren(resellers, 1)
   }
-  if (req.user.userType == "superReseller") {
+  if (req.user.userType == "super-reseller") {
     resellers = await userRepo.find({username: { $in: req.user.childUsernames}}, null, { sort: { creditsAvailable: 1 } })
     clients = await getChildren(resellers, 1)
   }
@@ -63,7 +63,7 @@ export async function addUser(req, res, next) {
     return res.status(401).json({ error: `User already exists with username: ${username}` })
   const user = await userRepo.create([{username, email, password, firstName, lastName, phoneNo, userType, accountStatus, parentUsername, creditsAvailable, creditsOnHold}], {lean:true})
   if (!req.user.childUsernames.includes(username)){
-    await req.user.update({ $push: { childUsernames : username }} )
+    await req.user.update({ $push: { childUsernames : username.toLowerCase() }} )
   }
     const token = getToken(user)
   res.status(201).json({ user, token })

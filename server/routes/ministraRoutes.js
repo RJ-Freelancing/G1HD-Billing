@@ -1,6 +1,6 @@
 import passport from '../_helpers/passport'
 import { getTariffs, sendMsg, sendEvent } from '../controllers/ministraController'
-import { validateParam, validateBody } from '../validations'
+import { validateBody } from '../validations'
 import { schemas } from '../validations/ministraValidation'
 
 
@@ -13,18 +13,16 @@ const router = require('express-promise-router')()
       getTariffs
     )
 
-    router.route('/stb_msg/:id')
+    router.route('/stb_msg/')
     .post(
       passportJWT,
-      validateParam(schemas.idSchema, 'id'),
       validateBody(schemas.msgSchema),
       sendMsg
     )
 
-    router.route('/send_event/:id')
+    router.route('/send_event/')
     .post(
       passportJWT,
-      validateParam(schemas.idSchema, 'id'),
       validateBody(schemas.eventSchema),
       sendEvent
     )
