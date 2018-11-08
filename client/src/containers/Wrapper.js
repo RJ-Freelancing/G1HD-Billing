@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import Header from 'containers/Header'
 import Sidebar from 'containers/Sidebar'
 import { logout } from 'actions/auth'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+// import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import FourOhFour from 'components/FourOhFour'
 import Profile from 'containers/Profile'
 import Dashboard from 'containers/Dashboard';

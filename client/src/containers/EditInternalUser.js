@@ -180,11 +180,13 @@ class EditInternalUser extends Component {
       this.confirmationProceed = () => {
         this.setState({confirmation: false}, ()=>{
           this.props.updateUser(username, {email, password: this.state.newPassword, firstName, lastName, phoneNo, accountStatus})
+          .then(()=>this.props.getUsers())
         })
       }
       this.setState({confirmation: true, confirmationMessage: "You are changing the user's password. Are you sure you want to continue ?"})
     } else {
       this.props.updateUser(username, {email, firstName, lastName, phoneNo, accountStatus})
+      .then(()=>this.props.getUsers())
     }
   }
 
@@ -347,7 +349,9 @@ class EditInternalUser extends Component {
           <br/><br/><br/>
           <div style={{textAlign: 'center'}}>
             {/* Credits Available<br/> <div style={{fontSize: 100}}>{this.state.user && this.state.user.account_balance} </div> */}
-            Credits Available<br/> <div style={{fontSize: 50}}> 5 </div>
+            Credits Available<br/> <div style={{fontSize: 50}}> 15 </div>
+            <br/><br/>
+            Credits On Hold<br/> <div style={{fontSize: 50}}> 5 </div>
           </div>
         </CreditsWrapper>
         <TransactionWrapper elevation={24}>
@@ -385,7 +389,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   getUsers: () => dispatch(getUsers()),
-  updateUser: (user) => dispatch(updateUser(user)),
+  updateUser: (username, user) => dispatch(updateUser(username, user)),
   updateCredits: (transaction) => dispatch(updateCredits(transaction)),
   deleteUser: (username) => dispatch(deleteUser(username))
 })
