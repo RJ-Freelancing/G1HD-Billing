@@ -44,7 +44,7 @@ const users = (state = initialState, action) => {
         ...initialState
       }
     default:
-      return state
+      return {...state}
   }
 }
 

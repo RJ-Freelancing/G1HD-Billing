@@ -25,8 +25,12 @@ const auth = (state = initialState, action) => {
         ...state,
         ...action.payload.data
       }
+    case (action.type.match(/_FAILED$/) || {}).input:    
+      if (action.error.response.status===401)
+        return {...initialState}
+      else return {...state}
     default:
-      return state
+      return {...state}
   }
 }
 
