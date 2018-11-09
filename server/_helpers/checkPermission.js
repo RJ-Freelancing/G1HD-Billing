@@ -49,6 +49,28 @@ export async function checkPermissionRights(reqestedUser, currentUser, ifUsers) 
   return true
 }
 
+export async function checkPermissionMinistra(reqestedMacs, currentUser) {
+  if (currentUser.userType == "reseller"){
+      if (Array.isArray(reqestedMacs)) return reqestedMacs.every( e => currentUser.childUsernames.includes(e) )
+      return currentUser.childUsernames.includes(reqestedMacs)
+  }
+  if (currentUser.userType == "super-reseller"){
+    const resellers = await userRepo.find({username: { $in: currentUser.childUsernames}}, null, { sort: { creditsAvailable: 1 } })
+    const childUsers = [].concat(...resellers.map(reseller=>reseller.childUsernames))
+    if (Array.isArray(reqestedMacs)) return reqestedMacs.every( e => childUsers.includes(e) )
+    return childUsers.includes(reqestedMacs)
+  }
+  if (currentUser.userType == "admin"){
+    const superResellers = await userRepo.find({username: { $in: currentUser.childUsernames}}, null, { sort: { creditsAvailable: 1 } })
+    const childResellers = [].concat(...superResellers.map(superReseller=>superReseller.childUsernames))
+    const resellers = await userRepo.find({username: { $in: childResellers}}, null, { sort: { creditsAvailable: 1 } })
+    const childUsers = [].concat(...resellers.map(reseller=>reseller.childUsernames))
+    if (Array.isArray(reqestedMacs)) return reqestedMacs.every( e => childUsers.includes(e) )
+    return childUsers.includes(reqestedMacs)
+  }
+  return true
+}
+
 export async function validParent(currentUserType, addingUserType){
   console.log("XXX : " + currentUserType + " : " + addingUserType)
   if(currentUserType == 'super-admin' && addingUserType == 'admin') return true

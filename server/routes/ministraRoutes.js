@@ -1,6 +1,6 @@
 import passport from '../_helpers/passport'
-import { getTariffs, sendMsg, sendEvent } from '../controllers/ministraController'
-import { validateBody } from '../validations'
+import { getTariffs, sendMsg, sendEvent, putAccountSub, postAccountSub, deleteAccountSub, permissionCheck } from '../controllers/ministraController'
+import { validateBody, validateParam } from '../validations'
 import { schemas } from '../validations/ministraValidation'
 
 
@@ -17,6 +17,7 @@ const router = require('express-promise-router')()
     .post(
       passportJWT,
       validateBody(schemas.msgSchema),
+      permissionCheck,
       sendMsg
     )
 
@@ -24,7 +25,30 @@ const router = require('express-promise-router')()
     .post(
       passportJWT,
       validateBody(schemas.eventSchema),
+      permissionCheck,
       sendEvent
+    )
+
+    router.route('/account_subscription/:id')
+    .post(
+      passportJWT,
+      validateParam(schemas.idSchema, 'id'),
+      validateBody(schemas.accountSubPostSchema),
+      permissionCheck,
+      postAccountSub
+    )
+    .put(
+      passportJWT,
+      validateParam(schemas.idSchema, 'id'),
+      validateBody(schemas.accountSubPutSchema),
+      permissionCheck,
+      putAccountSub
+    )
+    .delete(
+      passportJWT,
+      validateParam(schemas.idSchema, 'id'),
+      permissionCheck,
+      deleteAccountSub
     )
 
 export default router
