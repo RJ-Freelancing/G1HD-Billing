@@ -237,7 +237,7 @@ class EnhancedTable extends React.Component {
                           const fieldProperties = this.props.rows.find(row=>row.field===field)
                           switch (fieldProperties.type) {
                             case 'boolean':
-                              return <TableCell key={field} style={{textAlign: 'center', paddingLeft: 0}}> <Icon color='primary'>{value ? 'check_circle' : 'highlight_off'}</Icon> </TableCell>
+                              return <TableCell key={field} style={{textAlign: 'center', paddingLeft: 0}}> <Icon color='primary'>{value ? 'thumb_up' : 'thumb_down'}</Icon> </TableCell>
                             case 'integer':
                               return <TableCell key={field} style={{textAlign: 'center', paddingLeft: 0}}> {value} </TableCell>
                             case 'date':

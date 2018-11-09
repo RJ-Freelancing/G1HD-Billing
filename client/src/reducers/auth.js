@@ -30,7 +30,7 @@ const auth = (state = initialState, action) => {
         return {...initialState}
       else return {...state}
     default:
-      return {...state}
+      return state
   }
 }
 
