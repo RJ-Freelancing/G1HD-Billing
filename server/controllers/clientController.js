@@ -36,16 +36,7 @@ export async function validateMAC(req, res, next) {
 export async function addClient(req, res, next) {
   if(req.user.userType !== 'reseller') return res.status(403).json({error: `You have no rights to add this client.`})
   const { stb_mac } = req.value.body
-  await axios.get(ministraAPI+'accounts/'+stb_mac, config)
-    .then(response => {
-      res.locals.existingClient = response.data
-    })
-    .catch(error => {
-      console.log("Ministra API Error : " + error)
-    })
-    const ministraPayLoad = querystring.stringify(req.value.body)
-  if (res.locals.existingClient.status=='OK') return res.status(401).json({ error: `Client already exists with mac Address ${stb_mac} in the system`})
-  
+  const ministraPayLoad = querystring.stringify(req.value.body)
   await axios.post(ministraAPI+'accounts/',
   ministraPayLoad, config)
     .then(response => {
