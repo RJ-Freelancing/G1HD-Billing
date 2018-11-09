@@ -33,6 +33,12 @@ export async function validateMAC(req, res, next) {
   next()
 }
 
+export async function checkMac(req, res, next) {
+  const client = await clientRepo.findOne({ clientMac : req.params.id})
+  if (!client) return res.status(200).json({ mac: req.params.id, status: "Available." }) 
+  return res.status(201).json(client)
+}
+
 export async function addClient(req, res, next) {
   if(req.user.userType !== 'reseller') return res.status(403).json({error: `You have no rights to add this client.`})
   const { stb_mac } = req.value.body

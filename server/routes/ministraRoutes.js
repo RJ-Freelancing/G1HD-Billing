@@ -30,30 +30,23 @@ const router = require('express-promise-router')()
     )
 
     router.route('/account_subscription/:id')
-    .get(
+    .all(
       passportJWT,
       validateParam(schemas.idSchema, 'id'),
       permissionCheck,
+    )
+    .get(
       getAccountSub
     )
     .post(
-      passportJWT,
-      validateParam(schemas.idSchema, 'id'),
       validateBody(schemas.accountSubPostSchema),
-      permissionCheck,
       postAccountSub
     )
     .put(
-      passportJWT,
-      validateParam(schemas.idSchema, 'id'),
       validateBody(schemas.accountSubPutSchema),
-      permissionCheck,
       putAccountSub
     )
     .delete(
-      passportJWT,
-      validateParam(schemas.idSchema, 'id'),
-      permissionCheck,
       deleteAccountSub
     )
 
