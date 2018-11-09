@@ -4,19 +4,16 @@ const options = {
   timestamps: true
 }
 
-const clientSchema = new Schema({
-  clientMac: {
+const configSchema = new Schema({
+  configName: {
     type: String,
     required: true,
     unique: true
   },
-  parentUser: {
+  configValue: {
     type: String,
-    required: true,
-  },
-  expiryDate: {
-    type: Date
+    required: true
   }
 }, options)
 
-export default mongoose.model('Client', clientSchema)
+export default mongoose.model('Config', configSchema)

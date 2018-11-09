@@ -7,7 +7,7 @@ import { checkPermissionRights, validParent } from '../_helpers/checkPermission'
 
 export async function login(req, res, next) {
   const { user } = req
-  if (user.accountStatus == false) res.status(403).json({ error: `Your account is locked. Please contact your Adminstrator for more information.`})
+  if (user.accountStatus == false) return res.status(403).json({ error: `Your account is locked. Please contact your Adminstrator for more information.`})
   const token = getToken(user)
   res.status(201).json({ user, token })
 }

@@ -4,7 +4,7 @@ const options = {
   timestamps: true
 }
 
-const userSchema = new Schema({
+const transactionSchema = new Schema({
   credits: {
     type: Number,
     required: true
@@ -22,4 +22,4 @@ const userSchema = new Schema({
   }
 }, options)
 
-export default mongoose.model('Transaction', userSchema)
+export default mongoose.model('Transaction', transactionSchema)
