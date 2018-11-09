@@ -8,6 +8,9 @@ import Logo from 'assets/logo.png'
 import Notification from 'components/Notification'
 import Loading from 'components/Loading'
 import Paper from '@material-ui/core/Paper';
+import { Offline } from "react-detect-offline";
+import PopupMessage from 'components/PopupMessage'
+import NoInternetGIF from 'assets/noInternet.gif'
 
 import Typography from '@material-ui/core/Typography'
 
@@ -89,6 +92,14 @@ class Login extends Component {
             Login
           </LoginButton>
         </form>
+        <Offline polling={{interval:5000, url: '/api'}}>
+          <Loading />
+          <PopupMessage
+            title='No Active Internet Connection Detected'
+            description='You can continue with your work once the connection is back.'
+            image={NoInternetGIF}
+          />
+        </Offline>
       </Wrapper>
     )
   }
