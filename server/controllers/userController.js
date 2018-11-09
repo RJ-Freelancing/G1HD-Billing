@@ -16,7 +16,7 @@ const getToken = user => {
     iss: 'G1HD',
     sub: user.id,
     iat: new Date().getTime(),
-    exp: new Date().setDate(new Date().getDate() + 1)
+    exp: Math.floor(Date.now() / 1000) + (60 * 60)
   }, process.env.JWT_SECRET)
 }
 
