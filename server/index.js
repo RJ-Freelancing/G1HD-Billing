@@ -7,6 +7,7 @@ import transactionRoutes from './routes/transactionRoutes'
 import authRoutes from './routes/authRoutes'
 import clientRoutes from './routes/clientRoutes'
 import ministraRoutes from './routes/ministraRoutes'
+import configRoutes from './routes/configRoutes'
 
 
 const app = express()
@@ -40,6 +41,7 @@ app.use('/api/users', userRoutes)
 app.use('/api/clients', clientRoutes)
 app.use('/api/transactions', transactionRoutes)
 app.use('/api/ministra', ministraRoutes)
+app.use('/api/config', configRoutes)
 
 // Serve React Frontend at '/' url only in production
 if (process.env.NODE_ENV==='production') {
