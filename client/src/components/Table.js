@@ -18,6 +18,8 @@ import SearchIcon from '@material-ui/icons/Search'
 import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import IconButton from '@material-ui/core/IconButton';
+import { format } from 'date-fns'
+import Icon from '@material-ui/core/Icon';
 
 
 
@@ -53,37 +55,38 @@ class EnhancedTableHead extends React.Component {
 
   render() {
     const { order, orderBy, viewOnly, rows } = this.props
-
+    
     return (
       <TableHead>
-        <TableRow>
-          {rows.map(row => {
-            return (
-              <TableCell
-                key={row.field}
-                numeric={row.numeric}
-                padding='default'
-                sortDirection={orderBy === row.field ? order : false}
-                style={{position: 'sticky', top: 0, backgroundColor: "#fff"}}
-              >
-                <Tooltip
-                  title="Sort"
-                  placement={row.numeric ? 'bottom-end' : 'bottom-start'}
-                  enterDelay={300}
+          <TableRow>
+            {rows.map(row => {
+              return (
+                <TableCell
+                  key={row.field}
+                  numeric={row.numeric}
+                  padding='default'
+                  sortDirection={orderBy === row.field ? order : false}
+                  style={{position: 'sticky', top: 0, backgroundColor: "#fff"}}
                 >
-                  <TableSortLabel
-                    active={orderBy === row.field}
-                    direction={order}
-                    onClick={this.createSortHandler(row.field)}
+                  <Tooltip
+                    title="Sort"
+                    placement={row.numeric ? 'bottom-end' : 'bottom-start'}
+                    enterDelay={300}
                   >
-                    {row.label}
-                  </TableSortLabel>
-                </Tooltip>
-              </TableCell>
-            )
-          }, this)}
-          {!viewOnly && <TableCell style={{position: 'sticky', top: 0, backgroundColor: "#fff", zIndex: 10}}/>}
-        </TableRow>
+                    <TableSortLabel
+                      active={orderBy === row.field}
+                      direction={order}
+                      onClick={this.createSortHandler(row.field)}
+                    >
+                      {row.label}
+                    </TableSortLabel>
+                  </Tooltip>
+                </TableCell>
+              )
+            }, this)}
+            {!viewOnly && <TableCell style={{position: 'sticky', top: 0, backgroundColor: "#fff", zIndex: 10}}/>}
+          </TableRow>
+
       </TableHead>
     )
   }
@@ -160,7 +163,8 @@ EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar)
 const styles = theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing.unit * 3
+    marginTop: theme.spacing.unit * 3,
+    overflowX: "auto"
   },
   tableWrapper: {
     overflowX: 'auto'
@@ -197,11 +201,11 @@ class EnhancedTable extends React.Component {
 
 
   render() {
-    const { classes, mobileView, tableHeight, title, viewOnly, addNew, canAdd } = this.props
+    const { classes, mobileView, rows, tableHeight, title, viewOnly, addNew, canAdd } = this.props
     const { data, order, orderBy, rowsPerPage, page } = this.state
 
     return (
-      <Paper className={classes.root} elevation={5}>
+      <Paper className={classes.root} style={{width: mobileView ? '93vw' : '100%'}} elevation={5}>
         <EnhancedTableToolbar 
           title={title} 
           mobileView={mobileView} 
@@ -215,34 +219,45 @@ class EnhancedTable extends React.Component {
               order={order}
               orderBy={orderBy}
               onRequestSort={this.handleRequestSort}
-              rows={this.props.rows}
-              viewOnly={this.props.viewOnly}
+              rows={rows}
+              viewOnly={viewOnly}
+              mobileView={mobileView}
             />
             <TableBody>
               {stableSort(data, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((n, idx) => {
-                  return (
-                    <TableRow
-                      hover
-                      tabIndex={-1}
-                      key={idx}
-                    >
-                      {Object.entries(n).map(([field, value]) => {
-                        const fieldProperties = this.props.rows.find(row=>row.field===field)
-                        return <TableCell key={field} numeric={fieldProperties.numeric}> {value} </TableCell>
-                      })}
-                      {!viewOnly &&
-                        <TableCell>
-                          <Tooltip title="Edit">
-                            <IconButton aria-label="Edit" style={{padding: 9}} onClick={()=>this.props.gotoLink(n)}>
-                              <EditIcon fontSize="small" color="primary"/>
-                            </IconButton>
-                          </Tooltip>
-                        </TableCell>
-                      }
-                    </TableRow>
-                  )
+                    return (
+                      <TableRow
+                        hover
+                        tabIndex={-1}
+                        key={idx}
+                      >
+                        {Object.entries(n).map(([field, value]) => {
+                          const fieldProperties = this.props.rows.find(row=>row.field===field)
+                          switch (fieldProperties.type) {
+                            case 'boolean':
+                              return <TableCell key={field} style={{textAlign: 'center', paddingLeft: 0}}> <Icon color='primary'>{value ? 'check_circle' : 'highlight_off'}</Icon> </TableCell>
+                            case 'integer':
+                              return <TableCell key={field} style={{textAlign: 'center', paddingLeft: 0}}> {value} </TableCell>
+                            case 'date':
+                              return <TableCell key={field}> {format(Date.parse(value), 'd MMMM YYYY')} </TableCell>
+                            default:
+                              return <TableCell key={field}> {value} </TableCell>
+                          }
+                        })}
+                        {!viewOnly &&
+                          <TableCell>
+                            <Tooltip title="Edit">
+                              <IconButton aria-label="Edit" style={{padding: 9}} onClick={()=>this.props.gotoLink(n)}>
+                                <EditIcon fontSize="small" color="primary"/>
+                              </IconButton>
+                            </Tooltip>
+                          </TableCell>
+                        }
+                      </TableRow>
+                    )
+
                 })}
             </TableBody>
           </Table>

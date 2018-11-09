@@ -36,7 +36,6 @@ const Wrapper = styled.div`
   display: grid;
   grid-template-columns: 2fr 2fr 3fr;
   grid-gap: 20px;
-  margin: 20px 20px;
   @media only screen and (max-width: 768px) {
     grid-template-columns: 1fr;
   }
@@ -373,10 +372,12 @@ class EditClient extends Component {
               </div>
             }
             <br/><br/><br/>
+            {this.state.client && 
             <div style={{textAlign: 'center'}}>
               {/* Credits Available<br/> <div style={{fontSize: 100}}>{this.state.client && this.state.client.account_balance} </div> */}
-              Credits Available<br/> <div style={{fontSize: 50}}> 5 </div>
+              Credits Available<br/> <div style={{fontSize: 50}}> {this.state.client.account_balance} </div>
             </div>
+            }
         </CreditsWrapper>
 
 

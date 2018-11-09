@@ -27,7 +27,6 @@ const Wrapper = styled.div`
   display: grid;
   grid-template-columns: 2fr 1fr;
   grid-gap: 20px;
-  margin: 20px 20px;
   @media only screen and (max-width: 768px) {
     grid-template-columns: 1fr;
   }
@@ -51,7 +50,6 @@ const CreditsWrapper = styled(Paper)`
 `
 
 const TransactionWrapper = styled(Paper)`
-  padding: 20px 20px;
   @media only screen and (max-width: 768px) {
     grid-column: 1;
   }
@@ -339,7 +337,7 @@ class EditInternalUser extends Component {
                     aria-label="Gender"
                     name="gender1"
                     value={this.state.credits.action}
-                    style={{display: 'grid', gridTemplateColumns: '1fr 1fr'}}
+                    style={{display: 'grid', gridTemplateColumns: '1fr 1fr' , justifyItems: 'center' }}
                     onChange={(e)=>this.setState({credits: {...this.state.credits, action: e.target.value}})}
                   >
                     <FormControlLabel value="add" control={<Radio />} label="Add" />
@@ -353,15 +351,17 @@ class EditInternalUser extends Component {
               </div>
            }
             <br/><br/><br/>
-            <div style={{textAlign: 'center'}}>
-              {/* Credits Available<br/> <div style={{fontSize: 100}}>{this.state.user && this.state.user.account_balance} </div> */}
-              Credits Available<br/> <div style={{fontSize: 50}}> 15 </div>
-              <br/><br/>
-              Credits On Hold<br/> <div style={{fontSize: 50}}> 5 </div>
-            </div>
+            {this.state.user && 
+              <div style={{textAlign: 'center'}}>
+                {/* Credits Available<br/> <div style={{fontSize: 100}}>{this.state.user && this.state.user.account_balance} </div> */}
+                Credits Available<br/> <div style={{fontSize: 50}}> {this.state.user.creditsAvailable} </div>
+                <br/><br/>
+                Credits On Hold<br/> <div style={{fontSize: 50}}> {this.state.user.creditsOnHold} </div>
+              </div>
+            }
           </CreditsWrapper>
         <TransactionWrapper elevation={24}>
-          <Typography variant="h4"> Transactions </Typography>
+          <Typography variant="h4" style={{padding: 20}}> Transactions </Typography>
           {/* <br/><br/> */}
           <Table
             // title={'Transactions'}

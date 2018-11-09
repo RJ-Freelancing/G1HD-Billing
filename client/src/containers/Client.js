@@ -1,21 +1,20 @@
 import React, { Component } from 'react'
 import Table from 'components/Table'
 import { connect } from 'react-redux'
-import { format } from 'date-fns'
 import { getUsers } from 'actions/users'
 
 const rows = [
-  { field: 'mac', numeric: false, label: 'MAC Address' },
-  { field: 'fname', numeric: false, label: 'Full Name' },
-  // { field: 'firstName', numeric: false, label: 'First Name' },
-  { field: 'phone', numeric: false, label: 'Telephone' },
-  { field: 'account_balance', numeric: true, label: 'Credits Available' },
-  // { field: 'tariff_plan_id', numeric: false, label: 'Tariff Plan' },
-  { field: 'tariff_expired_date', numeric: false, label: 'Tariff Expiry' },
-  { field: 'comment', numeric: false, label: 'Reseller' },
-  { field: 'now_playing_content', numeric: false, label: 'Box Status' },
-  // { field: 'last_active', numeric: false, label: 'Last Active' },
-  // { field: 'status', numeric: false, label: 'Account Status' }
+  { field: 'mac', label: 'MAC Address', type: 'string'  },
+  { field: 'fname', label: 'Full Name', type: 'string'  },
+  // { field: 'firstName', label: 'First Name', type: 'string'  },
+  { field: 'phone', label: 'Telephone', type: 'string'  },
+  { field: 'account_balance', label: 'Credits Available', type: 'integer'  },
+  // { field: 'tariff_plan_id', label: 'Tariff Plan', type: 'string'  },
+  { field: 'tariff_expired_date', label: 'Tariff Expiry', type: 'date'  },
+  { field: 'comment', label: 'Reseller', type: 'string'  },
+  { field: 'now_playing_content', label: 'Box Status', type: 'boolean'  },
+  // { field: 'last_active', label: 'Last Active', type: 'date'  },
+  // { field: 'status', label: 'Account Status', type: 'boolean'  }
 ]
 
 
@@ -31,11 +30,7 @@ class Client extends Component {
     for (let client of this.props.clients) {
       let clientData = {}
       for (let row of rows) {
-        if (['tariff_expired_date', 'last_active'].includes(row.field)) {
-          clientData[row.field] = format(Date.parse(client[row.field]), 'd MMMM YYYY @ HH:mm:ss')
-        } else {
-          clientData[row.field] = client[row.field]
-        }
+        clientData[row.field] = client[row.field]
       }
       displayData.push({...clientData})
     }

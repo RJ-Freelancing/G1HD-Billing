@@ -1,24 +1,25 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Table from 'components/Table'
-import { format } from 'date-fns'
 import { startCase } from 'lodash';
 import { getUsers } from 'actions/users'
 
+
 const rows = [
-  { field: 'username', numeric: false, label: 'Username' },
-  { field: 'email', numeric: false, label: 'Email' },
-  // { field: 'firstName', numeric: false, label: 'First Name' },
-  // { field: 'lastName', numeric: false, label: 'Last Name' },
-  { field: 'phoneNo', numeric: false, label: 'Telephone' },
-  { field: 'accountStatus', numeric: false, label: 'Account Status' },
-  { field: 'parentUsername', numeric: false, label: 'Parent' },
-  // { field: 'childrenCount', numeric: true, label: 'No of Children' },
-  { field: 'creditsAvailable', numeric: true, label: 'Credits Available' },
-  { field: 'creditsOnHold', numeric: true, label: 'Credits on Hold' },
-  { field: 'createdAt', numeric: false, label: 'Created At' },
-  // { field: 'updatedAt', numeric: false, label: 'Updated At' }
+  { field: 'username', label: 'Username', type: 'string' },
+  { field: 'email', label: 'Email', type: 'string' },
+  // { field: 'firstName', label: 'First Name', type: 'string' },
+  // { field: 'lastName', label: 'Last Name', type: 'string' },
+  { field: 'phoneNo', label: 'Telephone', type: 'string' },
+  { field: 'accountStatus', label: 'Account Status', type: 'boolean' },
+  { field: 'parentUsername', label: 'Parent', type: 'string' },
+  // { field: 'childrenCount', label: 'No of Children' },
+  { field: 'creditsAvailable', label: 'Credits Available', type: 'integer' },
+  { field: 'creditsOnHold', label: 'Credits on Hold', type: 'integer' },
+  { field: 'createdAt', label: 'Created At', type: 'date' },
+  // { field: 'updatedAt', label: 'Updated At', type: 'date' }
 ]
+
 
 
 class InternalUser extends Component {
@@ -35,11 +36,7 @@ class InternalUser extends Component {
     for (let user of users) {
       let userData = {}
       for (let row of rows) {
-        if (row.field==='createdAt') {
-          userData[row.field] = format(Date.parse(user[row.field]), 'd MMMM YYYY')
-        } else {
-          userData[row.field] = user[row.field]
-        }
+        userData[row.field] = user[row.field]
       }
       displayData.push({...userData})
     }
@@ -67,6 +64,7 @@ class InternalUser extends Component {
         gotoLink={(user)=>this.props.history.push(`/users/${user.username}`)} 
         canAdd={this.checkPermissionToAdd(this.props.location.pathname.substr(1))}
         addNew={()=>this.props.history.push('/users/new')}
+        tableHeight='70vh'
       />
     )
   }
