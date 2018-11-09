@@ -62,8 +62,8 @@ const general = (state = initialState, action) => {
       else
         return {...state, loading: false}
     case (action.type.match(/_FAILED$/) || {}).input:      
-      let notificationMessage = action.meta.previousAction.failure
-      if (action.error.response.status===401)
+      let notificationMessage = action.meta.previousAction.failure     
+      if (action.error.response.status===401 && !action.meta.previousAction.types.includes('LOGIN_FAILED'))
         notificationMessage = "Your session has expired. Please login again."
       try {
         notificationMessage = action.error.response.data.error
