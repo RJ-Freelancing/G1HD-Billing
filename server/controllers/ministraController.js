@@ -48,6 +48,11 @@ export async function sendEvent(req, res, next) {
   await ministraPostCalls('send_event/', ministraPayLoad, mac, res)
 }
 
+export async function getAccountSub(req, res, next){
+  const mac = req.params.id
+  await ministraGetCalls('account_subscription/'+mac, res)
+}
+
 export async function postAccountSub(req, res, next){
   const payloadMap = req.value.body.subscribed.map(x => `subscribed[]=${x}&`).join('')
   const ministraPayLoad = payloadMap.substring(0, payloadMap.length-1)
