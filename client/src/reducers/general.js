@@ -79,7 +79,7 @@ const general = (state = initialState, action) => {
       else
         return {...state, loading: false}
     default:
-      return {...state}
+      return state
   }
 }
 
