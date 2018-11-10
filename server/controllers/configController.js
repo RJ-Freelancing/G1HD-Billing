@@ -11,4 +11,13 @@ export async function updateConfig(req, res, next){
     if (error) return res.status(404).json(error)
   })
   return res.status(200).json(config)
+
+}
+
+export async function getConfig(req, res, next){
+  const config = await configRepo.find()
+  if (!config) return res.status(404).json({error : "No Configs Found."})
+  let result = {}
+  config.forEach(config=>result[config.configName]=config.configValue)
+  return res.status(200).json(result)
 }

@@ -37,13 +37,8 @@ export async function sendMsg(req, res, next) {
 
 export async function sendEvent(req, res, next) {
   const ministraPayLoad = querystring.stringify(req.value.body)
-  var mac
-  if (req.user.userType == "super-admin") {
-    mac = ''
-  }
-  else{
-    mac = req.value.body.ids
-  }
+  var mac = req.value.body.ids
+  if (mac == "" && req.user.userType !== "super-admin") return res.status(403).json("You Have No Rights To Perform This Action.")
   if (mac == undefined)  return res.status(404).json("Mac Ids are missing...")
   await ministraPostCalls('send_event/', ministraPayLoad, mac, res)
 }

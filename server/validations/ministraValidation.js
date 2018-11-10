@@ -17,7 +17,7 @@ export const schemas = {
   }),
 
   msgSchema: Joi.object({
-    ids: Joi.array().items(Joi.string().regex(/^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/).error(new Error('ID should be a valid mac Address.'))).required(),
+    ids: Joi.array().items(Joi.string().regex(/^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/).error(new Error('ID should be a valid mac Address.'))),
     msg: Joi.string().required()
   }),
 
