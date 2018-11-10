@@ -129,7 +129,7 @@ class EditInternalUser extends Component {
       confirmation: false,
       confirmationMessage: "",
       credits: {
-        value: 1,
+        value: props.minimumTransferrableCredits,
         action: "add"
       },
       newPassword: ""
@@ -219,6 +219,7 @@ class EditInternalUser extends Component {
 
   
   render() {   
+    console.log(this.props.minimumTransferrableCredits);
     
     return (
       <Wrapper>
@@ -327,15 +328,15 @@ class EditInternalUser extends Component {
                 <TextField
                   label="Select Credits"
                   type="number"
-                  inputProps={{ min: 1, max: 12 }}
+                  inputProps={{ min: this.props.minimumTransferrableCredits }}
                   value={this.state.credits.value}
                   onChange={(e)=>this.setState({credits: {...this.state.credits, value: e.target.value}})}
                   fullWidth
                   disabled={this.props.loading}
+                  error={this.state.credits.value < this.props.minimumTransferrableCredits}
+                  helperText={this.state.credits.value < this.props.minimumTransferrableCredits ? `Minimum Transferrable credits is ${this.props.minimumTransferrableCredits}` : null}
                 />
                 <br/><br/>
-
-
                 <FormControl component="fieldset">
                   <RadioGroup
                     aria-label="Gender"
@@ -344,11 +345,26 @@ class EditInternalUser extends Component {
                     style={{display: 'grid', gridTemplateColumns: '1fr 1fr' , justifyItems: 'center' }}
                     onChange={(e)=>this.setState({credits: {...this.state.credits, action: e.target.value}})}
                   >
-                    <FormControlLabel value="add" control={<Radio />} label="Add" />
-                    <FormControlLabel value="recover" control={<Radio />} label="Recover" />
+                    <FormControlLabel 
+                      value="add" 
+                      control={<Radio disabled={this.props.loading || this.state.credits.value < this.props.minimumTransferrableCredits}/>} 
+                      label="Add" 
+                    />
+                    <FormControlLabel 
+                      value="recover" 
+                      control={<Radio disabled={this.props.loading || this.state.credits.value < this.props.minimumTransferrableCredits}/>} 
+                      label="Recover" 
+                    />
                   </RadioGroup>
                 </FormControl>
-                <Button variant="contained" type="submit" color="primary" disabled={this.props.loading} style={{float: 'right'}} onClick={()=>this.updateCredits()}>
+                <Button 
+                  variant="contained" 
+                  type="submit" 
+                  color="primary" 
+                  disabled={this.props.loading || this.state.credits.value < this.props.minimumTransferrableCredits} 
+                  style={{float: 'right'}} 
+                  onClick={()=>this.updateCredits()}
+                >
                   Submit&nbsp;
                   <SaveIcon />
                 </Button>
@@ -394,7 +410,8 @@ const mapStateToProps = state => ({
   superResellers: state.users.superResellers,
   resellers: state.users.resellers,
   authUsername: state.auth.username, 
-  mobileView: state.general.mobileView
+  mobileView: state.general.mobileView,
+  minimumTransferrableCredits: state.config.minimumTransferrableCredits
 })
 
 const mapDispatchToProps = dispatch => ({
