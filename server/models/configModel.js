@@ -11,7 +11,7 @@ const configSchema = new Schema({
     unique: true
   },
   configValue: {
-    type: String,
+    type: Schema.Types.Mixed,
     required: true
   }
 }, options)
