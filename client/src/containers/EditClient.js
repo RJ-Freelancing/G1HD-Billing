@@ -92,7 +92,7 @@ const TariffPackagesHeader = styled.div`
 const TariffPackages = styled.div`
   display: grid;
   grid-gap: 20px;
-  height: 200px;
+  height: 300px;
   overflow-y: scroll;
 `
 
@@ -207,22 +207,17 @@ class EditClient extends Component {
     if (!this.props.token) this.props.history.push('/login')
     else {
       this.props.getTariffPlans()
-      this.loadClientFromMac(this.props.match.params.id)
+      this.setEditingClient(this.props.match.params.id)
+      this.props.getSubscriptions(this.props.match.params.id)
+      .then(resoponse => {    
+        this.setState({subscriptions: resoponse.payload.data[0].subscribed})
+      })
     }
   }
 
-  loadClientFromMac = (stb_mac) => {
+  setEditingClient = (stb_mac) => {
     let client = this.props.clients.find(client=>client.stb_mac===stb_mac)
-    this.props.getSubscriptions(stb_mac)
-    .then(resoponse => {    
-      if (!isEqual(client, this.state.editingClient) || !isEqual(this.state.subscriptions, resoponse.payload.data[0].subscribed))
-        this.setState({editingClient: {...client}, subscriptions: resoponse.payload.data[0].subscribed})
-    })
-  }
-
-  componentDidUpdate = (prevProps, prevState, snapshot) => {
-    if (!this.props.token) this.props.history.push('/login')
-    else this.loadClientFromMac(this.props.match.params.id)
+    this.setState({editingClient: {...client}})
   }
 
   handleTextChange = (field, value) => {
@@ -232,8 +227,8 @@ class EditClient extends Component {
   updateClient = (event) => {
     event.preventDefault()
     const { stb_mac } = this.state.editingClient
-    const { full_name, phone } = this.state.editingClient
-    this.props.updateClient(stb_mac, {full_name:full_name, phone})
+    const { full_name, phone, comment } = this.state.editingClient
+    this.props.updateClient(stb_mac, {full_name:full_name, phone, comment})
   }
 
   checkValidation = () => {
@@ -306,6 +301,17 @@ class EditClient extends Component {
                   value={this.state.editingClient.full_name}
                   onChange={(e)=>this.handleTextChange('full_name', e.target.value)}
                   fullWidth
+                  disabled={this.props.loading}
+                />
+                <TextField
+                  label="Comments"
+                  type="comment"
+                  value={this.state.editingClient.comment}
+                  onChange={(e)=>this.handleTextChange('comment', e.target.value)}
+                  fullWidth
+                  multiline
+                  rows={3}
+                  rowsMax="3"
                   disabled={this.props.loading}
                 />
                 <InputMask mask="999-999-9999" 
