@@ -150,7 +150,7 @@ let EnhancedTableToolbar = props => {
       {selected.length > 0 &&
         <div>
           <Tooltip title="Send Event">
-            <Button aria-label="Send Event" variant={mobileView ? 'fab' : 'contained'} color="primary" mini={mobileView} onClick={sendEvent}>
+            <Button aria-label="Send Event" variant={mobileView ? 'fab' : 'contained'} color="primary" mini={mobileView} onClick={()=>sendEvent(selected)}>
               <SendIcon/>
               {!mobileView &&
                 <Typography variant="subtitle1" noWrap color="inherit">
