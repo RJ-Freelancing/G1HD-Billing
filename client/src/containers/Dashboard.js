@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
 import Paper from '@material-ui/core/Paper';
-import { connect } from 'react-redux'
 
 import { getUsers } from 'actions/users'
 
@@ -21,10 +21,7 @@ const DashboardItem = styled(Paper)`
 
 
 class Dashboard extends Component {
-  componentDidMount = () => {   
-    if (!this.props.token) this.props.history.push('/login')
-    else this.props.getUsers()
-  }
+  componentDidMount = () => this.props.getUsers()
 
   render() {
     return (

@@ -11,15 +11,14 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
 import Tooltip from '@material-ui/core/Tooltip'
-import AddIcon from '@material-ui/icons/Add'
-import EditIcon from '@material-ui/icons/Edit'
+import SendIcon from '@material-ui/icons/Send'
 import Button from '@material-ui/core/Button'
 import SearchIcon from '@material-ui/icons/Search'
 import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
-import IconButton from '@material-ui/core/IconButton';
 import { format } from 'date-fns'
 import Icon from '@material-ui/core/Icon';
+import Checkbox from '@material-ui/core/Checkbox';
 
 
 
@@ -54,11 +53,20 @@ class EnhancedTableHead extends React.Component {
   }
 
   render() {
-    const { order, orderBy, viewOnly, rows } = this.props
+    const { order, orderBy, rows, selected, dataLength, selectAll } = this.props
     
     return (
       <TableHead>
           <TableRow>
+            <TableCell style={{textAlign: 'center', padding: 0, position: 'sticky', top: 0, backgroundColor: "#fff", zIndex: 10}}>
+              <Tooltip title="Select All">
+                <Checkbox
+                  style={{padding: 9}}
+                  checked={selected.length === dataLength}
+                  onChange={selectAll}
+                />
+              </Tooltip>
+            </TableCell>
             {rows.map(row => {
               return (
                 <TableCell
@@ -84,7 +92,6 @@ class EnhancedTableHead extends React.Component {
                 </TableCell>
               )
             }, this)}
-            {!viewOnly && <TableCell style={{position: 'sticky', top: 0, backgroundColor: "#fff", zIndex: 10}}/>}
           </TableRow>
 
       </TableHead>
@@ -114,7 +121,7 @@ const toolbarStyles = theme => ({
 })
 
 let EnhancedTableToolbar = props => {
-  const { classes, title, mobileView, viewOnly, addNew, canAdd } = props
+  const { classes, title, mobileView, sendEvent, selected } = props
 
   return (
     <Toolbar>
@@ -139,14 +146,15 @@ let EnhancedTableToolbar = props => {
         fullWidth
       />
       <div className={classes.spacer} />
-      {!viewOnly && canAdd &&
+      {selected.length > 0 && <div style={{fontSize: 35, paddingRight: 10}}> {selected.length} </div>}
+      {selected.length > 0 &&
         <div>
-          <Tooltip title="Add New">
-            <Button aria-label="Add New" variant={mobileView ? 'fab' : 'contained'} color="primary" mini={mobileView} onClick={addNew}>
-              <AddIcon/>
+          <Tooltip title="Send Event">
+            <Button aria-label="Send Event" variant={mobileView ? 'fab' : 'contained'} color="primary" mini={mobileView} onClick={sendEvent}>
+              <SendIcon/>
               {!mobileView &&
                 <Typography variant="subtitle1" noWrap color="inherit">
-                  Add New
+                  Send Event
                 </Typography>
               }
             </Button>
@@ -178,6 +186,7 @@ class EnhancedTable extends React.Component {
     data: this.props.data,
     page: 0,
     rowsPerPage: 20,
+    selected: []
   }
 
   handleRequestSort = (event, property) => {
@@ -199,29 +208,44 @@ class EnhancedTable extends React.Component {
     this.setState({ rowsPerPage: event.target.value })
   }
 
+  handleRowSelect = id => {
+    if (this.state.selected.includes(id))
+      this.setState({selected: this.state.selected.filter(selectedID => selectedID !== id)})
+    else
+      this.setState({selected: [...this.state.selected, id]})
+  }
+
+  handleSelectAll = () => {
+    if (this.state.selected.length === this.state.data.length)
+      this.setState({selected: []})
+    else
+      this.setState({selected: [...this.state.data.map(n => n.stb_mac)]})
+  }
+
 
   render() {
-    const { classes, mobileView, rows, tableHeight, title, viewOnly, addNew, canAdd } = this.props
-    const { data, order, orderBy, rowsPerPage, page } = this.state
+    const { classes, mobileView, rows, tableHeight, title, sendEvent } = this.props
+    const { data, order, orderBy, rowsPerPage, page, selected } = this.state
 
     return (
       <Paper className={classes.root} style={{width: mobileView ? '93vw' : '100%'}} elevation={5}>
         <EnhancedTableToolbar 
           title={title} 
           mobileView={mobileView} 
-          viewOnly={viewOnly}
-          canAdd={canAdd}
-          addNew={addNew}
+          sendEvent={sendEvent}
+          selected={selected}
         />
         <div className={classes.tableWrapper} style={{height: tableHeight}} >
           <Table aria-labelledby="tableTitle">
             <EnhancedTableHead
+              selected={selected}
               order={order}
               orderBy={orderBy}
               onRequestSort={this.handleRequestSort}
               rows={rows}
-              viewOnly={viewOnly}
+              dataLength={data.length}
               mobileView={mobileView}
+              selectAll={this.handleSelectAll}
             />
             <TableBody>
               {stableSort(data, getSorting(order, orderBy))
@@ -232,7 +256,19 @@ class EnhancedTable extends React.Component {
                         hover
                         tabIndex={-1}
                         key={idx}
+                        onClick={()=>this.handleRowSelect(n.stb_mac)}
+                        selected={this.state.selected.includes(n.stb_mac)}
+                        style={{cursor: 'pointer'}}
                       >
+                        <TableCell style={{textAlign: 'center', padding: 0}}>
+                          <Tooltip title="Select">
+                            <Checkbox
+                              style={{padding: 9}}
+                              checked={this.state.selected.includes(n.stb_mac)}
+                              onChange={()=>this.handleRowSelect(n.stb_mac)}
+                            />
+                          </Tooltip>
+                        </TableCell>
                         {Object.entries(n).map(([field, value]) => {
                           const fieldProperties = this.props.rows.find(row=>row.field===field)
                           switch (fieldProperties.type) {
@@ -245,16 +281,7 @@ class EnhancedTable extends React.Component {
                             default:
                               return <TableCell key={field}> {value} </TableCell>
                           }
-                        })}
-                        {!viewOnly &&
-                          <TableCell>
-                            <Tooltip title="Edit">
-                              <IconButton aria-label="Edit" style={{padding: 9}} onClick={()=>this.props.gotoLink(n)}>
-                                <EditIcon fontSize="small" color="primary"/>
-                              </IconButton>
-                            </Tooltip>
-                          </TableCell>
-                        }
+                        })}                      
                       </TableRow>
                     )
 

@@ -24,10 +24,7 @@ const rows = [
 
 class InternalUser extends Component {
 
-  componentDidMount = () => {   
-    if (!this.props.token) this.props.history.push('/login')
-    else this.props.getUsers()
-  }
+  componentDidMount = () => this.props.getUsers()
 
   
   getTableData = (urlPath) => {    
