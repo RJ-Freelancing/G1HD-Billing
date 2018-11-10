@@ -456,7 +456,7 @@ class EditClient extends Component {
         </STBDetailsWrapper>
 
         <TransactionWrapper elevation={24}>
-          <Typography variant="h4" style={{padding: 20}}> Transactions </Typography>
+          <Typography variant="h4" style={{padding: 20, paddingBottom: 0}}> Transactions </Typography>
           <Table
             rows={rows}
             data={data}
