@@ -21,10 +21,11 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import Table from 'components/Table'
 import Confirmation from 'components/Confirmation';
 import { startCase } from 'lodash';
+import SendIcon from '@material-ui/icons/Send'
 
 
 import { getUsers } from 'actions/users'
-import { updateClient, deleteClient, getSubscriptions, addSubscription, removeSubscription } from 'actions/clients'
+import { updateClient, deleteClient, getSubscriptions, addSubscription, removeSubscription, sendEvent } from 'actions/clients'
 import { updateCredits } from 'actions/transactions'
 import { getTariffPlans } from 'actions/general'
 
@@ -199,7 +200,8 @@ class EditClient extends Component {
         value: 1,
         action: "add"
       },
-      subscriptions: []
+      subscriptions: [],
+      msg: ''
     }
   }
 
@@ -273,6 +275,17 @@ class EditClient extends Component {
     else
       this.props.removeSubscription(this.state.editingClient.stb_mac, subscribed)
       .then(()=>this.setState({subscriptions: this.state.subscriptions.filter(sub => sub !== subscribed)}))
+  }
+
+  sendMessage = (event) => {
+    event.preventDefault()
+    this.props.sendEvent({
+      event: "send_msg",
+      ids: [this.state.editingClient.stb_mac],
+      msg: this.state.msg,
+      ttl: 240
+    })
+    .then(()=>this.setState({msg: ''}))
   }
 
   render() {   
@@ -356,9 +369,9 @@ class EditClient extends Component {
         </ClientEditWrapper>
         <CreditsWrapper elevation={24}>
             <Typography variant="h4"> Credits </Typography>
-            <br/><br/>
             {client && this.props.authUsername===client.parentUsername  &&
               <div>
+                <br/><br/>
                 <TextField
                   label="Select Credits"
                   type="number"
@@ -390,10 +403,28 @@ class EditClient extends Component {
             <br/><br/><br/>
             {client && 
             <div style={{textAlign: 'center'}}>
-              {/* Credits Available<br/> <div style={{fontSize: 100}}>{client && client.account_balance} </div> */}
               Credits Available<br/> <div style={{fontSize: 50}}> {client.account_balance} </div>
             </div>
             }
+            <br/><br/><br/>
+            <Paper style={{padding: 20, textAlign: 'center'}}>
+              <TextField
+                label="Send Message"
+                type="text"
+                value={this.state.msg}
+                onChange={(e)=>this.setState({msg: e.target.value})}
+                fullWidth
+                multiline
+                rows={5}
+                rowsMax="5"
+                disabled={this.props.loading}
+                placeholder="Send a message to this client to display in portal"
+              /><br/><br/>
+              <Button variant="contained" color="primary" disabled={this.props.loading || this.state.msg===""} onClick={this.sendMessage}>
+                Send&nbsp;
+                <SendIcon />
+              </Button>
+            </Paper>
         </CreditsWrapper>
 
 
@@ -499,7 +530,8 @@ const mapDispatchToProps = dispatch => ({
   updateCredits: (transaction) => dispatch(updateCredits(transaction)),
   getSubscriptions: stb_mac => dispatch(getSubscriptions(stb_mac)),
   addSubscription: (stb_mac, subscribedID) => dispatch(addSubscription(stb_mac, subscribedID)),
-  removeSubscription: (stb_mac, subscribedID) => dispatch(removeSubscription(stb_mac, subscribedID))
+  removeSubscription: (stb_mac, subscribedID) => dispatch(removeSubscription(stb_mac, subscribedID)),
+  sendEvent: event => dispatch(sendEvent(event))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditClient)

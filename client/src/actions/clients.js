@@ -92,3 +92,4 @@ export const sendEvent = event => ({
   success: "Successfully sent event",
   failure: "Something went wrong while sending event!"
 })
+
