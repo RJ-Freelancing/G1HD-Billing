@@ -34,9 +34,15 @@ export async function validateMAC(req, res, next) {
 }
 
 export async function checkMac(req, res, next) {
-  const client = await clientRepo.findOne({ clientMac : req.params.id})
-  if (!client) return res.status(200).json({ mac: req.params.id, status: "Available." }) 
-  return res.status(201).json(client)
+  await axios.get(ministraAPI+'accounts/'+req.params.id, config)
+    .then(response => {
+      if(response.data.status!=='OK') return res.status(200).json({ mac: req.params.id, status: "Available." }) 
+      return res.status(200).json({ mac: response.data.results[0].stb_mac, expiryDate:  response.data.results[0].tariff_expired_date, status: "Unavailable."  }) 
+    })
+    .catch(error => {
+      console.log("Ministra API Error : " + error)
+      return res.status(404).json(error)
+    })
 }
 
 export async function addClient(req, res, next) {

@@ -13,9 +13,6 @@ const clientSchema = new Schema({
   parentUser: {
     type: String,
     required: true,
-  },
-  expiryDate: {
-    type: Date
   }
 }, options)
 
