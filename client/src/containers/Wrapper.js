@@ -16,7 +16,7 @@ import EditInternalUser from 'containers/EditInternalUser'
 import EditClient from 'containers/EditClient'
 import AddClient from 'containers/AddClient'
 import AddUser from 'containers/AddUser'
-
+import SuperAdminConfig from 'containers/SuperAdminConfig'
 
 import { setMobileView } from 'actions/general'
 
@@ -84,6 +84,7 @@ class Wrapper extends Component {
             <Route exact path="/clients" component={Client} />
             <Route exact path="/transactions" component={Transaction} />
             <Route exact path="/events" component={Events} />
+            <Route exact path="/config" component={SuperAdminConfig} />
             <Route exact path="/profile" component={Profile} />
             <Route exact path="/users/new" component={AddUser} />
             <Route exact path="/clients/new" component={AddClient} />

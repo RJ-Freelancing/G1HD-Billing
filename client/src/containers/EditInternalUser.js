@@ -20,6 +20,7 @@ import Confirmation from 'components/Confirmation';
 
 import { getUsers, updateUser, deleteUser } from 'actions/users'
 import { updateCredits } from 'actions/transactions'
+import { getConfig } from 'actions/users'
 
 const validPhoneNo = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
 
@@ -137,7 +138,10 @@ class EditInternalUser extends Component {
 
   componentDidMount = () => {   
     if (!this.props.token) this.props.history.push('/login')
-    else this.loadInternalUserFromUsername(this.props.match.params.id)
+    else {
+      this.props.getConfig()
+      this.loadInternalUserFromUsername(this.props.match.params.id)
+    }
   }
 
   componentDidUpdate = (prevProps, prevState, snapshot) => {
@@ -397,7 +401,8 @@ const mapDispatchToProps = dispatch => ({
   getUsers: () => dispatch(getUsers()),
   updateUser: (username, user) => dispatch(updateUser(username, user)),
   updateCredits: (transaction) => dispatch(updateCredits(transaction)),
-  deleteUser: (username) => dispatch(deleteUser(username))
+  deleteUser: (username) => dispatch(deleteUser(username)),
+  getConfig: () => dispatch(getConfig()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditInternalUser)

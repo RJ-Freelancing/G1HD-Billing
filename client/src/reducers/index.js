@@ -4,6 +4,7 @@ import localForage from 'localforage';
 import general from 'reducers/general';
 import auth from 'reducers/auth';
 import users from 'reducers/users';
+import config from 'reducers/config';
 
 
 const persistConfig = {
@@ -15,7 +16,8 @@ const persistConfig = {
 const rootReducer = combineReducers({
   general,
   auth,
-  users
+  users,
+  config
 })
 
 export default persistReducer(persistConfig, rootReducer)

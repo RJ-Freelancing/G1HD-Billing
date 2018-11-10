@@ -31,7 +31,7 @@ const styles = theme => ({
 })
 
 const permissions = {
-  'super-admin': ['/', '/admins', '/superResellers', '/resellers', '/clients', '/transactions', '/events'],
+  'super-admin': ['/', '/admins', '/superResellers', '/resellers', '/clients', '/transactions', '/events', '/config'],
   'admin': ['/', '/superResellers', '/resellers', '/clients', '/transactions', '/events'],
   'superReseller': ['/', '/resellers', '/clients', '/transactions', '/events'],
   'reseller': ['/', '/clients', '/transactions', '/events']
@@ -45,6 +45,8 @@ const menus = [
   {label: 'Clients', link: '/clients', icon: 'airplay'},
   {label: 'Transactions', link: '/transactions', icon: 'attach_money'},
   {label: 'Events', link: '/events', icon: 'near_me'},
+  {label: 'Configuration', link: '/config', icon: 'info'},
+
 ];
 
 

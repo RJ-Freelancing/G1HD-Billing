@@ -319,7 +319,7 @@ class EditClient extends Component {
                 <TextField
                   label="Comments"
                   type="comment"
-                  value={this.state.editingClient.comment}
+                  value={this.state.editingClient.comment ? this.state.editingClient.comment : ''}
                   onChange={(e)=>this.handleTextChange('comment', e.target.value)}
                   fullWidth
                   multiline
@@ -400,7 +400,7 @@ class EditClient extends Component {
                 </Button>
               </div>
             }
-            <br/><br/><br/>
+            <br/><br/>
             {client && 
             <div style={{textAlign: 'center'}}>
               Credits Available<br/> <div style={{fontSize: 50}}> {client.account_balance} </div>
@@ -411,7 +411,7 @@ class EditClient extends Component {
               <TextField
                 label="Send Message"
                 type="text"
-                value={this.state.msg}
+                value={this.state.msg ? this.state.msg : ''}
                 onChange={(e)=>this.setState({msg: e.target.value})}
                 fullWidth
                 multiline

@@ -72,3 +72,29 @@ export const getTransactions = () => ({
   success: '',
   failure: "Something went wrong while retrieving transactions!"
 })
+
+
+export const getConfig = () => ({
+  types: ['NO_LOADING', 'GET_CONFIG_SUCCESS', 'GET_CONFIG_FAILED'],
+  payload: {
+    request:{
+      url: '/config',
+      method: 'GET',
+    }
+  },
+  success: '',
+  failure: "Something went wrong while retrieving config!"
+})
+
+export const updateConfig = config => ({
+  types: ['LOADING', 'UPDATE_CONFIG_SUCCESS', 'UPDATE_CONFIG_FAILED'],
+  payload: {
+    request:{
+      url: '/config',
+      method: 'PUT',
+      data: config
+    }
+  },
+  success: 'Successfully updated',
+  failure: "Something went wrong while retrieving config!"
+})
