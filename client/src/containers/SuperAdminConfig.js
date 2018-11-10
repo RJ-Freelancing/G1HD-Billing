@@ -100,6 +100,7 @@ class SuperAdminConfig extends Component {
               variant="contained" 
               color="primary" 
               disabled={this.props.loading || this.state.minimumTransferrableCredits < 1 || this.state.minimumTransferrableCredits===this.props.minimumTransferrableCredits} 
+              onClick={()=>{this.props.updateConfig({configName: 'minimumTransferrableCredits', configValue: this.state.minimumTransferrableCredits})}}            
             >
               Update&nbsp;
               <SaveIcon />
