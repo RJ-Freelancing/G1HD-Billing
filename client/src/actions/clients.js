@@ -78,3 +78,17 @@ export const removeSubscription = (mac, subscribedID) => ({
   success: "Successfully unsubscribed",
   failure: "Something went wrong while attempting to unsubscribe!"
 })
+
+
+export const sendEvent = event => ({
+  types: ['LOADING', 'SEND_EVENT_SUCCESS', 'SEND_EVENT_FAILED'],
+  payload: {
+    request:{
+      url: '/ministra/send_event',
+      method: 'POST',
+      data: event
+    }
+  },
+  success: "Successfully sent event",
+  failure: "Something went wrong while sending event!"
+})

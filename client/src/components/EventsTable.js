@@ -67,18 +67,17 @@ class EnhancedTableHead extends React.Component {
                 />
               </Tooltip>
             </TableCell>
-            {rows.map(row => {
+            {rows.map(row => {            
               return (
                 <TableCell
                   key={row.field}
-                  numeric={row.numeric}
                   padding='default'
                   sortDirection={orderBy === row.field ? order : false}
-                  style={{position: 'sticky', top: 0, backgroundColor: "#fff"}}
+                  style={{position: 'sticky', top: 0, backgroundColor: "#fff", textAlign: row.type==='integer' ? 'center' : 'inherit'}}
                 >
                   <Tooltip
                     title="Sort"
-                    placement={row.numeric ? 'bottom-end' : 'bottom-start'}
+                    placement={row.type==='integer' ? 'bottom-end' : 'bottom-start'}
                     enterDelay={300}
                   >
                     <TableSortLabel
@@ -132,21 +131,6 @@ let EnhancedTableToolbar = props => {
           </Typography>
         </div>
       }
-      <TextField
-        className={classes.margin}
-        id="input-with-icon-textfield"
-        placeholder="Type to search..."
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-        }}
-        fullWidth
-      />
-      <div className={classes.spacer} />
-      {selected.length > 0 && <div style={{fontSize: 35, paddingRight: 10}}> {selected.length} </div>}
       {selected.length > 0 &&
         <div>
           <Tooltip title="Send Event">
@@ -161,6 +145,21 @@ let EnhancedTableToolbar = props => {
           </Tooltip>
         </div>
       }
+      <TextField
+        className={classes.margin}
+        id="input-with-icon-textfield"
+        placeholder="Type to search..."
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+        fullWidth
+      />
+      <div className={classes.spacer} />
+      {selected.length > 0 && <div style={{fontSize: 35, color: 'green', fontWeight: 'bold'}}> {selected.length} </div>}
     </Toolbar>
   )
 }
@@ -171,7 +170,7 @@ EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar)
 const styles = theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing.unit,
     overflowX: "auto"
   },
   tableWrapper: {

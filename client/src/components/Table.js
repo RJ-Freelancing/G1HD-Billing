@@ -63,14 +63,12 @@ class EnhancedTableHead extends React.Component {
               return (
                 <TableCell
                   key={row.field}
-                  numeric={row.numeric}
                   padding='default'
                   sortDirection={orderBy === row.field ? order : false}
-                  style={{position: 'sticky', top: 0, backgroundColor: "#fff"}}
+                  style={{position: 'sticky', top: 0, backgroundColor: "#fff", textAlign: row.type==='integer' ? 'center' : 'inherit'}}
                 >
                   <Tooltip
                     title="Sort"
-                    placement={row.numeric ? 'bottom-end' : 'bottom-start'}
                     enterDelay={300}
                   >
                     <TableSortLabel
