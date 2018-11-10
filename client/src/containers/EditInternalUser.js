@@ -218,9 +218,7 @@ class EditInternalUser extends Component {
   }
 
   
-  render() {   
-    console.log(this.props.minimumTransferrableCredits);
-    
+  render() {      
     return (
       <Wrapper>
         <UserEditWrapper elevation={24}>
