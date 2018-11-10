@@ -90,17 +90,19 @@ class Profile extends Component {
           <br/>
           <form onSubmit={this.updateProfile} style={{padding: 10}}>
             <ProfileEdit>
-              <TextField
-                label="Username"
-                type="username"
-                value={this.state.username}
-                onChange={(e)=>this.handleTextChange('username', e.target.value)}
-                fullWidth
-                required
-                error={this.state.username===""}
-                helperText={this.state.username==="" ? "Required" : null}
-                disabled={this.props.loading}
-              />
+              {this.props.auth.userType==='super-admin' &&
+                <TextField
+                  label="Username"
+                  type="username"
+                  value={this.state.username}
+                  onChange={(e)=>this.handleTextChange('username', e.target.value)}
+                  fullWidth
+                  required
+                  error={this.state.username===""}
+                  helperText={this.state.username==="" ? "Required" : null}
+                  disabled={this.props.loading}
+                />
+              }
               <TextField
                 label="Email"
                 type="email"

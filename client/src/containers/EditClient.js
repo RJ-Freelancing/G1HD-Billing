@@ -118,7 +118,6 @@ const STBDetails = styled.div`
 `
 
 const TransactionWrapper = styled(Paper)`
-  padding: 20px 20px;
   @media only screen and (max-width: 768px) {
     grid-column: 1;
   }
@@ -446,7 +445,7 @@ class EditClient extends Component {
         </STBDetailsWrapper>
 
         <TransactionWrapper elevation={24}>
-          <Typography variant="h4"> Transactions </Typography>
+          <Typography variant="h4" style={{padding: 20}}> Transactions </Typography>
           {/* <br/><br/> */}
           <Table
             // title={'Transactions'}
