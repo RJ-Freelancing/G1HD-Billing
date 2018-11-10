@@ -37,3 +37,44 @@ export const deleteClient = (mac) => ({
   success: `Successfully deleted the client`,
   failure: "Something went wrong while deleting the client!"
 })
+
+
+export const getSubscriptions = (mac) => ({
+  types: ['LOADING', 'GET_SUBSCRIPTIONS_SUCCESS', 'GET_SUBSCRIPTIONS_FAILED'],
+  payload: {
+    request:{
+      url: `/ministra/account_subscription/${mac}`,
+      method: 'GET'
+    }
+  },
+  success: false,
+  failure: "Something went wrong while retrieving client subscriptions!"
+})
+
+
+export const addSubscription = (mac, subscribedID) => ({
+  types: ['LOADING', 'ADD_SUBSCRIPTION_SUCCESS', 'ADD_SUBSCRIPTION_FAILED'],
+  payload: {
+    request:{
+      url: `/ministra/account_subscription/${mac}`,
+      method: 'PUT',
+      data: {subscribed: subscribedID}
+    }
+  },
+  success: "Successfully subscribed",
+  failure: "Something went wrong while attempting to subscribe!"
+})
+
+
+export const removeSubscription = (mac, subscribedID) => ({
+  types: ['LOADING', 'REMOVE_SUBSCRIPTION_SUCCESS', 'REMOVE_SUBSCRIPTION_FAILED'],
+  payload: {
+    request:{
+      url: `/ministra/account_subscription/${mac}`,
+      method: 'DELETE',
+      data: {subscribed: subscribedID}
+    }
+  },
+  success: "Successfully unsubscribed",
+  failure: "Something went wrong while attempting to unsubscribe!"
+})

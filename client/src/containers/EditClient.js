@@ -24,7 +24,7 @@ import { startCase } from 'lodash';
 
 
 import { getUsers } from 'actions/users'
-import { updateClient, deleteClient } from 'actions/clients'
+import { updateClient, deleteClient, getSubscriptions, addSubscription, removeSubscription } from 'actions/clients'
 import { updateCredits } from 'actions/transactions'
 import { getTariffPlans } from 'actions/general'
 
@@ -193,13 +193,13 @@ class EditClient extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      client: null,
       editingClient: null,
       deleteConfirmation: false,
       credits: {
         value: 1,
         action: "add"
-      }
+      },
+      subscriptions: []
     }
   }
 
@@ -211,17 +211,18 @@ class EditClient extends Component {
     }
   }
 
-  loadClientFromMac = (mac) => {
-    let client = {};
-    client = this.props.clients.find(client=>client.mac===mac)
-    this.setState({client, editingClient:{...client}})
+  loadClientFromMac = (stb_mac) => {
+    let client = this.props.clients.find(client=>client.stb_mac===stb_mac)
+    this.props.getSubscriptions(stb_mac)
+    .then(resoponse => {    
+      if (!isEqual(client, this.state.editingClient) || !isEqual(this.state.subscriptions, resoponse.payload.data[0].subscribed))
+        this.setState({editingClient: {...client}, subscriptions: resoponse.payload.data[0].subscribed})
+    })
   }
 
   componentDidUpdate = (prevProps, prevState, snapshot) => {
-    if (!isEqual(prevState.client, this.state.client)) {
-      if (!this.props.token) this.props.history.push('/login')
-      else this.loadClientFromMac(this.props.match.params.id)
-    }
+    if (!this.props.token) this.props.history.push('/login')
+    else this.loadClientFromMac(this.props.match.params.id)
   }
 
   handleTextChange = (field, value) => {
@@ -230,14 +231,14 @@ class EditClient extends Component {
 
   updateClient = (event) => {
     event.preventDefault()
-    const { mac } = this.state.editingClient
-    const { fname, phone } = this.state.editingClient
-    this.props.updateClient(mac, {full_name:fname, phone})
+    const { stb_mac } = this.state.editingClient
+    const { full_name, phone } = this.state.editingClient
+    this.props.updateClient(stb_mac, {full_name:full_name, phone})
   }
 
   checkValidation = () => {
     const loginEmpty = this.state.editingClient.login==="";
-    const invalidMAC = this.state.editingClient.mac && !this.state.editingClient.mac.match(validMAC);
+    const invalidMAC = this.state.editingClient.stb_mac && !this.state.editingClient.stb_mac.match(validMAC);
     const phoneInvalid = this.state.editingClient.phone && !this.state.editingClient.phone.match(validPhoneNo);
     return loginEmpty || phoneInvalid || invalidMAC
   }
@@ -249,7 +250,7 @@ class EditClient extends Component {
     event.preventDefault()
     this.deleteConfirmationProceed = () => {
       this.setState({deleteConfirmation: false}, ()=>{
-        this.props.deleteClient(this.state.client.mac)
+        this.props.deleteClient(this.state.editingClient.stb_mac)
         .then(clientDeleteResponse => {
           if (clientDeleteResponse.type==='DELETE_CLIENT_SUCCESS') {
             this.props.getUsers()
@@ -266,12 +267,22 @@ class EditClient extends Component {
       credits: this.state.credits.action==="add" ? this.state.credits.value : this.state.credits.value*-1,
       description: `${startCase(this.state.credits.action)}ed ${this.state.credits.value} credits`,
       transactionFrom: this.props.authUsername,
-      transactionTo: this.state.client.mac
+      transactionTo: this.state.editingClient.stb_mac
     })
   }
 
+  setSubscription = (subscribed, checked) => {
+    if (checked)
+      this.props.addSubscription(this.state.editingClient.stb_mac, subscribed)
+      .then(()=>this.setState({subscriptions: [...this.state.subscriptions, subscribed]}))
+    else
+      this.props.removeSubscription(this.state.editingClient.stb_mac, subscribed)
+      .then(()=>this.setState({subscriptions: this.state.subscriptions.filter(sub => sub !== subscribed)}))
+  }
+
   render() {   
-    
+    const client = this.props.clients.find(client=>client.stb_mac===this.props.match.params.id)
+   
     return (
       <Wrapper>
         <ClientEditWrapper elevation={24}>
@@ -285,15 +296,15 @@ class EditClient extends Component {
                 <TextField
                   label="Username"
                   type="username"
-                  value={this.state.client.login}
+                  value={client.login}
                   fullWidth
                   disabled
                 />
                 <TextField
                   label="Full Name"
                   type="name"
-                  value={this.state.editingClient.fname}
-                  onChange={(e)=>this.handleTextChange('fname', e.target.value)}
+                  value={this.state.editingClient.full_name}
+                  onChange={(e)=>this.handleTextChange('full_name', e.target.value)}
                   fullWidth
                   disabled={this.props.loading}
                 />
@@ -326,7 +337,7 @@ class EditClient extends Component {
                 />
               </ClientEdit>
               <br/><br/>
-              <Button variant="contained" type="submit" color="primary" disabled={this.props.loading || this.checkValidation() || isEqual(this.state.editingClient, this.state.client)}>
+              <Button variant="contained" type="submit" color="primary" disabled={this.props.loading || this.checkValidation() || isEqual(this.state.editingClient, client)}>
                 Update&nbsp;
                 <SaveIcon />
               </Button>
@@ -340,7 +351,7 @@ class EditClient extends Component {
         <CreditsWrapper elevation={24}>
             <Typography variant="h4"> Credits </Typography>
             <br/><br/>
-            {this.state.client && this.props.authUsername===this.state.client.parentUsername  &&
+            {client && this.props.authUsername===client.parentUsername  &&
               <div>
                 <TextField
                   label="Select Credits"
@@ -371,10 +382,10 @@ class EditClient extends Component {
               </div>
             }
             <br/><br/><br/>
-            {this.state.client && 
+            {client && 
             <div style={{textAlign: 'center'}}>
-              {/* Credits Available<br/> <div style={{fontSize: 100}}>{this.state.client && this.state.client.account_balance} </div> */}
-              Credits Available<br/> <div style={{fontSize: 50}}> {this.state.client.account_balance} </div>
+              {/* Credits Available<br/> <div style={{fontSize: 100}}>{client && client.account_balance} </div> */}
+              Credits Available<br/> <div style={{fontSize: 50}}> {client.account_balance} </div>
             </div>
             }
         </CreditsWrapper>
@@ -387,9 +398,9 @@ class EditClient extends Component {
             <TariffHeader>
               <Select
                 label="Tarriff Plan"
-                value={this.state.editingClient ? this.state.editingClient.tariff_plan_id : 1}
-                onChange={(e)=>this.handleTextChange('tariff_plan_id', e.target.value)}
-                inputProps={{ id: 'tariff_plan_id' }}
+                value={client.tariff_plan}
+                onChange={(e)=>this.props.updateClient(client.stb_mac, {tariff_plan: e.target.value})}
+                inputProps={{ id: 'tariff_plan' }}
               >
                 {
                   this.props.tariffPlans.map(plan=>(
@@ -398,7 +409,7 @@ class EditClient extends Component {
                 }
               </Select>
               <Typography variant="body2" style={{alignSelf: 'center', justifySelf: 'center'}}>
-                Tariff Expires on : <strong>{this.state.client ? format(Date.parse(this.state.client.tariff_expired_date), 'd MMMM YYYY') : null}</strong>
+                Tariff Expires on : <strong>{format(Date.parse(client.tariff_expired_date), 'd MMMM YYYY')}</strong>
               </Typography>
             </TariffHeader>
             <TariffPackagesHeader>
@@ -406,16 +417,16 @@ class EditClient extends Component {
             </TariffPackagesHeader>
             <TariffPackages>
               {
-                this.state.editingClient &&
-                this.props.tariffPlans.find(plan=>parseInt(plan.id)===this.state.editingClient.tariff_plan_id) &&
-                this.props.tariffPlans.find(plan=>parseInt(plan.id)===this.state.editingClient.tariff_plan_id).packages.map(tariffPackage=>(
+                this.props.tariffPlans.find(plan=>parseInt(plan.id)===client.tariff_plan) &&
+                this.props.tariffPlans.find(plan=>parseInt(plan.id)===client.tariff_plan).packages.map(tariffPackage=>(
                   <TariffPackageRow key={tariffPackage.name}>
                     <div>{tariffPackage.name}</div>
                     <div style={{justifySelf: 'center'}}>{tariffPackage.optional==="1" ? "Yes": "No"}</div>
                     <Checkbox 
-                      checked={tariffPackage.optional==="1" ? false: true} 
+                      checked={tariffPackage.optional==="1" ? this.state.subscriptions.includes(tariffPackage.id) : true} 
                       disabled={tariffPackage.optional==="1" ? false: true}  
                       style={{padding: 10, justifySelf: 'center', height: 15}}
+                      onChange={(e)=>this.setSubscription(tariffPackage.id, e.target.checked)}
                     />
                   </TariffPackageRow>
                 ))
@@ -426,29 +437,27 @@ class EditClient extends Component {
         <STBDetailsWrapper elevation={24}>
           <Typography variant="h4"> STB Details </Typography>
           <br/><br/>
-          {this.state.client && 
+          {client && 
             <STBDetails>           
               <Typography variant="subtitle2">MAC Address</Typography>
-              <Typography variant="body2">{this.state.client.mac}</Typography>
+              <Typography variant="body2">{client.stb_mac}</Typography>
               <Typography variant="subtitle2">Receiver Status</Typography>
-              <Typography variant="body2">{this.state.client.online==="1" ? 'Online' : 'Offline'}</Typography>
+              <Typography variant="body2">{client.online==="1" ? 'Online' : 'Offline'}</Typography>
               <Typography variant="subtitle2">IP</Typography>
-              <Typography variant="body2">{this.state.client.ip}</Typography>
+              <Typography variant="body2">{client.ip}</Typography>
               <Typography variant="subtitle2">STB Type</Typography>
-              <Typography variant="body2">{this.state.client.stb_type}</Typography>
+              <Typography variant="body2">{client.stb_type}</Typography>
               <Typography variant="subtitle2">STB Serial</Typography>
-              <Typography variant="body2">{this.state.client.serial_number}</Typography>
+              <Typography variant="body2">{client.serial_number}</Typography>
               <Typography variant="subtitle2">Last Active</Typography>
-              <Typography variant="body2">{format(Date.parse(this.state.client.last_active), 'd MMMM YYYY @ HH:mm:ss')}</Typography>
+              <Typography variant="body2">{format(Date.parse(client.last_active), 'd MMMM YYYY @ HH:mm:ss')}</Typography>
             </STBDetails>
           }
         </STBDetailsWrapper>
 
         <TransactionWrapper elevation={24}>
           <Typography variant="h4" style={{padding: 20}}> Transactions </Typography>
-          {/* <br/><br/> */}
           <Table
-            // title={'Transactions'}
             rows={rows}
             data={data}
             orderBy='date'
@@ -477,11 +486,14 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateClient: (mac, client) => dispatch(updateClient(mac, client)),
-  deleteClient: (mac) => dispatch(deleteClient(mac)),
+  updateClient: (stb_mac, client) => dispatch(updateClient(stb_mac, client)),
+  deleteClient: stb_mac => dispatch(deleteClient(stb_mac)),
   getUsers: () => dispatch(getUsers()),
   getTariffPlans: () => dispatch(getTariffPlans()),
-  updateCredits: (transaction) => dispatch(updateCredits(transaction))
+  updateCredits: (transaction) => dispatch(updateCredits(transaction)),
+  getSubscriptions: stb_mac => dispatch(getSubscriptions(stb_mac)),
+  addSubscription: (stb_mac, subscribedID) => dispatch(addSubscription(stb_mac, subscribedID)),
+  removeSubscription: (stb_mac, subscribedID) => dispatch(removeSubscription(stb_mac, subscribedID))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditClient)

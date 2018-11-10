@@ -26,13 +26,19 @@ const users = (state = initialState, action) => {
       }
     case 'UPDATE_CLIENT_SUCCESS':
       // FIND UPDATED USER AND UPDATE WITH PAYLOAD
+      const stb_mac = action.payload.data
       return {
         ...state, 
+        clients: state.clients.map(client => {
+          if (client.stb_mac===stb_mac)
+            return {...client, ...action.meta.previousAction.payload.request.data}
+          else
+            return client
+        })
       }
     case 'DELETE_CLIENT_SUCCESS':
       return {
         ...state, 
-        // clients: [...state.clients]
       }
     case 'ADD_CREDIT_SUCCESS':
       return {

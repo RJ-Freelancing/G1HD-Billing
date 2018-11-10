@@ -4,8 +4,8 @@ import { connect } from 'react-redux'
 import { getUsers } from 'actions/users'
 
 const rows = [
-  { field: 'mac', label: 'MAC Address', type: 'string'  },
-  { field: 'fname', label: 'Full Name', type: 'string'  },
+  { field: 'stb_mac', label: 'MAC Address', type: 'string'  },
+  { field: 'full_name', label: 'Full Name', type: 'string'  },
   // { field: 'firstName', label: 'First Name', type: 'string'  },
   { field: 'phone', label: 'Telephone', type: 'string'  },
   { field: 'account_balance', label: 'Credits Available', type: 'integer'  },
@@ -45,7 +45,7 @@ class Client extends Component {
         data={this.getTableData()}
         orderBy='tariff_expired_date'
         mobileView={this.props.mobileView}
-        gotoLink={(client)=>this.props.history.push(`/clients/${client.mac}`)}
+        gotoLink={(client)=>this.props.history.push(`/clients/${client.stb_mac}`)}
         addNew={()=>this.props.history.push('/clients/new')}
         tableHeight='70vh'
         canAdd={this.props.authUserType==='reseller'}
