@@ -23,7 +23,7 @@ export async function checkPermission(req, res, next) {
   if(macRegex.test(req.params.id)){
     const client = await clientRepo.findOne({ clientMac : req.params.id})
     if (!client) return res.status(404).json({ error: `Client with mac Address ${req.params.id} was not found in mongo DB` }) 
-    if(await checkPermissionRights(client, req.user, 0) == false) return res.status(403).json({ error: `You Have No Rights To Perform This Action.`})
+    if(await checkPermissionRights(req.params.id, req.user, 0) == false) return res.status(403).json({ error: `You Have No Rights To Perform This Action.`})
   }
   else {
     const user = await userRepo.findOne({ username : req.params.id})
