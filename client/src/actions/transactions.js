@@ -1,5 +1,5 @@
 export const updateCredits = (transaction) => ({
-  types: ['LOADING', 'ADD_CREDIT_SUCCESS', 'ADD_CREDIT_FAILED'],
+  types: ['LOADING', 'UPDATE_CREDIT_SUCCESS', 'UPDATE_CREDIT_FAILED'],
   payload: {
     request:{
       url: `/transactions`,
@@ -22,4 +22,17 @@ export const getTransactions = username => ({
   },
   success: '',
   failure: "Something went wrong while retrieving transactions!"
+})
+
+
+export const getUserTransactions = username => ({
+  types: ['NO_LOADING', 'GET_USER_TRANSACTIONS_SUCCESS', 'GET_USER_TRANSACTIONS_FAILED'],
+  payload: {
+    request:{
+      url: `/transactions/${username}`,
+      method: 'GET',
+    }
+  },
+  success: '',
+  failure: "Something went wrong while retrieving user transactions!"
 })

@@ -19,7 +19,7 @@ import Table from 'components/Table'
 import Confirmation from 'components/Confirmation';
 
 import { getUsers, updateUser, deleteUser } from 'actions/users'
-import { updateCredits } from 'actions/transactions'
+import { getUserTransactions, updateCredits } from 'actions/transactions'
 import { getConfig } from 'actions/users'
 
 const validPhoneNo = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
@@ -58,65 +58,13 @@ const TransactionWrapper = styled(Paper)`
 `
 
 const rows = [
-  { field: 'date', numeric: false, label: 'Date' },
-  { field: 'from', numeric: false, label: 'From' },
-  // { field: 'firstName', numeric: false, label: 'First Name' },
-  // { field: 'lastName', numeric: false, label: 'Last Name' },
-  { field: 'to', numeric: false, label: 'To' },
-  { field: 'credits', numeric: true, label: 'Credits' },
-  { field: 'description', numeric: false, label: 'Description' },
-  // { field: 'parentID', numeric: false, label: 'Parent Username' },
-  // { field: 'childrenCount', numeric: true, label: 'No of Children' },
-  // { field: 'creditsOnHold', numeric: true, label: 'Credits on Hold' },
-  // { field: 'createdAt', numeric: false, label: 'Created At' },
-  // { field: 'updatedAt', numeric: false, label: 'Updated At' }
+  { field: 'createdAt', label: 'Date', type: 'date'},
+  { field: 'transactionFrom', label: 'From', type: 'string'},
+  { field: 'transactionTo', label: 'To', type: 'string'},
+  { field: 'credits', label: 'Credits', type: 'integer'},
+  { field: 'description', label: 'Description', type: 'string'},
 ]
 
-
-const data = [
-  {
-    date: '2018-10-24T06:27:57.000Z',
-    from: 'someusername',
-    to: 'username',
-    credits: 2,
-    description: "soething useful here",
-  },
-  {
-    date: '2018-10-24T06:27:57.000Z',
-    from: 'someusername',
-    to: 'username',
-    credits: 1,
-    description: "soething useful here",
-  },
-  {
-    date: '2018-10-24T06:27:57.000Z',
-    from: 'someusername',
-    to: 'username',
-    credits: 20,
-    description: "soething useful here",
-  },
-  {
-    date: '2018-10-24T06:27:57.000Z',
-    from: 'someusername',
-    to: 'username',
-    credits: -10,
-    description: "soething useful here",
-  },
-  {
-    date: '2018-10-24T06:27:57.000Z',
-    from: 'someusername',
-    to: 'username',
-    credits: 5,
-    description: "soething useful here",
-  },
-  {
-    date: '2018-10-24T06:27:57.000Z',
-    from: 'someusername',
-    to: 'username',
-    credits: 2,
-    description: "soething useful here",
-  },
-]
 
 
 class EditInternalUser extends Component {
@@ -132,7 +80,8 @@ class EditInternalUser extends Component {
         value: props.minimumTransferrableCredits,
         action: "add"
       },
-      newPassword: ""
+      newPassword: "",
+      transactions: []
     }
   }
 
@@ -158,7 +107,10 @@ class EditInternalUser extends Component {
       user = this.props.superResellers.find(admin=>admin.username===username)
     if (!user)
       user = this.props.resellers.find(admin=>admin.username===username)
-    this.setState({user, editingUser: {...user}})
+    this.props.getUserTransactions(username)
+    .then(resnponseTransactions => { 
+      this.setState({user, editingUser: {...user}, transactions: resnponseTransactions.payload.data})
+    })
   }
 
   handleTextChange = (field, value) => {
@@ -212,10 +164,21 @@ class EditInternalUser extends Component {
     this.props.updateCredits({
       credits: this.state.credits.action==="add" ? this.state.credits.value : this.state.credits.value*-1,
       description: `${startCase(this.state.credits.action)}ed ${this.state.credits.value} credits`,
-      transactionFrom: this.props.authUsername,
       transactionTo: this.state.user.username
     })
   }
+
+  getTableData = (transactions) => {    
+    let displayData = []
+    for (let transaction of transactions) {
+      let transactionData = {}
+      for (let row of rows) {
+        transactionData[row.field] = transaction[row.field]
+      }
+      displayData.push({...transactionData})
+    }
+    return displayData
+  } 
 
   
   render() {      
@@ -371,7 +334,6 @@ class EditInternalUser extends Component {
             <br/><br/><br/>
             {this.state.user && 
               <div style={{textAlign: 'center'}}>
-                {/* Credits Available<br/> <div style={{fontSize: 100}}>{this.state.user && this.state.user.account_balance} </div> */}
                 Credits Available<br/> <div style={{fontSize: 50}}> {this.state.user.creditsAvailable} </div>
                 <br/><br/>
                 Credits On Hold<br/> <div style={{fontSize: 50}}> {this.state.user.creditsOnHold} </div>
@@ -382,10 +344,9 @@ class EditInternalUser extends Component {
           <Typography variant="h4" style={{padding: 20, paddingBottom: 0}}> Transactions </Typography>
           {/* <br/><br/> */}
           <Table
-            // title={'Transactions'}
             rows={rows}
-            data={data}
-            orderBy='date'
+            data={this.getTableData(this.state.transactions)}
+            orderBy='createdAt'
             mobileView={this.props.mobileView}
             tableHeight='100%'
             viewOnly={true}
@@ -418,6 +379,7 @@ const mapDispatchToProps = dispatch => ({
   updateCredits: (transaction) => dispatch(updateCredits(transaction)),
   deleteUser: (username) => dispatch(deleteUser(username)),
   getConfig: () => dispatch(getConfig()),
+  getUserTransactions: username => dispatch(getUserTransactions(username)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditInternalUser)

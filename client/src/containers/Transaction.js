@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { getTransactions } from 'actions/transactions'
 
 const rows = [
-  { field: 'created_at', label: 'Date', type: 'date'},
+  { field: 'createdAt', label: 'Date', type: 'date'},
   { field: 'transactionFrom', label: 'From', type: 'string'},
   { field: 'transactionTo', label: 'To', type: 'string'},
   { field: 'credits', label: 'Credits', type: 'integer'},
@@ -34,10 +34,10 @@ class Transaction extends Component {
         title='Transactions'
         rows={rows}
         data={this.getTableData()}
-        orderBy='tariff_expired_date'
+        orderBy='createdAt'
         mobileView={this.props.mobileView}
         viewOnly={true}
-        tableHeight='70vh'
+        tableHeight={this.props.mobileView ? '70vh' : '80vh'}
       />
     )
   }

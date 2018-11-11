@@ -25,7 +25,7 @@ const rows = [
   { field: 'stb_mac', label: 'MAC Address', type: 'string'  },
   { field: 'full_name', label: 'Full Name', type: 'string'  },
   { field: 'phone', label: 'Telephone', type: 'string'  },
-  { field: 'account_balance', label: 'Credits Available', type: 'integer'  },
+  { field: 'accountBalance', label: 'Credits Available', type: 'integer'  },
   { field: 'tariff_expired_date', label: 'Tariff Expiry', type: 'date'  },
   { field: 'comment', label: 'Reseller', type: 'string'  },
   { field: 'now_playing_content', label: 'Box Status', type: 'boolean'  },
@@ -81,7 +81,7 @@ class Events extends Component {
           <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr'}}>
           <Typography variant="h6" style={{marginLeft: 20}}>Select MAC IDs to send Event</Typography>
           {this.props.authUserType === 'super-admin' && 
-            <Button variant="contained" color="secondary" disabled={this.props.loading} onClick={()=>this.setState({ids: [], open: true})}>
+            <Button variant="contained" color="primary" disabled={this.props.loading} onClick={()=>this.setState({ids: [], open: true})}>
               Click Here To Send All
             </Button>          
           }
@@ -93,7 +93,7 @@ class Events extends Component {
           orderBy='tariff_expired_date'
           mobileView={this.props.mobileView}
           sendEvent={(ids)=>this.setState({ids, open: true})}
-          tableHeight='70vh'
+          tableHeight={this.props.mobileView ? '70vh' : '78vh'}
         />
         <Dialog
           open={this.state.open}

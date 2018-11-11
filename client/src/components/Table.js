@@ -20,6 +20,7 @@ import InputAdornment from '@material-ui/core/InputAdornment'
 import IconButton from '@material-ui/core/IconButton';
 import { format } from 'date-fns'
 import Icon from '@material-ui/core/Icon';
+import { isEqual } from 'lodash';
 
 
 
@@ -197,6 +198,12 @@ class EnhancedTable extends React.Component {
     this.setState({ rowsPerPage: event.target.value })
   }
 
+  componentDidUpdate = (prevProps, prevState, snapshot) => {   
+    if (!isEqual(prevState.data, this.props.data)) {
+      this.setState({data: this.props.data})
+    }
+  }
+
 
   render() {
     const { classes, mobileView, rows, tableHeight, title, viewOnly, addNew, canAdd } = this.props
@@ -235,7 +242,7 @@ class EnhancedTable extends React.Component {
                           const fieldProperties = this.props.rows.find(row=>row.field===field)
                           switch (fieldProperties.type) {
                             case 'boolean':
-                              return <TableCell key={field} style={{textAlign: 'center', paddingLeft: 0}}> <Icon color={value ? 'primary' : 'secondary'}>{value ? 'thumb_up' : 'thumb_down'}</Icon> </TableCell>
+                              return <TableCell key={field} style={{textAlign: 'center', paddingLeft: 0}}> <Icon style={{color: value ? 'green' : 'red'}}>{value ? 'thumb_up' : 'thumb_down'}</Icon> </TableCell>
                             case 'integer':
                               return <TableCell key={field} style={{textAlign: 'center', paddingLeft: 0}}> {value} </TableCell>
                             case 'date':

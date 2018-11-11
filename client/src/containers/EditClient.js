@@ -35,7 +35,7 @@ import SendIcon from '@material-ui/icons/Send'
 
 import { getUsers } from 'actions/users'
 import { addClient, updateClient, deleteClient, getSubscriptions, addSubscription, removeSubscription, sendEvent, checkMAC } from 'actions/clients'
-import { updateCredits } from 'actions/transactions'
+import { getUserTransactions, updateCredits } from 'actions/transactions'
 import { getTariffPlans } from 'actions/general'
 
 
@@ -137,65 +137,14 @@ const TransactionWrapper = styled(Paper)`
 
 
 const rows = [
-  { field: 'date', numeric: false, label: 'Date' },
-  { field: 'from', numeric: false, label: 'From' },
-  // { field: 'firstName', numeric: false, label: 'First Name' },
-  // { field: 'lastName', numeric: false, label: 'Last Name' },
-  { field: 'to', numeric: false, label: 'To' },
-  { field: 'credits', numeric: true, label: 'Credits' },
-  { field: 'description', numeric: false, label: 'Description' },
-  // { field: 'parentID', numeric: false, label: 'Parent Username' },
-  // { field: 'childrenCount', numeric: true, label: 'No of Children' },
-  // { field: 'creditsOnHold', numeric: true, label: 'Credits on Hold' },
-  // { field: 'createdAt', numeric: false, label: 'Created At' },
-  // { field: 'updatedAt', numeric: false, label: 'Updated At' }
+  { field: 'createdAt', label: 'Date', type: 'date'},
+  { field: 'transactionFrom', label: 'From', type: 'string'},
+  { field: 'transactionTo', label: 'To', type: 'string'},
+  { field: 'credits', label: 'Credits', type: 'integer'},
+  { field: 'description', label: 'Description', type: 'string'},
 ]
 
 
-const data = [
-  {
-    date: '2018-10-24T06:27:57.000Z',
-    from: 'resellerName',
-    to: 'clientName',
-    credits: 2,
-    description: "soething useful here",
-  },
-  {
-    date: '2018-10-24T06:27:57.000Z',
-    from: 'resellerName',
-    to: 'clientName',
-    credits: 1,
-    description: "soething useful here",
-  },
-  {
-    date: '2018-10-24T06:27:57.000Z',
-    from: 'resellerName',
-    to: 'clientName',
-    credits: 20,
-    description: "soething useful here",
-  },
-  {
-    date: '2018-10-24T06:27:57.000Z',
-    from: 'resellerName',
-    to: 'clientName',
-    credits: -10,
-    description: "soething useful here",
-  },
-  {
-    date: '2018-10-24T06:27:57.000Z',
-    from: 'resellerName',
-    to: 'clientName',
-    credits: 5,
-    description: "soething useful here",
-  },
-  {
-    date: '2018-10-24T06:27:57.000Z',
-    from: 'resellerName',
-    to: 'clientName',
-    credits: 2,
-    description: "soething useful here",
-  },
-]
 
 
 class EditClient extends Component {
@@ -213,7 +162,8 @@ class EditClient extends Component {
       msg: '',
       changeMAC: false,
       newMAC: '',
-      checkMACStatus: ''
+      checkMACStatus: '',
+      transactions: []
     }
   }
 
@@ -235,11 +185,14 @@ class EditClient extends Component {
 
   setEditingClient = (stb_mac) => {
     let client = this.props.clients.find(client=>client.stb_mac===stb_mac)
-    this.setState({editingClient: {...client}}, ()=>{
-      this.props.getSubscriptions(stb_mac)
-      .then(resoponse => {    
-        if (resoponse.payload)
-          this.setState({subscriptions: resoponse.payload.data[0].subscribed})
+    this.props.getUserTransactions(stb_mac)
+    .then(resnponseTransactions => {     
+      this.setState({editingClient: {...client}, transactions: resnponseTransactions.payload.data}, ()=>{
+        this.props.getSubscriptions(stb_mac)
+        .then(resoponse => {    
+          if (resoponse.payload)
+            this.setState({subscriptions: resoponse.payload.data[0].subscribed})
+        })
       })
     })
   }
@@ -284,7 +237,6 @@ class EditClient extends Component {
     this.props.updateCredits({
       credits: this.state.credits.action==="add" ? this.state.credits.value : this.state.credits.value*-1,
       description: `${startCase(this.state.credits.action)}ed ${this.state.credits.value} credits`,
-      transactionFrom: this.props.authUsername,
       transactionTo: this.state.editingClient.stb_mac
     })
   }
@@ -323,6 +275,18 @@ class EditClient extends Component {
       })
     })
   }
+
+  getTableData = (transactions) => {    
+    let displayData = []
+    for (let transaction of transactions) {
+      let transactionData = {}
+      for (let row of rows) {
+        transactionData[row.field] = transaction[row.field]
+      }
+      displayData.push({...transactionData})
+    }
+    return displayData
+  } 
 
   render() {   
     const client = this.props.clients.find(client=>client.stb_mac===this.props.match.params.id)
@@ -541,8 +505,8 @@ class EditClient extends Component {
           <Typography variant="h4" style={{padding: 20, paddingBottom: 0}}> Transactions </Typography>
           <Table
             rows={rows}
-            data={data}
-            orderBy='date'
+            data={this.getTableData(this.state.transactions)}
+            orderBy='createdAt'
             mobileView={this.props.mobileView}
             tableHeight='100%'
             viewOnly={true}
@@ -621,6 +585,7 @@ const mapDispatchToProps = dispatch => ({
   removeSubscription: (stb_mac, subscribedID) => dispatch(removeSubscription(stb_mac, subscribedID)),
   sendEvent: event => dispatch(sendEvent(event)),
   checkMAC: mac => dispatch(checkMAC(mac)),
+  getUserTransactions: username => dispatch(getUserTransactions(username)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditClient)

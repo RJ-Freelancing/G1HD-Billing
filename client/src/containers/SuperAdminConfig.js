@@ -78,7 +78,7 @@ class SuperAdminConfig extends Component {
   render() {
     return (
       <Wrapper>
-        <CreditsWrapper elevations={24}>
+        <CreditsWrapper elevation={5}>
           <Typography variant="h4">
             Minimum Transferrable Credits
           </Typography>
@@ -107,7 +107,7 @@ class SuperAdminConfig extends Component {
             </Button>
           </form>
         </CreditsWrapper>
-        <AnnouncementsWrapper elevation={24}>
+        <AnnouncementsWrapper elevation={5}>
           <Typography variant="h4">
             Announcements
           </Typography>

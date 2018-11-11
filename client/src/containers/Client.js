@@ -8,7 +8,7 @@ const rows = [
   { field: 'full_name', label: 'Full Name', type: 'string'  },
   // { field: 'firstName', label: 'First Name', type: 'string'  },
   { field: 'phone', label: 'Telephone', type: 'string'  },
-  { field: 'account_balance', label: 'Credits Available', type: 'integer'  },
+  { field: 'accountBalance', label: 'Credits Available', type: 'integer'  },
   // { field: 'tariff_plan_id', label: 'Tariff Plan', type: 'string'  },
   { field: 'tariff_expired_date', label: 'Tariff Expiry', type: 'date'  },
   { field: 'comment', label: 'Reseller', type: 'string'  },

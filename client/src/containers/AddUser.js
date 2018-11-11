@@ -81,7 +81,6 @@ class AddUser extends Component {
           this.props.updateCredits({
             credits: this.state.newUser.credits,
             description: "Add initial credits for new user",
-            transactionFrom: this.props.authUsername,
             transactionTo: this.state.newUser.username
           })
           .then(creditAddResponse => {

@@ -89,7 +89,6 @@ class AddClient extends Component {
           this.props.updateCredits({
             credits: this.state.newClient.credits,
             description: "Add initial credits for new client",
-            transactionFrom: this.props.authUsername,
             transactionTo: this.state.newClient.stb_mac
           })
           .then(creditAddResponse => {
