@@ -398,12 +398,12 @@ class EditClient extends Component {
                   error={
                     (this.state.credits.value < 1) || 
                     (this.state.credits.value > 12) || 
-                    (this.props.authCreditsAvailable+this.props.authCreditsOnHold < this.state.credits.value) ||
+                    (this.state.credits.action==='add' && (this.props.authCreditsAvailable+this.props.authCreditsOnHold < this.state.credits.value)) ||
                     (this.state.credits.action==='recover' && (client.accountBalance-this.state.credits.value < 0))
                   }
                   helperText={
                     (this.state.credits.value < 1 || this.state.credits.value > 12) ? 'Credits can only be transferred in the range from 1 to 12' 
-                    : (this.props.authCreditsAvailable+this.props.authCreditsOnHold < this.state.credits.value) ? "You don't have enough credits"
+                    : (this.state.credits.action==='add' && (this.props.authCreditsAvailable+this.props.authCreditsOnHold < this.state.credits.value)) ? "You don't have enough credits to transfer"
                     : (this.state.credits.action==='recover' && (client.accountBalance-this.state.credits.value < 0)) ? 'Client has not enough credits to recover'
                     : null
                   }
@@ -429,7 +429,7 @@ class EditClient extends Component {
                     (this.props.loading) || 
                     (this.state.credits.value < 1) || 
                     (this.state.credits.value > 12) || 
-                    (this.props.authCreditsAvailable+this.props.authCreditsOnHold < this.state.credits.value) ||
+                    (this.state.credits.action==='add' && (this.props.authCreditsAvailable+this.props.authCreditsOnHold < this.state.credits.value)) ||
                     (this.state.credits.action==='recover' && (client.accountBalance-this.state.credits.value < 0))
                   } 
                   style={{float: 'right'}} 

@@ -196,7 +196,7 @@ class EditInternalUser extends Component {
   } 
 
   
-  render() {   
+  render() {    
     return (
       <Wrapper>
         <UserEditWrapper elevation={24}>
@@ -304,15 +304,20 @@ class EditInternalUser extends Component {
                 <TextField
                   label="Select Credits"
                   type="number"
-                  inputProps={{ min: this.props.minimumTransferrableCredits }}
+                  inputProps={{ min: this.state.credits.action==='recover' ? 1 : this.props.minimumTransferrableCredits }}
                   value={this.state.credits.value}
                   onChange={(e)=>this.setState({credits: {...this.state.credits, value: e.target.value}})}
                   fullWidth
                   disabled={this.props.loading}
-                  error={this.state.credits.value < this.props.minimumTransferrableCredits || this.props.authCreditsAvailable < this.state.credits.value}
+                  error={
+                    (this.state.credits.action==='add' && (this.state.credits.value < this.props.minimumTransferrableCredits)) || 
+                    (this.state.credits.action==='add' && (this.props.authCreditsAvailable < this.state.credits.value)) ||
+                    (this.state.credits.action==='recover' && (this.state.user.creditsAvailable-this.state.credits.value < 0))
+                  }
                   helperText={
-                    this.state.credits.value < this.props.minimumTransferrableCredits ? `Minimum Transferrable credits is ${this.props.minimumTransferrableCredits}` 
-                    : this.props.authCreditsAvailable < this.state.credits.value ? "You don't have enough credits" 
+                    (this.state.credits.action==='add' && (this.state.credits.value < this.props.minimumTransferrableCredits)) ? `Minimum Transferrable credits is ${this.props.minimumTransferrableCredits}` 
+                    : (this.state.credits.action==='add' && (this.props.authCreditsAvailable < this.state.credits.value)) ? "You don't have enough credits to transfer" 
+                    : (this.state.credits.action==='recover' && (this.state.user.creditsAvailable-this.state.credits.value < 0)) ? 'User has not enough credits to recover'
                     : null
                   }
                 />
@@ -327,12 +332,12 @@ class EditInternalUser extends Component {
                   >
                     <FormControlLabel 
                       value="add" 
-                      control={<Radio disabled={this.props.loading || this.state.credits.value < this.props.minimumTransferrableCredits}/>} 
+                      control={<Radio disabled={this.props.loading}/>} 
                       label="Add" 
                     />
                     <FormControlLabel 
                       value="recover" 
-                      control={<Radio disabled={this.props.loading || this.state.credits.value < this.props.minimumTransferrableCredits}/>} 
+                      control={<Radio disabled={this.props.loading}/>} 
                       label="Recover" 
                     />
                   </RadioGroup>
@@ -341,7 +346,12 @@ class EditInternalUser extends Component {
                   variant="contained" 
                   type="submit" 
                   color="primary" 
-                  disabled={this.props.loading || this.state.credits.value < this.props.minimumTransferrableCredits  || this.props.authCreditsAvailable < this.state.credits.value} 
+                  disabled={
+                    (this.props.loading) || 
+                    (this.state.credits.action==='add' && (this.state.credits.value < this.props.minimumTransferrableCredits)) || 
+                    (this.state.credits.action==='add' && (this.props.authCreditsAvailable < this.state.credits.value)) ||
+                    (this.state.credits.action==='recover' && (this.state.user.creditsAvailable-this.state.credits.value < 0))
+                  } 
                   style={{float: 'right'}} 
                   onClick={()=>this.updateCredits()}
                 >
