@@ -7,6 +7,8 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import Icon from '@material-ui/core/Icon';
+import Typography from '@material-ui/core/Typography'
+import Logo from 'assets/logo.png'
 
 import { toggleMobileSideBar, clearNotification } from 'actions/general'
 
@@ -72,6 +74,17 @@ const Sidebar = (props) => {
     </ListItem>
   )
 
+
+  const logo = (          
+    <div style={{textAlign: 'center'}}>
+      <img src={Logo} alt="Logo" style={{maxWidth:100, padding: '10px 10px'}}/>
+      <Typography variant="h4" color="inherit" noWrap style={{color: 'white'}}>
+        G1HD Billing
+      </Typography>
+      <br/>
+    </div>
+  )
+
   return (
     <>
       {!mobileView ? 
@@ -81,7 +94,7 @@ const Sidebar = (props) => {
             paper: classes.drawerPaper
           }}
         >
-          <div className={classes.toolbar} />
+          {logo}
           {Menus}
         </Drawer>
         :
@@ -93,6 +106,7 @@ const Sidebar = (props) => {
             paper: classes.drawerPaper,
           }}
         >
+          {logo}
           {Menus}
         </SwipeableDrawer>
       }
