@@ -13,6 +13,7 @@ import Paper from '@material-ui/core/Paper'
 import Tooltip from '@material-ui/core/Tooltip'
 import AddIcon from '@material-ui/icons/Add'
 import EditIcon from '@material-ui/icons/Edit'
+import PlusOneIcon from '@material-ui/icons/PlusOne'
 import Button from '@material-ui/core/Button'
 import SearchIcon from '@material-ui/icons/Search'
 import TextField from '@material-ui/core/TextField'
@@ -206,7 +207,7 @@ class EnhancedTable extends React.Component {
 
 
   render() {
-    const { classes, mobileView, rows, tableHeight, title, viewOnly, addNew, canAdd } = this.props
+    const { classes, mobileView, rows, tableHeight, title, viewOnly, addNew, canAdd, incrementClientCredit } = this.props
     const { data, order, orderBy, rowsPerPage, page } = this.state
 
     return (
@@ -258,6 +259,17 @@ class EnhancedTable extends React.Component {
                                 <EditIcon fontSize="small" color="primary"/>
                               </IconButton>
                             </Tooltip>
+                            {incrementClientCredit && 
+                              <Tooltip title={(this.props.authCreditsAvailable+this.props.authCreditsOnHold < 1) ? "No credits available to transfer" : "Add 1 Credit"}>
+                                <IconButton 
+                                  aria-label="Add 1 Credit" 
+                                  style={{padding: 9}} 
+                                  onClick={()=>(this.props.authCreditsAvailable+this.props.authCreditsOnHold < 1) ? {} : this.props.incrementClientCredit(n.stb_mac)}
+                                >
+                                  <PlusOneIcon fontSize="small" color="primary"/>
+                                </IconButton>
+                              </Tooltip>
+                            }
                           </TableCell>
                         }
                       </TableRow>

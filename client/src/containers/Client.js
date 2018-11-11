@@ -2,6 +2,11 @@ import React, { Component } from 'react'
 import Table from 'components/Table'
 import { connect } from 'react-redux'
 import { getUsers } from 'actions/users'
+import { updateCredits } from 'actions/transactions'
+import { incrementClientCredit } from 'actions/clients'
+import { updateAuthResellerCredits } from 'actions/auth'
+
+
 
 const rows = [
   { field: 'stb_mac', label: 'MAC Address', type: 'string'  },
@@ -34,6 +39,18 @@ class Client extends Component {
     return displayData
   } 
 
+  incrementClientCredit = (stb_mac) => {
+    this.props.updateCredits({
+      credits: 1,
+      description: 'Added 1 credit',
+      transactionTo: stb_mac
+    })
+    .then(()=>{
+      this.props.incrementClientCredit(stb_mac)
+      this.props.updateAuthResellerCredits(-1)
+    })
+  }
+
   render() {
     return (
       <Table
@@ -41,10 +58,13 @@ class Client extends Component {
         rows={rows}
         data={this.getTableData()}
         orderBy='tariff_expired_date'
-        orderByDirection='desc'
+        orderByDirection='asc'
         mobileView={this.props.mobileView}
         gotoLink={(client)=>this.props.history.push(`/clients/${client.stb_mac}`)}
         addNew={()=>this.props.history.push('/clients/new')}
+        incrementClientCredit={(stb_mac)=>this.incrementClientCredit(stb_mac)}
+        authCreditsAvailable={this.props.authCreditsAvailable}
+        authCreditsOnHold={this.props.authCreditsOnHold}
         tableHeight={this.props.mobileView ? '70vh' : '80vh'}
         canAdd={this.props.authUserType==='reseller'}
       />
@@ -57,12 +77,16 @@ const mapStateToProps = state => ({
   token: state.auth.token,
   authUserType: state.auth.userType,
   clients: state.users.clients,
-  mobileView: state.general.mobileView
+  mobileView: state.general.mobileView,
+  authCreditsAvailable: state.auth.creditsAvailable,
+  authCreditsOnHold: state.auth.creditsOnHold,
 })
 
 const mapDispatchToProps = dispatch => ({
   getUsers: () => dispatch(getUsers()),
-
+  updateCredits: transaction => dispatch(updateCredits(transaction)),
+  incrementClientCredit: stb_mac => dispatch(incrementClientCredit(stb_mac)),
+  updateAuthResellerCredits: creditsAvailable => dispatch(updateAuthResellerCredits(creditsAvailable))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Client)
