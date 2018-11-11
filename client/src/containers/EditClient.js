@@ -555,9 +555,12 @@ class EditClient extends Component {
         </TransactionWrapper>
         <Confirmation
           open={this.state.deleteConfirmation}
-          message="Are you sure you want to delete this client ?"
+          message={(client.accountBalance > 0) ? 'Client has active credits. Please recover them before deleting.'
+            : 'Are you sure you want to delete this client ?'
+          }
           confirmationProceed={this.deleteConfirmationProceed}
           confirmationCancel={this.deleteConfirmationCancel}
+          disabled={client.accountBalance > 0}
         />
 
         <Dialog

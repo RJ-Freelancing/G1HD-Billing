@@ -38,7 +38,7 @@ const styles = theme => ({
 const permissions = {
   'super-admin': ['/', '/admins', '/superResellers', '/resellers', '/clients', '/transactions', '/events', '/config'],
   'admin': ['/', '/superResellers', '/resellers', '/clients', '/transactions', '/events'],
-  'superReseller': ['/', '/resellers', '/clients', '/transactions', '/events'],
+  'super-reseller': ['/', '/resellers', '/clients', '/transactions', '/events'],
   'reseller': ['/', '/clients', '/transactions', '/events']
 }
 

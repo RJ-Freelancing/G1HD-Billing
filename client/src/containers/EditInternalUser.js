@@ -386,12 +386,19 @@ class EditInternalUser extends Component {
             viewOnly={true}
           />
         </TransactionWrapper>
-        <Confirmation
-          open={this.state.confirmation }
-          message={this.state.confirmationMessage}
-          confirmationProceed={this.confirmationProceed}
-          confirmationCancel={this.confirmationCancel}
-        />
+        {this.state.user &&
+          <Confirmation
+            open={this.state.confirmation }
+            message={
+              (this.state.user.childUsernames.length > 0) ? 'User has active children. Please remove/move all children before deleting.'
+              : (this.state.user.creditsAvailable+this.state.user.creditsOnHold > 0) ? 'User has active credits. Please recover them before deleting.'
+              : this.state.confirmationMessage
+            }
+            confirmationProceed={this.confirmationProceed}
+            confirmationCancel={this.confirmationCancel}
+            disabled={this.state.user.childUsernames.length > 0 || (this.state.user.creditsAvailable+this.state.user.creditsOnHold > 0)}
+          />
+        }
       </Wrapper>
     )
   }
