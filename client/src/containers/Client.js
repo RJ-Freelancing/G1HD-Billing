@@ -62,7 +62,7 @@ class Client extends Component {
         mobileView={this.props.mobileView}
         gotoLink={(client)=>this.props.history.push(`/clients/${client.stb_mac}`)}
         addNew={()=>this.props.history.push('/clients/new')}
-        incrementClientCredit={(stb_mac)=>this.incrementClientCredit(stb_mac)}
+        incrementClientCredit={this.props.authUserType==='reseller' ? (stb_mac)=>this.incrementClientCredit(stb_mac) : false}
         authCreditsAvailable={this.props.authCreditsAvailable}
         authCreditsOnHold={this.props.authCreditsOnHold}
         tableHeight={this.props.mobileView ? '70vh' : '80vh'}
