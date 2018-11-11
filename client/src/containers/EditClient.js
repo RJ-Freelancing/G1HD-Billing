@@ -217,6 +217,14 @@ class EditClient extends Component {
     }
   }
 
+  componentDidUpdate = (prevProps, prevState, snapshot) => {
+    let client = this.props.clients.find(client=>client.stb_mac===this.props.match.params.id)
+    if (!isEqual(prevState.editingClient, client) && prevState.editingClient && prevState.editingClient.tariff_plan!==client.tariff_plan) {
+      if (!this.props.token) this.props.history.push('/login')
+      else this.setEditingClient(this.props.match.params.id)
+    }
+  }
+
   setEditingClient = (stb_mac) => {
     let client = this.props.clients.find(client=>client.stb_mac===stb_mac)
     this.setState({editingClient: {...client}})

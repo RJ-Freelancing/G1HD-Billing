@@ -9,8 +9,11 @@ import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import Icon from '@material-ui/core/Icon';
 import Typography from '@material-ui/core/Typography'
 import Logo from 'assets/logo.png'
+import SettingsIcon from '@material-ui/icons/Settings'
+import LogoutIcon from '@material-ui/icons/PowerSettingsNew'
 
 import { toggleMobileSideBar, clearNotification } from 'actions/general'
+import { logout } from 'actions/auth'
 
 
 const styles = theme => ({
@@ -48,7 +51,6 @@ const menus = [
   {label: 'Transactions', link: '/transactions', icon: 'attach_money'},
   {label: 'Events', link: '/events', icon: 'near_me'},
   {label: 'Configuration', link: '/config', icon: 'info'},
-
 ];
 
 
@@ -85,6 +87,29 @@ const Sidebar = (props) => {
     </div>
   )
 
+  const footer = (
+    <>
+    <br/>
+    <ListItem 
+      onClick={()=>{props.gotoLink('/profile');props.clearNotification()}}
+      button 
+      classes={{root: classes.menu}}  
+      style={{background: props.activePage==='/profile' ? 'radial-gradient(circle, #9553eb, #714ad0, #5040b5, #2f3598, #082a7c)' : 'inherit'}}
+    >
+      <ListItemIcon classes={{root: classes.menuItem}}><SettingsIcon/></ListItemIcon>
+      <ListItemText primary="My account" primaryTypographyProps={{className: classes.menuItem}}/>
+    </ListItem>
+    <ListItem 
+      onClick={()=>{props.logout();props.gotoLink('/login')}}
+      button 
+      classes={{root: classes.menu}}  
+    >
+      <ListItemIcon classes={{root: classes.menuItem}}><LogoutIcon/></ListItemIcon>
+      <ListItemText primary="Logout" primaryTypographyProps={{className: classes.menuItem}}/>
+    </ListItem>
+    </>
+  )
+
   return (
     <>
       {!mobileView ? 
@@ -96,6 +121,7 @@ const Sidebar = (props) => {
         >
           {logo}
           {Menus}
+          {footer}
         </Drawer>
         :
         <SwipeableDrawer
@@ -108,6 +134,7 @@ const Sidebar = (props) => {
         >
           {logo}
           {Menus}
+          {footer}
         </SwipeableDrawer>
       }
     </>
@@ -125,6 +152,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   toggleMobileSideBar: (open) => dispatch(toggleMobileSideBar(open)),
   clearNotification: () => dispatch(clearNotification()),
+  logout: () => dispatch(logout()),
+
 
 })
 
