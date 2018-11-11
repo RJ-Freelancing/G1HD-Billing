@@ -150,6 +150,7 @@ const Sidebar = (props) => {
           }}
         >
           {logo}
+          {authInfo}
           {Menus}
           {footer}
         </SwipeableDrawer>
