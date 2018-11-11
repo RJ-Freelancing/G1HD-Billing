@@ -78,7 +78,14 @@ class Events extends Component {
     return (
       <div>
         <Paper>
+          <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr'}}>
           <Typography variant="h6" style={{marginLeft: 20}}>Select MAC IDs to send Event</Typography>
+          {this.props.authUserType === 'super-admin' && 
+            <Button variant="contained" color="secondary" disabled={this.props.loading} onClick={()=>this.setState({ids: [], open: true})}>
+              Click Here To Send Event To All MAC IDs
+            </Button>          
+          }
+          </div>
         </Paper>
         <Table
           rows={rows}
@@ -94,7 +101,13 @@ class Events extends Component {
           fullWidth
         >
           <form onSubmit={this.sendEvent}>
-            <DialogTitle id="form-dialog-title">Sending Event for Selected {this.state.ids.length} MAC Addresses</DialogTitle>
+            <DialogTitle id="form-dialog-title">
+              {this.props.authUserType === 'super-admin' && this.state.ids.length===0 ? 
+                'Sending Event to All Mac Addresses'
+              :
+                `Sending Event to Selected ${this.state.ids.length} MAC Addresses`
+              }
+            </DialogTitle>
             <DialogContent>
               <div style={{display: 'grid', gridTemplateColumns: ['send_msg', 'play_channel'].includes(this.state.event) ? '1fr 1fr' : '1fr', gridGap: 20}}>
                 <FormControl>
@@ -174,7 +187,7 @@ class Events extends Component {
               <Button onClick={()=>this.setState({open: false})} color="secondary">
                 Cancel
               </Button>
-              <Button variant="contained" type="submit" color="primary" disabled={this.props.loading || this.checkValidation()}>
+              <Button variant="contained" type="submit" color="primary" disabled={this.props.loading || this.checkValidation()} onClick={this.sendEvent}>
                 Send
               </Button>
             </DialogActions>
@@ -194,6 +207,7 @@ class Events extends Component {
 const mapStateToProps = state => ({
   token: state.auth.token,
   clients: state.users.clients,
+  authUserType: state.auth.userType,
   mobileView: state.general.mobileView
 })
 
