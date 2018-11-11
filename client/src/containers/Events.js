@@ -91,6 +91,7 @@ class Events extends Component {
           rows={rows}
           data={this.getTableData()}
           orderBy='tariff_expired_date'
+          orderByDirection='desc'
           mobileView={this.props.mobileView}
           sendEvent={(ids)=>this.setState({ids, open: true})}
           tableHeight={this.props.mobileView ? '70vh' : '78vh'}

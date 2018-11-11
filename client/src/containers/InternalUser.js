@@ -57,6 +57,7 @@ class InternalUser extends Component {
         rows={rows}
         data={this.getTableData(this.props.location.pathname.substr(1))}
         orderBy='creditsAvailable'
+        orderByDirection='asc'
         mobileView={this.props.mobileView}
         gotoLink={(user)=>this.props.history.push(`/users/${user.username}`)} 
         canAdd={this.checkPermissionToAdd(this.props.location.pathname.substr(1))}

@@ -15,3 +15,8 @@ export const login = ({username, password}) => ({
 export const logout = () => ({
   type: 'LOGOUT'
 })
+
+export const updateAuthCreditsAvailable = creditsAvailable => ({
+  type: 'UPDATE_CREDITS_AVAILABLE',
+  payload: creditsAvailable
+})

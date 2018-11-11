@@ -507,6 +507,7 @@ class EditClient extends Component {
             rows={rows}
             data={this.getTableData(this.state.transactions)}
             orderBy='createdAt'
+            orderByDirection='desc'
             mobileView={this.props.mobileView}
             tableHeight='100%'
             viewOnly={true}

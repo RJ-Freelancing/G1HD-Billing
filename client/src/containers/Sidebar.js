@@ -55,10 +55,10 @@ const menus = [
 
 
 const Sidebar = (props) => {
-  const { classes, mobileView, userType } = props
+  const { classes, mobileView, authUserType } = props
   
   const Menus = menus.map(({ label, link, icon }, idx)=> 
-    userType && permissions[userType].includes(link) && 
+    authUserType && permissions[authUserType].includes(link) && 
     <ListItem 
       key={idx} 
       button 
@@ -80,10 +80,26 @@ const Sidebar = (props) => {
   const logo = (          
     <div style={{textAlign: 'center'}}>
       <img src={Logo} alt="Logo" style={{maxWidth:100, padding: '10px 10px'}}/>
-      <Typography variant="h4" color="inherit" noWrap style={{color: 'white'}}>
+      <Typography variant="h5" color="inherit" noWrap style={{color: 'white'}}>
         G1HD Billing
       </Typography>
       <br/>
+    </div>
+  )
+
+  const authInfo = (
+    <div style={{textAlign: 'center', paddingBottom: 10}}>
+      <Typography variant="subtitle2" color="inherit" noWrap style={{color: 'white'}}>
+        Welcome {props.auth.username}
+      </Typography>
+      <Typography variant="subtitle2" color="inherit" noWrap style={{color: 'white'}}>
+        Credits Available {props.auth.creditsAvailable}
+      </Typography>
+      {authUserType==='reseller' &&
+        <Typography variant="subtitle2" color="inherit" noWrap style={{color: 'white'}}>
+          Credits On Hold {props.auth.creditsOnHold}
+        </Typography>
+      }
     </div>
   )
 
@@ -120,6 +136,7 @@ const Sidebar = (props) => {
           }}
         >
           {logo}
+          {authInfo}
           {Menus}
           {footer}
         </Drawer>
@@ -144,7 +161,8 @@ const Sidebar = (props) => {
 
 
 const mapStateToProps = state => ({
-  userType: state.auth.userType,
+  auth: state.auth,
+  authUserType: state.auth.userType,
   mobileMenu: state.general.mobileMenu,
   mobileView: state.general.mobileView
 })

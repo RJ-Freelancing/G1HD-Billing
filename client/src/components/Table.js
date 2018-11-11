@@ -172,7 +172,7 @@ const styles = theme => ({
 
 class EnhancedTable extends React.Component {
   state = {
-    order: 'asc',
+    order: this.props.orderByDirection,
     orderBy: this.props.orderBy,
     data: this.props.data,
     page: 0,

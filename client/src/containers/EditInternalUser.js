@@ -21,6 +21,9 @@ import Confirmation from 'components/Confirmation';
 import { getUsers, updateUser, deleteUser } from 'actions/users'
 import { getUserTransactions, updateCredits } from 'actions/transactions'
 import { getConfig } from 'actions/users'
+import { updateAuthCreditsAvailable } from 'actions/auth'
+
+
 
 const validPhoneNo = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
 
@@ -165,6 +168,18 @@ class EditInternalUser extends Component {
       credits: this.state.credits.action==="add" ? this.state.credits.value : this.state.credits.value*-1,
       description: `${startCase(this.state.credits.action)}ed ${this.state.credits.value} credits`,
       transactionTo: this.state.user.username
+    })
+    .then(()=>{
+      this.props.getUserTransactions(this.state.user.username)
+      .then(resnponseTransactions => { 
+        const creditsTo = this.state.credits.action==="add" ? this.state.credits.value : this.state.credits.value*-1
+        const creditsFrom = -1*creditsTo
+        this.props.getUsers()
+        .then(()=>{
+          this.loadInternalUserFromUsername(this.props.match.params.id)
+          this.props.updateAuthCreditsAvailable(creditsFrom)
+        })
+      })
     })
   }
 
@@ -347,6 +362,7 @@ class EditInternalUser extends Component {
             rows={rows}
             data={this.getTableData(this.state.transactions)}
             orderBy='createdAt'
+            orderByDirection='desc'
             mobileView={this.props.mobileView}
             tableHeight='100%'
             viewOnly={true}
@@ -380,6 +396,7 @@ const mapDispatchToProps = dispatch => ({
   deleteUser: (username) => dispatch(deleteUser(username)),
   getConfig: () => dispatch(getConfig()),
   getUserTransactions: username => dispatch(getUserTransactions(username)),
+  updateAuthCreditsAvailable: creditsAvailable => dispatch(updateAuthCreditsAvailable(creditsAvailable))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditInternalUser)
