@@ -5,7 +5,7 @@ import { checkPermissionRights } from '../_helpers/checkPermission'
 import axios from 'axios'
 import dateFns from 'date-fns'
 
-const ministraAPI = process.env.MINISTRA_HOST+'stalker_portal/api/'
+const ministraAPI = process.env.MINISTRA_HOST + 'stalker_portal/api/'
 const ministaUser = process.env.MINISTRA_USER
 const ministraPW = process.env.MINISTRA_PW
 const config = {
@@ -20,21 +20,21 @@ const config = {
 
 export async function checkPermission(req, res, next) {
   const macRegex = /^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/
-  if(macRegex.test(req.params.id)){
-    const client = await clientRepo.findOne({ clientMac : req.params.id})
-    if (!client) return res.status(404).json({ error: `Client with mac Address ${req.params.id} was not found in mongo DB` }) 
-    if(await checkPermissionRights(req.params.id, req.user, 0) == false) return res.status(403).json({ error: `You Have No Rights To Perform This Action.`})
+  if (macRegex.test(req.params.id)) {
+    const client = await clientRepo.findOne({ clientMac: req.params.id })
+    if (!client) return res.status(404).json({ error: `Client with mac Address ${req.params.id} was not found in mongo DB` })
+    if (await checkPermissionRights(req.params.id, req.user, 0) == false) return res.status(403).json({ error: `You Have No Rights To Perform This Action.` })
   }
   else {
-    const user = await userRepo.findOne({ username : req.params.id})
-    if (!user) return res.status(404).json({ error: `User with username ${req.params.id} was not found in DB` }) 
-    if(await checkPermissionRights(user, req.user, 1) == false) return res.status(403).json({ error: `You Have No Rights To Perform This Action.`})
+    const user = await userRepo.findOne({ username: req.params.id })
+    if (!user) return res.status(404).json({ error: `User with username ${req.params.id} was not found in DB` })
+    if (await checkPermissionRights(user, req.user, 1) == false) return res.status(403).json({ error: `You Have No Rights To Perform This Action.` })
   }
   next()
 }
 
 export async function getTransactionsForUser(req, res, next) {
-  const transactions = await transactionRepo.find({$or:[ {transactionTo: { $in: req.params.id}}, {transactionFrom: { $in: req.params.id}}]}, null, { sort: { credits: 1 } })
+  const transactions = await transactionRepo.find({ $or: [{ transactionTo: { $in: req.params.id } }, { transactionFrom: { $in: req.params.id } }] }, null, { sort: { credits: 1 } })
   return res.status(200).json(transactions)
 }
 
@@ -42,64 +42,64 @@ export async function addTransaction(req, res, next) {
   const transactionFrom = req.user.username
   const { credits, description, transactionTo } = req.value.body
   if (!req.user.childUsernames.includes(transactionTo)) return res.status(403).json(`You cant add credits to the user ${transactionTo}`)
-  if (credits > 0 && req.user.creditsAvailable < credits && (req.user.creditsAvailable+req.user.creditsOnHold) < credits ) return res.status(400).json(`You have no enough credits to transfer.`)
-  if (req.user.userType == "reseller"){
-    const client = await clientRepo.findOne({clientMac : transactionTo})
-    if (credits < 0 && client.accountBalance<(-1*credits)) return res.status(400).json("Not enough balance to recover the credits. Try again with lesser credits.")
+  if (credits > 0 && req.user.creditsAvailable < credits && (req.user.creditsAvailable + req.user.creditsOnHold) < credits) return res.status(400).json(`You have no enough credits to transfer.`)
+  if (req.user.userType == "reseller") {
+    const client = await clientRepo.findOne({ clientMac: transactionTo })
+    if (credits < 0 && client.accountBalance < (-1 * credits)) return res.status(400).json("Not enough balance to recover the credits. Try again with lesser credits.")
     if (req.user.creditsAvailable > credits) {
-      await req.user.update({creditsAvailable : (req.user.creditsAvailable-credits)})
-      if(credits>0) await req.user.update({creditsOnHold : (req.user.creditsOnHold+credits)})
+      await req.user.update({ creditsAvailable: (req.user.creditsAvailable - credits) })
+      if (credits > 0) await req.user.update({ creditsOnHold: (req.user.creditsOnHold + credits) })
     }
-    else if ((req.user.creditsAvailable+req.user.creditsOnHold) > credits){
+    else if ((req.user.creditsAvailable + req.user.creditsOnHold) > credits) {
       // Intentionally left deducting -1 once you move money to credits on hold while transferring to client. Let cronjob handle it
-      await req.user.update( {creditsOnHold : ((req.user.creditsAvailable+req.user.creditsOnHold)-credits), creditsAvailable : 0})
+      await req.user.update({ creditsOnHold: ((req.user.creditsAvailable + req.user.creditsOnHold) - credits), creditsAvailable: 0 })
     }
-    await clientRepo.findOneAndUpdate({clientMac : transactionTo}, { $inc: { accountBalance : credits }})
+    await clientRepo.findOneAndUpdate({ clientMac: transactionTo }, { $inc: { accountBalance: credits } })
   }
   else {
-    const user = await userRepo.findOne({username : transactionTo})
-    if (credits < 0 && user.creditsAvailable<(-1*credits)) return res.status(400).json("Not enough balance to recover the credits. Try again with lesser credits.")
-    if (req.user.creditsAvailable > credits) await req.user.update({creditsAvailable : (req.user.creditsAvailable-credits)})
-    await userRepo.findOneAndUpdate({username : transactionTo}, { $inc : { creditsAvailable : credits }})
+    const user = await userRepo.findOne({ username: transactionTo })
+    if (credits < 0 && user.creditsAvailable < (-1 * credits)) return res.status(400).json("Not enough balance to recover the credits. Try again with lesser credits.")
+    if (req.user.creditsAvailable > credits) await req.user.update({ creditsAvailable: (req.user.creditsAvailable - credits) })
+    await userRepo.findOneAndUpdate({ username: transactionTo }, { $inc: { creditsAvailable: credits } })
   }
 
-  await axios.get(ministraAPI+'accounts/'+transactionTo, config)
-  .then(response => {
-    res.locals.clientExpiryDate = response.data.results[0].tariff_expired_date
-  })
-  .catch(error => {
-    console.log("Ministra API Error : " + error)
-  })
+  await axios.get(ministraAPI + 'accounts/' + transactionTo, config)
+    .then(response => {
+      res.locals.clientExpiryDate = response.data.results[0].tariff_expired_date
+    })
+    .catch(error => {
+      console.log("Ministra API Error : " + error)
+    })
   let expiredDate = []
-  if (res.locals.clientExpiryDate == null || res.locals.clientExpiryDate == "0000-00-00 00:00:00"){
-    expiredDate = await `tariff_expired_date=${expiryDateAfterTransaction(0,credits)}`
+  if (res.locals.clientExpiryDate == null || res.locals.clientExpiryDate == "0000-00-00 00:00:00") {
+    expiredDate = await `tariff_expired_date=${expiryDateAfterTransaction(0, credits)}`
   }
   else {
     expiredDate = await `tariff_expired_date=${expiryDateAfterTransaction(res.locals.clientExpiryDate, credits)}`
   }
-  await axios.put(ministraAPI+'accounts/'+transactionTo,
-  expiredDate, config) 
+  await axios.put(ministraAPI + 'accounts/' + transactionTo,
+    expiredDate, config)
     .then(response => {
       res.locals.updatedUser = response.data
     })
     .catch(error => {
       console.log("Ministra API Error : " + error)
     })
-  const transaction = await transactionRepo.create([{ credits, description, transactionFrom, transactionTo }], {lean:true})
-  return res.status(201).json({transaction})
+  const transaction = await transactionRepo.create([{ credits, description, transactionFrom, transactionTo }], { lean: true })
+  return res.status(201).json({ transaction })
 }
 
 function expiryDateAfterTransaction(date, n) {
   var resDate
-  if (date == 0){
+  if (date == 0) {
     resDate = new Date()
   }
   else {
     var currDate = new Date()
     resDate = new Date(date)
-    if (resDate<currDate) resDate = currDate
+    if (resDate < currDate) resDate = currDate
   }
   resDate = dateFns.addMonths(resDate, n)
-  if (resDate<currDate) resDate = currDate
+  if (resDate < currDate) resDate = currDate
   return dateFns.format(resDate, 'YYYY-MM-DD')
 }

@@ -17,7 +17,7 @@ export const schemas = {
     userType: Joi.string().required(),
     accountStatus: Joi.boolean().required(),
   }),
-  
+
   updateSchema: Joi.object({
     username: Joi.string(),
     email: Joi.string().email().error(new Error('Email Address should be a valid Email Address.')),

@@ -4,7 +4,7 @@ import fs from 'fs'
 import rfs from 'rotating-file-stream'
 
 
-const filenameGenerator = () => { 
+const filenameGenerator = () => {
   const dateiso = new Date().toISOString()
   const datestr = dateiso.substr(0, 10)
   const timestr = dateiso.substr(11, 8)
@@ -19,7 +19,7 @@ let logStream = process.stdout
 let format = 'dev'
 
 // Create a rotating write stream in production
-if (process.env.NODE_ENV==='production') {
+if (process.env.NODE_ENV === 'production') {
   fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory)
   logStream = rfs(filenameGenerator, {
     interval: '7d', // rotate weekly
@@ -29,4 +29,4 @@ if (process.env.NODE_ENV==='production') {
 }
 
 
-export default morgan(format, {stream: logStream})
+export default morgan(format, { stream: logStream })

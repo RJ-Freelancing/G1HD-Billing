@@ -7,7 +7,7 @@ import { addTransaction, checkPermission, getTransactionsForUser } from '../cont
 const passportJWT = passport.authenticate('jwt', { session: false })
 const router = require('express-promise-router')()
 
-  router.route('/')
+router.route('/')
   .post(
     passportJWT,
     validateBody(schemas.addSchema),
