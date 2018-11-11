@@ -305,7 +305,7 @@ class EditClient extends Component {
 
   render() {   
     const client = this.props.clients.find(client=>client.stb_mac===this.props.match.params.id)
-    if (!client) return <Wrapper></Wrapper>
+    if (!client) return <Wrapper></Wrapper>  
     return (
       <Wrapper>
         <ClientEditWrapper elevation={24}>
@@ -395,10 +395,16 @@ class EditClient extends Component {
                   onChange={(e)=>this.setState({credits: {...this.state.credits, value: e.target.value}})}
                   fullWidth
                   disabled={this.props.loading}
-                  error={this.state.credits.value < 1 || this.state.credits.value > 12 || this.props.authCreditsAvailable+this.props.authCreditsOnHold < this.state.credits.value}
+                  error={
+                    (this.state.credits.value < 1) || 
+                    (this.state.credits.value > 12) || 
+                    (this.props.authCreditsAvailable+this.props.authCreditsOnHold < this.state.credits.value) ||
+                    (this.state.credits.action==='recover' && (client.accountBalance-this.state.credits.value < 0))
+                  }
                   helperText={
-                    this.state.credits.value < 1|| this.state.credits.value > 12 ? 'Credits can only be transferred in the range from 1 to 12' 
-                    : this.props.authCreditsAvailable+this.props.authCreditsOnHold < this.state.credits.value ? "You don't have enough credits"
+                    (this.state.credits.value < 1 || this.state.credits.value > 12) ? 'Credits can only be transferred in the range from 1 to 12' 
+                    : (this.props.authCreditsAvailable+this.props.authCreditsOnHold < this.state.credits.value) ? "You don't have enough credits"
+                    : (this.state.credits.action==='recover' && (client.accountBalance-this.state.credits.value < 0)) ? 'Client has not enough credits to recover'
                     : null
                   }
                 />
@@ -419,7 +425,13 @@ class EditClient extends Component {
                   variant="contained" 
                   type="submit" 
                   color="primary" 
-                  disabled={this.props.loading || this.state.credits.value < 1 || this.state.credits.value > 12  || this.props.authCreditsAvailable+this.props.authCreditsOnHold < this.state.credits.value} 
+                  disabled={
+                    (this.props.loading) || 
+                    (this.state.credits.value < 1) || 
+                    (this.state.credits.value > 12) || 
+                    (this.props.authCreditsAvailable+this.props.authCreditsOnHold < this.state.credits.value) ||
+                    (this.state.credits.action==='recover' && (client.accountBalance-this.state.credits.value < 0))
+                  } 
                   style={{float: 'right'}} 
                   onClick={()=>this.updateCredits()}
                 >
