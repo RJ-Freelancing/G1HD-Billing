@@ -42,23 +42,27 @@ export async function addTransaction(req, res, next) {
   const transactionFrom = req.user.username
   const { credits, description, transactionTo } = req.value.body
   if (!req.user.childUsernames.includes(transactionTo)) return res.status(403).json(`You cant add credits to the user ${transactionTo}`)
-  if (req.user.creditsAvailable < credits && req.user.creditsOnHold < credits ) return res.status(400).json(`You have no enough credits to transfer.`)
-  if (req.user.creditsAvailable > credits) {
-    await req.user.update({creditsAvailable : (req.user.creditsAvailable-credits)} )
-  }
-  else {
-    await req.user.update({creditsOnHold : (req.user.creditsOnHold-credits)} )
-  }
+  if (credits > 0 && req.user.creditsAvailable < credits && (req.user.creditsAvailable+req.user.creditsOnHold) < credits ) return res.status(400).json(`You have no enough credits to transfer.`)
   if (req.user.userType == "reseller"){
     const client = await clientRepo.findOne({clientMac : transactionTo})
     if (credits < 0 && client.accountBalance<(-1*credits)) return res.status(400).json("Not enough balance to recover the credits. Try again with lesser credits.")
+    if (req.user.creditsAvailable > credits) {
+      await req.user.update({creditsAvailable : (req.user.creditsAvailable-credits)})
+      if(credits>0) await req.user.update({creditsOnHold : (req.user.creditsOnHold+credits)})
+    }
+    else if ((req.user.creditsAvailable+req.user.creditsOnHold) > credits){
+      // Intentionally left deducting -1 once you move money to credits on hold while transferring to client. Let cronjob handle it
+      await req.user.update( {creditsOnHold : ((req.user.creditsAvailable+req.user.creditsOnHold)-credits), creditsAvailable : 0})
+    }
     await clientRepo.findOneAndUpdate({clientMac : transactionTo}, { $inc: { accountBalance : credits }})
   }
   else {
     const user = await userRepo.findOne({username : transactionTo})
     if (credits < 0 && user.creditsAvailable<(-1*credits)) return res.status(400).json("Not enough balance to recover the credits. Try again with lesser credits.")
+    if (req.user.creditsAvailable > credits) await req.user.update({creditsAvailable : (req.user.creditsAvailable-credits)})
     await userRepo.findOneAndUpdate({username : transactionTo}, { $inc : { creditsAvailable : credits }})
   }
+
   await axios.get(ministraAPI+'accounts/'+transactionTo, config)
   .then(response => {
     res.locals.clientExpiryDate = response.data.results[0].tariff_expired_date
@@ -91,8 +95,11 @@ function expiryDateAfterTransaction(date, n) {
     resDate = new Date()
   }
   else {
+    var currDate = new Date()
     resDate = new Date(date)
+    if (resDate<currDate) resDate = currDate
   }
   resDate = dateFns.addMonths(resDate, n)
+  if (resDate<currDate) resDate = currDate
   return dateFns.format(resDate, 'YYYY-MM-DD')
 }
