@@ -37,6 +37,7 @@ import { getUsers } from 'actions/users'
 import { addClient, updateClient, deleteClient, getSubscriptions, addSubscription, removeSubscription, sendEvent, checkMAC } from 'actions/clients'
 import { getUserTransactions, updateCredits } from 'actions/transactions'
 import { getTariffPlans } from 'actions/general'
+import { updateAuthResellerCredits } from 'actions/auth'
 
 
 const validPhoneNo = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
@@ -176,10 +177,12 @@ class EditClient extends Component {
   }
 
   componentDidUpdate = (prevProps, prevState, snapshot) => {
-    let client = this.props.clients.find(client=>client.stb_mac===this.props.match.params.id)
-    if (!isEqual(prevState.editingClient, client) && client && prevState.editingClient && prevState.editingClient.tariff_plan!==client.tariff_plan) {
-      if (!this.props.token) this.props.history.push('/login')
-      else this.setEditingClient(this.props.match.params.id)
+    if (!this.props.token) this.props.history.push('/login')
+    else {
+      let client = this.props.clients.find(client=>client.stb_mac===this.props.match.params.id)
+      if (!isEqual(prevState.editingClient, client) && client && prevState.editingClient && prevState.editingClient.tariff_plan!==client.tariff_plan) {
+        this.setEditingClient(this.props.match.params.id)
+      }
     }
   }
 
@@ -239,6 +242,18 @@ class EditClient extends Component {
       description: `${startCase(this.state.credits.action)}ed ${this.state.credits.value} credits`,
       transactionTo: this.state.editingClient.stb_mac
     })
+    .then(()=>{
+      this.props.getUserTransactions(this.state.editingClient.stb_mac)
+      .then(() => { 
+        const creditsTo = this.state.credits.action==="add" ? this.state.credits.value : this.state.credits.value*-1
+        const creditsFrom = -1*creditsTo
+        this.props.getUsers()
+        .then(()=>{
+          this.setEditingClient(this.props.match.params.id)
+          this.props.updateAuthResellerCredits(creditsFrom)
+        })
+      })
+    })
   }
 
   setSubscription = (subscribed, checked) => {
@@ -290,7 +305,7 @@ class EditClient extends Component {
 
   render() {   
     const client = this.props.clients.find(client=>client.stb_mac===this.props.match.params.id)
-    if (!client) return <Wrapper></Wrapper>
+    if (!client) return <Wrapper></Wrapper>  
     return (
       <Wrapper>
         <ClientEditWrapper elevation={24}>
@@ -380,6 +395,18 @@ class EditClient extends Component {
                   onChange={(e)=>this.setState({credits: {...this.state.credits, value: e.target.value}})}
                   fullWidth
                   disabled={this.props.loading}
+                  error={
+                    (this.state.credits.value < 1) || 
+                    (this.state.credits.value > 12) || 
+                    (this.state.credits.action==='add' && (this.props.authCreditsAvailable+this.props.authCreditsOnHold < this.state.credits.value)) ||
+                    (this.state.credits.action==='recover' && (client.accountBalance-this.state.credits.value < 0))
+                  }
+                  helperText={
+                    (this.state.credits.value < 1 || this.state.credits.value > 12) ? 'Credits can only be transferred in the range from 1 to 12' 
+                    : (this.state.credits.action==='add' && (this.props.authCreditsAvailable+this.props.authCreditsOnHold < this.state.credits.value)) ? "You don't have enough credits to transfer"
+                    : (this.state.credits.action==='recover' && (client.accountBalance-this.state.credits.value < 0)) ? 'Client has not enough credits to recover'
+                    : null
+                  }
                 />
                 <br/><br/>
                 <FormControl component="fieldset">
@@ -394,7 +421,20 @@ class EditClient extends Component {
                     <FormControlLabel value="recover" control={<Radio />} label="Recover" />
                   </RadioGroup>
                 </FormControl>
-                <Button variant="contained" type="submit" color="primary" disabled={this.props.loading} style={{float: 'right'}} onClick={()=>this.updateCredits()}>
+                <Button 
+                  variant="contained" 
+                  type="submit" 
+                  color="primary" 
+                  disabled={
+                    (this.props.loading) || 
+                    (this.state.credits.value < 1) || 
+                    (this.state.credits.value > 12) || 
+                    (this.state.credits.action==='add' && (this.props.authCreditsAvailable+this.props.authCreditsOnHold < this.state.credits.value)) ||
+                    (this.state.credits.action==='recover' && (client.accountBalance-this.state.credits.value < 0))
+                  } 
+                  style={{float: 'right'}} 
+                  onClick={()=>this.updateCredits()}
+                >
                   Submit&nbsp;
                   <SaveIcon />
                 </Button>
@@ -515,9 +555,12 @@ class EditClient extends Component {
         </TransactionWrapper>
         <Confirmation
           open={this.state.deleteConfirmation}
-          message="Are you sure you want to delete this client ?"
+          message={(client.accountBalance > 0) ? 'Client has active credits. Please recover them before deleting.'
+            : 'Are you sure you want to delete this client ?'
+          }
           confirmationProceed={this.deleteConfirmationProceed}
           confirmationCancel={this.deleteConfirmationCancel}
+          disabled={client.accountBalance > 0}
         />
 
         <Dialog
@@ -569,6 +612,8 @@ class EditClient extends Component {
 const mapStateToProps = state => ({
   token: state.auth.token,
   clients: state.users.clients,
+  authCreditsAvailable: state.auth.creditsAvailable,
+  authCreditsOnHold: state.auth.creditsOnHold,
   tariffPlans: state.general.tariffPlans,
   authUsername: state.auth.username, 
   mobileView: state.general.mobileView
@@ -587,6 +632,7 @@ const mapDispatchToProps = dispatch => ({
   sendEvent: event => dispatch(sendEvent(event)),
   checkMAC: mac => dispatch(checkMAC(mac)),
   getUserTransactions: username => dispatch(getUserTransactions(username)),
+  updateAuthResellerCredits: creditsAvailable => dispatch(updateAuthResellerCredits(creditsAvailable))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditClient)

@@ -36,6 +36,16 @@ const users = (state = initialState, action) => {
             return client
         })
       }
+    case 'INCREMENT_CLIENT_CREDIT':
+      return {
+        ...state, 
+        clients: state.clients.map(client => {
+          if (client.stb_mac===action.payload )
+            return {...client, accountBalance:client.accountBalance+1}
+          else
+            return client
+        })
+      }
     case 'DELETE_CLIENT_SUCCESS':
       return {
         ...state, 

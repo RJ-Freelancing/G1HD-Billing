@@ -13,6 +13,7 @@ import Paper from '@material-ui/core/Paper'
 import Tooltip from '@material-ui/core/Tooltip'
 import AddIcon from '@material-ui/icons/Add'
 import EditIcon from '@material-ui/icons/Edit'
+import PlusOneIcon from '@material-ui/icons/PlusOne'
 import Button from '@material-ui/core/Button'
 import SearchIcon from '@material-ui/icons/Search'
 import TextField from '@material-ui/core/TextField'
@@ -60,6 +61,8 @@ class EnhancedTableHead extends React.Component {
     return (
       <TableHead>
           <TableRow>
+            {!viewOnly && <TableCell style={{position: 'sticky', top: 0, backgroundColor: "#fff", zIndex: 10, paddingRight: 0, paddingLeft: 5}}/>}
+
             {rows.map(row => {
               return (
                 <TableCell
@@ -83,7 +86,6 @@ class EnhancedTableHead extends React.Component {
                 </TableCell>
               )
             }, this)}
-            {!viewOnly && <TableCell style={{position: 'sticky', top: 0, backgroundColor: "#fff", zIndex: 10}}/>}
           </TableRow>
 
       </TableHead>
@@ -206,7 +208,7 @@ class EnhancedTable extends React.Component {
 
 
   render() {
-    const { classes, mobileView, rows, tableHeight, title, viewOnly, addNew, canAdd } = this.props
+    const { classes, mobileView, rows, tableHeight, title, viewOnly, addNew, canAdd, incrementClientCredit } = this.props
     const { data, order, orderBy, rowsPerPage, page } = this.state
 
     return (
@@ -238,6 +240,28 @@ class EnhancedTable extends React.Component {
                         tabIndex={-1}
                         key={idx}
                       >
+                        {!viewOnly &&
+                          <TableCell style={{paddingRight: 0, paddingLeft: 5}}>
+                            <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr'}}>
+                            <Tooltip title="Edit">
+                              <IconButton aria-label="Edit" style={{padding: 9}} onClick={()=>this.props.gotoLink(n)}>
+                                <EditIcon fontSize="small" color="primary"/>
+                              </IconButton>
+                            </Tooltip>
+                            {incrementClientCredit && 
+                              <Tooltip title={(this.props.authCreditsAvailable+this.props.authCreditsOnHold < 1) ? "No credits available to transfer" : "Add 1 Credit"}>
+                                <IconButton 
+                                  aria-label="Add 1 Credit" 
+                                  style={{padding: 9}} 
+                                  onClick={()=>(this.props.authCreditsAvailable+this.props.authCreditsOnHold < 1) ? {} : this.props.incrementClientCredit(n.stb_mac)}
+                                >
+                                  <PlusOneIcon fontSize="small" color="primary"/>
+                                </IconButton>
+                              </Tooltip>
+                            }
+                            </div>
+                          </TableCell>
+                        }
                         {Object.entries(n).map(([field, value]) => {
                           const fieldProperties = this.props.rows.find(row=>row.field===field)
                           switch (fieldProperties.type) {
@@ -251,15 +275,7 @@ class EnhancedTable extends React.Component {
                               return <TableCell key={field}> {value} </TableCell>
                           }
                         })}
-                        {!viewOnly &&
-                          <TableCell>
-                            <Tooltip title="Edit">
-                              <IconButton aria-label="Edit" style={{padding: 9}} onClick={()=>this.props.gotoLink(n)}>
-                                <EditIcon fontSize="small" color="primary"/>
-                              </IconButton>
-                            </Tooltip>
-                          </TableCell>
-                        }
+
                       </TableRow>
                     )
 
