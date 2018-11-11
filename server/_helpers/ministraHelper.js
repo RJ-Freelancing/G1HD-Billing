@@ -23,7 +23,6 @@ const SQL_SELECT_FIELDS = '\
   ip, \
   version, \
   comment, \
-  account_balance, \
   last_active \
 '
 
