@@ -304,7 +304,7 @@ class EditClient extends Component {
                 <TextField
                   label="Username"
                   type="username"
-                  value={client.login}
+                  value={client && client.login}
                   fullWidth
                   disabled
                 />
@@ -431,45 +431,47 @@ class EditClient extends Component {
         <TariffWrapper elevation={24}>
           <Typography variant="h4"> Edit Tariff Plan</Typography>
           <br/><br/>
-          <TariffDetails>
-            <TariffHeader>
-              <Select
-                label="Tarriff Plan"
-                value={client.tariff_plan}
-                onChange={(e)=>this.props.updateClient(client.stb_mac, {tariff_plan: e.target.value})}
-                inputProps={{ id: 'tariff_plan' }}
-              >
+          {client &&
+            <TariffDetails>
+              <TariffHeader>
+                <Select
+                  label="Tarriff Plan"
+                  value={client.tariff_plan}
+                  onChange={(e)=>this.props.updateClient(client.stb_mac, {tariff_plan: e.target.value})}
+                  inputProps={{ id: 'tariff_plan' }}
+                >
+                  {
+                    this.props.tariffPlans.map(plan=>(
+                      <MenuItem key={plan.id} value={parseInt(plan.id)}> {plan.name} </MenuItem>
+                    ))
+                  }
+                </Select>
+                <Typography variant="body2" style={{alignSelf: 'center', justifySelf: 'center'}}>
+                  Tariff Expires on : <strong>{format(Date.parse(client.tariff_expired_date), 'd MMMM YYYY')}</strong>
+                </Typography>
+              </TariffHeader>
+              <TariffPackagesHeader>
+                <div>Name</div><div style={{justifySelf: 'center'}}>Optional</div><div style={{justifySelf: 'center'}}>Subscribed</div>
+              </TariffPackagesHeader>
+              <TariffPackages>
                 {
-                  this.props.tariffPlans.map(plan=>(
-                    <MenuItem key={plan.id} value={parseInt(plan.id)}> {plan.name} </MenuItem>
+                  this.props.tariffPlans.find(plan=>parseInt(plan.id)===client.tariff_plan) &&
+                  this.props.tariffPlans.find(plan=>parseInt(plan.id)===client.tariff_plan).packages.map(tariffPackage=>(
+                    <TariffPackageRow key={tariffPackage.name}>
+                      <div>{tariffPackage.name}</div>
+                      <div style={{justifySelf: 'center'}}>{tariffPackage.optional==="1" ? "Yes": "No"}</div>
+                      <Checkbox 
+                        checked={tariffPackage.optional==="1" ? this.state.subscriptions.includes(tariffPackage.id) : true} 
+                        disabled={tariffPackage.optional==="1" ? false: true}  
+                        style={{padding: 10, justifySelf: 'center', height: 15}}
+                        onChange={(e)=>this.setSubscription(tariffPackage.id, e.target.checked)}
+                      />
+                    </TariffPackageRow>
                   ))
                 }
-              </Select>
-              <Typography variant="body2" style={{alignSelf: 'center', justifySelf: 'center'}}>
-                Tariff Expires on : <strong>{format(Date.parse(client.tariff_expired_date), 'd MMMM YYYY')}</strong>
-              </Typography>
-            </TariffHeader>
-            <TariffPackagesHeader>
-              <div>Name</div><div style={{justifySelf: 'center'}}>Optional</div><div style={{justifySelf: 'center'}}>Subscribed</div>
-            </TariffPackagesHeader>
-            <TariffPackages>
-              {
-                this.props.tariffPlans.find(plan=>parseInt(plan.id)===client.tariff_plan) &&
-                this.props.tariffPlans.find(plan=>parseInt(plan.id)===client.tariff_plan).packages.map(tariffPackage=>(
-                  <TariffPackageRow key={tariffPackage.name}>
-                    <div>{tariffPackage.name}</div>
-                    <div style={{justifySelf: 'center'}}>{tariffPackage.optional==="1" ? "Yes": "No"}</div>
-                    <Checkbox 
-                      checked={tariffPackage.optional==="1" ? this.state.subscriptions.includes(tariffPackage.id) : true} 
-                      disabled={tariffPackage.optional==="1" ? false: true}  
-                      style={{padding: 10, justifySelf: 'center', height: 15}}
-                      onChange={(e)=>this.setSubscription(tariffPackage.id, e.target.checked)}
-                    />
-                  </TariffPackageRow>
-                ))
-              }
-            </TariffPackages>
-          </TariffDetails>
+              </TariffPackages>
+            </TariffDetails>
+          }
         </TariffWrapper>
         <STBDetailsWrapper elevation={24}>
           <Typography variant="h4"> STB Details </Typography>

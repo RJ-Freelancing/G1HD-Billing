@@ -63,14 +63,15 @@ class Wrapper extends Component {
       min-width: 0px;
       padding: 16px;
       margin-left: ${this.props.mobileView ? 'inherit' : '240px'}
-      // padding-top: 70px;
+      padding-top: ${this.props.mobileView ? '70px' : '10px'}
     `
 
     return (
       <RootDiv>
-        {/* <Header 
+         <Header 
             gotoLink={(link)=>this.props.history.push(link)} 
-          /> */}
+          />
+         
           <Sidebar 
             gotoLink={(link)=>this.props.history.push(link)} 
             activePage={this.props.location.pathname} 

@@ -61,7 +61,7 @@ class InternalUser extends Component {
         gotoLink={(user)=>this.props.history.push(`/users/${user.username}`)} 
         canAdd={this.checkPermissionToAdd(this.props.location.pathname.substr(1))}
         addNew={()=>this.props.history.push('/users/new')}
-        tableHeight='70vh'
+        tableHeight={this.props.mobileView ? '70vh' : '80vh'}
       />
     )
   }

@@ -44,7 +44,7 @@ class Client extends Component {
         mobileView={this.props.mobileView}
         gotoLink={(client)=>this.props.history.push(`/clients/${client.stb_mac}`)}
         addNew={()=>this.props.history.push('/clients/new')}
-        tableHeight='70vh'
+        tableHeight={this.props.mobileView ? '70vh' : '80vh'}
         canAdd={this.props.authUserType==='reseller'}
       />
     )

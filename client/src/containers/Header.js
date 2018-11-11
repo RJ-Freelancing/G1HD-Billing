@@ -139,6 +139,7 @@ class Header extends Component {
 
     return (
       <>
+      {this.props.mobileView &&
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
           <IconButton className={classes.menuButton} color="inherit" aria-label="Open drawer" onClick={()=>this.props.toggleMobileSideBar(true)}>
@@ -165,7 +166,8 @@ class Header extends Component {
           </div>
         </Toolbar>
       </AppBar>
-      {renderMenu}
+      }
+      {this.props.mobileView && renderMenu}
       <Loading />
       <Notification />
       <Offline polling={{interval:30000, url: '/api'}}>
@@ -192,7 +194,9 @@ class Header extends Component {
 
 const mapStateToProps = state => ({
   token: state.auth.token,
-  username: state.auth.username
+  username: state.auth.username,
+  mobileView: state.general.mobileView
+
 })
 
 const mapDispatchToProps = dispatch => ({
