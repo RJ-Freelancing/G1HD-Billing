@@ -2,6 +2,21 @@ import transactionRepo from '../models/transactionModel'
 import userRepo from '../models/userModel'
 import clientRepo from '../models/clientModel'
 import { checkPermissionRights } from '../_helpers/checkPermission'
+import axios from 'axios'
+import querystring from 'querystring'
+
+const ministraAPI = process.env.MINISTRA_HOST+'stalker_portal/api/'
+const ministaUser = process.env.MINISTRA_USER
+const ministraPW = process.env.MINISTRA_PW
+const config = {
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded'
+  },
+  auth: {
+    username: `${ministaUser}`,
+    password: `${ministraPW}`
+  }
+}
 
 export async function checkPermission(req, res, next) {
   const macRegex = /^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/
@@ -40,6 +55,36 @@ export async function addTransaction(req, res, next) {
   else {
     await userRepo.findOneAndUpdate({username : transactionTo}, { $inc : { creditsAvailable : credits }})
   }
+  await axios.get(ministraAPI+'accounts/'+transactionTo, config)
+  .then(response => {
+    res.locals.clientExpiryDate = response.data.results[0].tariff_expired_date
+  })
+  .catch(error => {
+    console.log("Ministra API Error : " + error)
+  })
+  if (res.locals.clientExpiryDate == null){
+    const expiredDate = `tariff_expired_date=${dateAfterNthMonth(1)}`
+    await axios.put(ministraAPI+'accounts/'+transactionTo,
+    expiredDate, config) 
+      .then(response => {
+        res.locals.updatedUser = response.data
+      })
+      .catch(error => {
+        console.log("Ministra API Error : " + error)
+      })
+  }
   const transaction = await transactionRepo.create([{ credits, description, transactionFrom, transactionTo }], {lean:true})
   return res.status(201).json({transaction})
+}
+
+function dateAfterNthMonth(n) {
+  var d = new Date(),
+      month = '' + (d.getMonth() + 1+n),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+  if (month.length < 2) month = '0' + month;
+  if (day.length < 2) day = '0' + day;
+
+  return [year, month, day].join('-');
 }
