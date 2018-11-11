@@ -29,7 +29,7 @@ export async function validateMAC(req, res, next) {
   const client = await clientRepo.findOne({ clientMac : req.params.id})
   if (!client) return res.status(404).json({ error: `Client with mac Address ${req.params.id} was not found in mongo DB` }) 
   res.locals.mongoClient = client
-  if(await checkPermissionRights(req.params.id, req.user, 0) == false) return res.status(403).json({ error: `You Have No Rights To Perform This Action.`})
+   if(await checkPermissionRights(req.params.id, req.user, 0) == false) return res.status(403).json({ error: `You Have No Rights To Perform This Action.`})
   next()
 }
 
@@ -70,6 +70,22 @@ export async function addClient(req, res, next) {
 }
 
 export async function updateClient(req, res, next) {
+  var returnMac = req.params.id
+  if(req.value.body.stb_mac !== undefined){
+    returnMac = req.value.body.stb_mac
+    if(returnMac == req.params.id) return res.status(400).json("No change in Mac Address.")
+    await axios.get(ministraAPI+'accounts/'+returnMac, config)
+    .then(response => {
+      if (response.data.status == 'OK') return res.status(400).json("Mac Already Exists on the System. Please delete that mac before proceeding")
+    })
+    .catch(error => {
+      console.log("Ministra API Error : " + error)
+    })
+    await res.locals.mongoClient.update({clientMac : returnMac})
+    await userRepo.findOneAndUpdate({username : res.locals.mongoClient.parentUsername},{$push: {childUsernames : returnMac}})
+    await userRepo.findOneAndUpdate({username : res.locals.mongoClient.parentUsername},{$pull: {childUsernames : req.params.id}})
+  
+  }
   await axios.put(ministraAPI+'accounts/'+req.params.id,
   querystring.stringify(req.value.body), config)
     .then(response => {
@@ -81,10 +97,7 @@ export async function updateClient(req, res, next) {
   if (res.locals.updatedUser.status!=='OK') {
     return res.status(404).json({ error: `Failed to update the client ${req.params.id} to the system : ${res.locals.updatedUser.error}`})
   }
-  else if (req.value.body.tariff_expired_date !== undefined) {
-    await res.locals.mongoClient.update({expiryDate : req.value.body.tariff_expired_date})
-  }
-  return res.status(200).json(req.params.id)
+  return res.status(200).json(returnMac)
 }
 
 export async function deleteClient(req, res, next) {

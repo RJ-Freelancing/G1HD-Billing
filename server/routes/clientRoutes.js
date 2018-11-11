@@ -25,7 +25,6 @@ router.route('/:id')
     updateClient
   )
   .delete(
-    // validateMAC - No need as a rare case the mac might be there in ministra but not in local mongo
     deleteClient
   )
 
