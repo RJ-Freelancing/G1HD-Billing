@@ -93,3 +93,15 @@ export const sendEvent = event => ({
   failure: "Something went wrong while sending event!"
 })
 
+
+export const checkMAC = mac => ({
+  types: ['LOADING', 'CHECK_MAC_SUCCESS', 'CHECK_MAC_FAILED'],
+  payload: {
+    request:{
+      url: `/clients/checkmac/${mac}`,
+      method: 'GET'
+    }
+  },
+  success: false,
+  failure: "Something went wrong while checking MAC !"
+})

@@ -26,7 +26,7 @@ const users = (state = initialState, action) => {
       }
     case 'UPDATE_CLIENT_SUCCESS':
       // FIND UPDATED USER AND UPDATE WITH PAYLOAD
-      const stb_mac = action.payload.data
+      const stb_mac = action.meta.previousAction.payload.request.url.split('/').pop()     
       return {
         ...state, 
         clients: state.clients.map(client => {

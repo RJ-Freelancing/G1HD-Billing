@@ -61,18 +61,6 @@ export const deleteUser = username => ({
   failure: "Something went wrong!"
 })
 
-export const getTransactions = () => ({
-  types: ['LOADING', 'GET_TRANSACTIONS_SUCCESS', 'GET_TRANSACTIONS_FAILED'],
-  payload: {
-    request:{
-      url: '/transactions',
-      method: 'GET',
-    }
-  },
-  success: '',
-  failure: "Something went wrong while retrieving transactions!"
-})
-
 
 export const getConfig = () => ({
   types: ['NO_LOADING', 'GET_CONFIG_SUCCESS', 'GET_CONFIG_FAILED'],

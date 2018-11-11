@@ -82,7 +82,7 @@ class Events extends Component {
           <Typography variant="h6" style={{marginLeft: 20}}>Select MAC IDs to send Event</Typography>
           {this.props.authUserType === 'super-admin' && 
             <Button variant="contained" color="secondary" disabled={this.props.loading} onClick={()=>this.setState({ids: [], open: true})}>
-              Click Here To Send Event To All MAC IDs
+              Click Here To Send All
             </Button>          
           }
           </div>

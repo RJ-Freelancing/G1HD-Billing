@@ -170,7 +170,7 @@ class Header extends Component {
       {this.props.mobileView && renderMenu}
       <Loading />
       <Notification />
-      <Offline polling={{interval:30000, url: '/api'}}>
+      <Offline polling={{interval: 300000, url: '/api'}}>
         <Loading />
         <PopupMessage
           title='No Active Internet Connection Detected'

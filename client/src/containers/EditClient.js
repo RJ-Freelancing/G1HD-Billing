@@ -20,12 +20,21 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Table from 'components/Table'
 import Confirmation from 'components/Confirmation';
+import EditIcon from '@material-ui/icons/Edit'
+import Tooltip from '@material-ui/core/Tooltip'
+import IconButton from '@material-ui/core/IconButton';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Loading from 'components/Loading'
+
 import { startCase } from 'lodash';
 import SendIcon from '@material-ui/icons/Send'
 
 
 import { getUsers } from 'actions/users'
-import { updateClient, deleteClient, getSubscriptions, addSubscription, removeSubscription, sendEvent } from 'actions/clients'
+import { addClient, updateClient, deleteClient, getSubscriptions, addSubscription, removeSubscription, sendEvent, checkMAC } from 'actions/clients'
 import { updateCredits } from 'actions/transactions'
 import { getTariffPlans } from 'actions/general'
 
@@ -201,7 +210,10 @@ class EditClient extends Component {
         action: "add"
       },
       subscriptions: [],
-      msg: ''
+      msg: '',
+      changeMAC: false,
+      newMAC: '',
+      checkMACStatus: ''
     }
   }
 
@@ -210,16 +222,12 @@ class EditClient extends Component {
     else {
       this.props.getTariffPlans()
       this.setEditingClient(this.props.match.params.id)
-      this.props.getSubscriptions(this.props.match.params.id)
-      .then(resoponse => {    
-        this.setState({subscriptions: resoponse.payload.data[0].subscribed})
-      })
     }
   }
 
   componentDidUpdate = (prevProps, prevState, snapshot) => {
     let client = this.props.clients.find(client=>client.stb_mac===this.props.match.params.id)
-    if (!isEqual(prevState.editingClient, client) && prevState.editingClient && prevState.editingClient.tariff_plan!==client.tariff_plan) {
+    if (!isEqual(prevState.editingClient, client) && client && prevState.editingClient && prevState.editingClient.tariff_plan!==client.tariff_plan) {
       if (!this.props.token) this.props.history.push('/login')
       else this.setEditingClient(this.props.match.params.id)
     }
@@ -227,7 +235,13 @@ class EditClient extends Component {
 
   setEditingClient = (stb_mac) => {
     let client = this.props.clients.find(client=>client.stb_mac===stb_mac)
-    this.setState({editingClient: {...client}})
+    this.setState({editingClient: {...client}}, ()=>{
+      this.props.getSubscriptions(stb_mac)
+      .then(resoponse => {    
+        if (resoponse.payload)
+          this.setState({subscriptions: resoponse.payload.data[0].subscribed})
+      })
+    })
   }
 
   handleTextChange = (field, value) => {
@@ -243,9 +257,8 @@ class EditClient extends Component {
 
   checkValidation = () => {
     const loginEmpty = this.state.editingClient.login==="";
-    const invalidMAC = this.state.editingClient.stb_mac && !this.state.editingClient.stb_mac.match(validMAC);
     const phoneInvalid = this.state.editingClient.phone && !this.state.editingClient.phone.match(validPhoneNo);
-    return loginEmpty || phoneInvalid || invalidMAC
+    return loginEmpty || phoneInvalid
   }
 
   deleteConfirmationProceed = () => this.setState({deleteConfirmation: false})
@@ -296,9 +309,24 @@ class EditClient extends Component {
     .then(()=>this.setState({msg: ''}))
   }
 
+  changeMAC = (event) => {
+    event.preventDefault();
+    this.setState({checkMACStatus: ''}, ()=>{
+      this.props.checkMAC(this.state.newMAC)
+      .then(response => {
+        if (response.payload.data.status === 'Available.') {        
+          this.props.updateClient(this.state.editingClient.stb_mac, {stb_mac: this.state.newMAC})
+          .then(()=>this.props.history.push(`/clients/${this.state.newMAC}`))
+        } else {
+          this.setState({checkMACStatus: `Given MAC Address is already in use and will expire on ${format(Date.parse(response.payload.data.expiryDate), 'd MMMM YYYY')}`})
+        }
+      })
+    })
+  }
+
   render() {   
     const client = this.props.clients.find(client=>client.stb_mac===this.props.match.params.id)
-   
+    if (!client) return <Wrapper></Wrapper>
     return (
       <Wrapper>
         <ClientEditWrapper elevation={24}>
@@ -411,7 +439,7 @@ class EditClient extends Component {
             <br/><br/>
             {client && 
             <div style={{textAlign: 'center'}}>
-              Credits Available<br/> <div style={{fontSize: 50}}> {client.account_balance} </div>
+              Credits Available<br/> <div style={{fontSize: 50}}> {client.accountBalance} </div>
             </div>
             }
             <br/><br/><br/>
@@ -486,8 +514,15 @@ class EditClient extends Component {
           <br/><br/>
           {client && 
             <STBDetails>           
-              <Typography variant="subtitle2">MAC Address</Typography>
-              <Typography variant="body2">{client.stb_mac}</Typography>
+              <Typography variant="subtitle2" style={{alignSelf: 'center'}}>MAC Address</Typography>
+              <Typography variant="body2">
+                {client.stb_mac}
+                <Tooltip title="Change MAC">
+                  <IconButton aria-label="Change MAC" style={{padding: 9}} onClick={()=>this.setState({changeMAC: true})}>
+                    <EditIcon fontSize="small" color="primary"/>
+                  </IconButton>
+                </Tooltip>
+              </Typography>
               <Typography variant="subtitle2">Receiver Status</Typography>
               <Typography variant="body2">{client.online==="1" ? 'Online' : 'Offline'}</Typography>
               <Typography variant="subtitle2">IP</Typography>
@@ -519,6 +554,48 @@ class EditClient extends Component {
           confirmationProceed={this.deleteConfirmationProceed}
           confirmationCancel={this.deleteConfirmationCancel}
         />
+
+        <Dialog
+          open={this.state.changeMAC}
+          aria-labelledby="form-dialog-title"
+          fullWidth
+        >
+          <form onSubmit={this.changeMAC}>
+            <DialogTitle id="form-dialog-title">
+              Changing MAC Address for {client && client.login}
+            </DialogTitle>
+            <DialogContent>
+              <Typography variant="body1" style={{paddingBottom: 20, textAlign: 'center'}}> Current MAC Address: {client && client.stb_mac} </Typography>           
+              <InputMask mask="**:**:**:**:**:**" 
+                value={this.state.newMAC}  
+                onChange={(e)=>this.setState({newMAC: e.target.value.toUpperCase()})}
+              >
+                {(inputProps) => (
+                  <TextField 
+                    {...inputProps} 
+                    autoFocus
+                    label="New MAC Address"
+                    disabled={this.props.loading}
+                    fullWidth
+                    error={Boolean(this.state.newMAC) && !this.state.newMAC.match(validMAC)}
+                    helperText={this.state.newMAC && !this.state.newMAC.match(validMAC) ? "Invalid MAC Given" : null}
+                  />
+                )}
+              </InputMask>
+              <Typography variant="subtitle1" color='secondary' style={{paddingTop: 20, textAlign: 'center'}}> {this.state.checkMACStatus} </Typography>           
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={()=>this.setState({changeMAC: false})} color="secondary">
+                Cancel
+              </Button>
+              <Button variant="contained" type="submit" color="primary" disabled={this.props.loading || !this.state.newMAC || (Boolean(this.state.newMAC) && !this.state.newMAC.match(validMAC))} onClick={this.changeMAC}>
+                Submit
+              </Button>
+            </DialogActions>
+          </form>
+          <Loading />
+        </Dialog>
+
       </Wrapper>
     )
   }
@@ -533,6 +610,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  addClient: (client) => dispatch(addClient(client)),
   updateClient: (stb_mac, client) => dispatch(updateClient(stb_mac, client)),
   deleteClient: stb_mac => dispatch(deleteClient(stb_mac)),
   getUsers: () => dispatch(getUsers()),
@@ -541,7 +619,8 @@ const mapDispatchToProps = dispatch => ({
   getSubscriptions: stb_mac => dispatch(getSubscriptions(stb_mac)),
   addSubscription: (stb_mac, subscribedID) => dispatch(addSubscription(stb_mac, subscribedID)),
   removeSubscription: (stb_mac, subscribedID) => dispatch(removeSubscription(stb_mac, subscribedID)),
-  sendEvent: event => dispatch(sendEvent(event))
+  sendEvent: event => dispatch(sendEvent(event)),
+  checkMAC: mac => dispatch(checkMAC(mac)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditClient)
