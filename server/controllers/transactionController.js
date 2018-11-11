@@ -47,11 +47,10 @@ export async function addTransaction(req, res, next) {
     const client = await clientRepo.findOne({ clientMac: transactionTo })
     if (credits < 0 && client.accountBalance < (-1 * credits)) return res.status(400).json("Not enough balance to recover the credits. Try again with lesser credits.")
     if (req.user.creditsAvailable > credits) {
-      await req.user.update({ creditsAvailable: (req.user.creditsAvailable - credits) })
-      if (credits > 0) await req.user.update({ creditsOnHold: (req.user.creditsOnHold + credits) })
+      await req.user.update({ creditsAvailable: (req.user.creditsAvailable - credits), creditsOnHold: (req.user.creditsOnHold + credits)  })
     }
     else if ((req.user.creditsAvailable + req.user.creditsOnHold) > credits) {
-      // Intentionally left deducting -1 once you move money to credits on hold while transferring to client. Let cronjob handle it
+      // Intentionally left deducting -1 once you move credits to credits on hold while transferring to client. Let cronjob handle it
       await req.user.update({ creditsOnHold: ((req.user.creditsAvailable + req.user.creditsOnHold) - credits), creditsAvailable: 0 })
     }
     await clientRepo.findOneAndUpdate({ clientMac: transactionTo }, { $inc: { accountBalance: credits } })

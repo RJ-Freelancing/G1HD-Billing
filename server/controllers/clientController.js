@@ -104,6 +104,7 @@ export async function deleteClient(req, res, next) {
   if (await checkPermissionRights(req.params.id, req.user, 0) == false) return res.status(403).json({ error: `You Have No Rights To Perform This Action.` })
   const client = await clientRepo.findOne({ clientMac: req.params.id })
   if (!client) return res.status(404).json({ error: `Client with mac Address ${req.params.id} was not found in mongo DB` })
+  if (client.accountBalance > 0) return res.status(400).json({ error: `The Client has ${client.accountBalance} in his account. Please recover the credits from this Client ${req.params.id} before you delete.` })
   await axios.delete(ministraAPI + 'accounts/' + req.params.id, config)
     .then(response => {
       res.locals.deletingClient = response.data

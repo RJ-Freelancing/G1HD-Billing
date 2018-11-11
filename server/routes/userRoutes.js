@@ -1,7 +1,7 @@
 import passport from '../_helpers/passport'
 import { validateParam, validateBody } from '../validations'
 import { schemas } from '../validations/userValidation'
-import { getAllUsers, addUser, validateUsername, getUser, updateUser, deleteUser } from '../controllers/userController'
+import { getAllUsers, addUser, validateUsername, getUser, updateUser, deleteUser, upgradeUserRole } from '../controllers/userController'
 
 
 const passportJWT = passport.authenticate('jwt', { session: false })
@@ -35,5 +35,14 @@ router.route('/:username')
   .delete(
     deleteUser
   )
+
+router.route('/upgrade/:username')
+.post(
+  passportJWT,
+  validateParam(schemas.usernameSchema, 'username'),
+  validateUsername,
+  validateBody(schemas.addSchema),
+  upgradeUserRole
+)
 
 export default router

@@ -5,6 +5,8 @@ import bcrypt from 'bcryptjs'
 import { getAllClients, getClients } from '../_helpers/ministraHelper'
 import { checkPermissionRights, validParent } from '../_helpers/checkPermission'
 
+const tokenExpiryHours = process.env.TOKEN_EXPIRY_HOURS
+
 export async function login(req, res, next) {
   const { user } = req
   if (user.accountStatus == false) return res.status(403).json({ error: `Your account is locked. Please contact your Adminstrator for more information.` })
@@ -17,7 +19,7 @@ const getToken = user => {
     iss: 'G1HD',
     sub: user.id,
     iat: new Date().getTime(),
-    exp: Math.floor(Date.now() / 1000) + (60 * 60)
+    exp: Math.floor(Date.now() / 1000) + (60 * 60 * tokenExpiryHours) // Set to 30 days for development mode in .env
   }, process.env.JWT_SECRET)
 }
 
@@ -52,13 +54,13 @@ export async function getAllUsers(req, res, next) {
   if (req.user.userType == "reseller") {
     clients = await getChildren(req.user.childUsernames, 3)
   }
-  res.status(200).json({ admins, superResellers, resellers, clients })
+  return res.status(200).json({ admins, superResellers, resellers, clients })
 }
 
 export async function addUser(req, res, next) {
   const { username, email, password, firstName, lastName, phoneNo, userType, accountStatus, creditsAvailable, creditsOnHold } = req.value.body
   const parentUsername = req.user.username
-  if (await validParent(req.user.userType, userType) == false) return res.status(403).json({ error: `You have no rights to add this user.` })
+  if (await validParent(req.user.userType, userType, res.locals.user) == false) return res.status(403).json({ error: `You have no rights to add this user.` })
   const existingUser = await userRepo.findOne({ username })
   if (existingUser)
     return res.status(401).json({ error: `User already exists with username: ${username}` })
@@ -67,11 +69,11 @@ export async function addUser(req, res, next) {
     await req.user.update({ $push: { childUsernames: username.toLowerCase() } })
   }
   const token = getToken(user)
-  res.status(201).json({ user, token })
+  return res.status(201).json({ user, token })
 }
 
 export async function getUser(req, res, next) {
-  res.status(200).json(res.locals.user)
+  return res.status(200).json(res.locals.user)
 }
 
 export async function updateUser(req, res, next) {
@@ -85,10 +87,29 @@ export async function updateUser(req, res, next) {
 
 export async function deleteUser(req, res, next) {
   if (req.user.userType == "reseller") return res.status(403).json({ error: `Only your superReseller/admin can delete your account.` })
+  if (res.locals.user.childUsernames.length !== 0) return res.status(404).json({ error: `The user ${res.locals.user.username} has childs. Please remove/switch childs before you delete this user.`})
   const username = res.locals.user.username
   await userRepo.findOneAndUpdate({ username: res.locals.user.parentUsername }, { $pull: { childUsernames: username } })
   await res.locals.user.remove()
   return res.status(200).json(`User with username: ${username} successfully deleted.`)
+}
+
+export async function upgradeUserRole(req, res, next) {
+  const { username, email, password, firstName, lastName, phoneNo, userType, accountStatus, creditsAvailable, creditsOnHold } = req.value.body
+  const parentUsername = req.user.username
+  if (await validParent(req.user.userType, userType, res.locals.user) == false) return res.status(403).json({ error: `You have no rights to add this user.` })
+  const existingUser = await userRepo.findOne({ username })
+  if (existingUser)
+    return res.status(401).json({ error: `User already exists with username: ${username}` })
+  await userRepo.create([{ username, email, password, firstName, lastName, phoneNo, userType, accountStatus, parentUsername, creditsAvailable, creditsOnHold, childUsernames : req.params.username }], { lean: true })
+  if (!req.user.childUsernames.includes(username)) {
+    await req.user.update({ $push: { childUsernames: username.toLowerCase() } })
+  }
+  const oldParentUsername = res.locals.user.parentUsername
+  await res.locals.user.update({parentUsername : req.value.body.username})
+  var oldParent = await userRepo.findOne({ username: oldParentUsername })
+  await oldParent.update({ $pull: { childUsernames: req.params.username } })
+  return res.status(200).json(`User  ${req.params.username } has been successfully upgraded to ${username}.`)
 }
 
 async function getChildren(list, isMinistra) {
@@ -115,8 +136,6 @@ async function getChildren(list, isMinistra) {
     return mergeArrayObjectsByKey(ministraClients, mongoClients, 'stb_mac', 'clientMac')
   }
 }
-
-
 
 function mergeArrayObjectsByKey(obj1Array, obj2Array, key1, key2) {
   return obj1Array.map(obj1 => {
