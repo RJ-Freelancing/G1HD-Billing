@@ -7,7 +7,7 @@ import { addClient, validateMAC, updateClient, deleteClient, checkMac } from '..
 const passportJWT = passport.authenticate('jwt', { session: false })
 const router = require('express-promise-router')()
 
-  router.route('/')
+router.route('/')
   .post(
     passportJWT,
     validateBody(schemas.addSchema),
@@ -28,7 +28,7 @@ router.route('/:id')
     deleteClient
   )
 
-  router.route('/checkmac/:id')
+router.route('/checkmac/:id')
   .get(
     passportJWT,
     validateParam(schemas.idSchema, 'id'),

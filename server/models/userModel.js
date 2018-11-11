@@ -48,7 +48,7 @@ const userSchema = new Schema({
   },
   childUsernames: [
     {
-    type: String
+      type: String
     }
   ],
   creditsAvailable: {
@@ -61,17 +61,17 @@ const userSchema = new Schema({
   }
 }, options)
 
-userSchema.pre('save', async function(next){
+userSchema.pre('save', async function (next) {
   try {
-    const salt = await bcrypt.genSalt(10)  
-    this.password = await bcrypt.hash(this.password, salt)   
+    const salt = await bcrypt.genSalt(10)
+    this.password = await bcrypt.hash(this.password, salt)
     next()
   } catch (error) {
     next(error)
   }
 })
 
-userSchema.methods.isValidPassword = async function(loginPassword){
+userSchema.methods.isValidPassword = async function (loginPassword) {
   try {
     return await bcrypt.compare(loginPassword, this.password)
   } catch (error) {

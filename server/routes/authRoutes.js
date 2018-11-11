@@ -6,8 +6,8 @@ import { login } from '../controllers/userController'
 const passportSignIn = passport.authenticate('local', { session: false })
 
 const router = require('express-promise-router')()
-  
-  router.route('/login')
+
+router.route('/login')
   .post(
     validateBody(schemas.userLoginSchema),
     passportSignIn,

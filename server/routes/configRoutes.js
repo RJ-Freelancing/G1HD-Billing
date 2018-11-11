@@ -7,7 +7,7 @@ import { updateConfig, getConfig } from '../controllers/configController'
 const passportJWT = passport.authenticate('jwt', { session: false })
 const router = require('express-promise-router')()
 
-  router.route('/')
+router.route('/')
   .put(
     passportJWT,
     validateBody(schemas.configSchema),

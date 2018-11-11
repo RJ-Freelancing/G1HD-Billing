@@ -14,7 +14,7 @@ const app = express()
 
 // MongoDB
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true })
-mongoose.set('debug', process.env.NODE_ENV==='development')
+mongoose.set('debug', process.env.NODE_ENV === 'development')
 mongoose.set('useCreateIndex', true)
 
 // Enable CORS
@@ -26,13 +26,13 @@ app.use((req, res, next) => {
 })
 
 // Log all requests and responses
-if (process.env.NODE_ENV!=='test') app.use(logger)
+if (process.env.NODE_ENV !== 'test') app.use(logger)
 
 // Secure the app by setting various HTTP headers
 app.use(helmet())
 
 // Parse incoming requests with JSON payloads
-app.use(express.json({limit: '10mb'}))
+app.use(express.json({ limit: '10mb' }))
 
 
 // Routes
@@ -44,7 +44,7 @@ app.use('/api/ministra', ministraRoutes)
 app.use('/api/config', configRoutes)
 
 // Serve React Frontend at '/' url only in production
-if (process.env.NODE_ENV==='production') {
+if (process.env.NODE_ENV === 'production') {
   const path = require('path');
   app.use(express.static(path.join(__dirname, 'client')));
   app.get('*', function (req, res) {
@@ -62,7 +62,7 @@ app.use((req, res, next) => {
 // Error handler function
 app.use((err, req, res, next) => {
   const status = err.status || 500
-  res.status(status).json({error: err.message})
+  res.status(status).json({ error: err.message })
 })
 
 

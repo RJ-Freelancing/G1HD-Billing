@@ -7,7 +7,7 @@ import { getAllUsers, addUser, validateUsername, getUser, updateUser, deleteUser
 const passportJWT = passport.authenticate('jwt', { session: false })
 const router = require('express-promise-router')()
 
-  router.route('/')
+router.route('/')
   .all(
     passportJWT
   )
