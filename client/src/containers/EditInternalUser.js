@@ -171,7 +171,7 @@ class EditInternalUser extends Component {
     })
     .then(()=>{
       this.props.getUserTransactions(this.state.user.username)
-      .then(resnponseTransactions => { 
+      .then(() => { 
         const creditsTo = this.state.credits.action==="add" ? this.state.credits.value : this.state.credits.value*-1
         const creditsFrom = -1*creditsTo
         this.props.getUsers()
@@ -196,7 +196,7 @@ class EditInternalUser extends Component {
   } 
 
   
-  render() {      
+  render() {   
     return (
       <Wrapper>
         <UserEditWrapper elevation={24}>
@@ -309,8 +309,12 @@ class EditInternalUser extends Component {
                   onChange={(e)=>this.setState({credits: {...this.state.credits, value: e.target.value}})}
                   fullWidth
                   disabled={this.props.loading}
-                  error={this.state.credits.value < this.props.minimumTransferrableCredits}
-                  helperText={this.state.credits.value < this.props.minimumTransferrableCredits ? `Minimum Transferrable credits is ${this.props.minimumTransferrableCredits}` : null}
+                  error={this.state.credits.value < this.props.minimumTransferrableCredits || this.props.authCreditsAvailable < this.state.credits.value}
+                  helperText={
+                    this.state.credits.value < this.props.minimumTransferrableCredits ? `Minimum Transferrable credits is ${this.props.minimumTransferrableCredits}` 
+                    : this.props.authCreditsAvailable < this.state.credits.value ? "You don't have enough credits" 
+                    : null
+                  }
                 />
                 <br/><br/>
                 <FormControl component="fieldset">
@@ -337,7 +341,7 @@ class EditInternalUser extends Component {
                   variant="contained" 
                   type="submit" 
                   color="primary" 
-                  disabled={this.props.loading || this.state.credits.value < this.props.minimumTransferrableCredits} 
+                  disabled={this.props.loading || this.state.credits.value < this.props.minimumTransferrableCredits  || this.props.authCreditsAvailable < this.state.credits.value} 
                   style={{float: 'right'}} 
                   onClick={()=>this.updateCredits()}
                 >
@@ -350,8 +354,12 @@ class EditInternalUser extends Component {
             {this.state.user && 
               <div style={{textAlign: 'center'}}>
                 Credits Available<br/> <div style={{fontSize: 50}}> {this.state.user.creditsAvailable} </div>
-                <br/><br/>
-                Credits On Hold<br/> <div style={{fontSize: 50}}> {this.state.user.creditsOnHold} </div>
+                {this.props.authUserType==='reseller' &&
+                  <>
+                  <br/><br/>
+                  Credits On Hold<br/> <div style={{fontSize: 50}}> {this.state.user.creditsOnHold} </div>
+                  </>
+                }
               </div>
             }
           </CreditsWrapper>
@@ -381,6 +389,8 @@ class EditInternalUser extends Component {
 
 const mapStateToProps = state => ({
   token: state.auth.token,
+  authUserType: state.auth.userType,
+  authCreditsAvailable: state.auth.creditsAvailable,
   admins: state.users.admins,
   superResellers: state.users.superResellers,
   resellers: state.users.resellers,

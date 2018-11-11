@@ -37,6 +37,7 @@ import { getUsers } from 'actions/users'
 import { addClient, updateClient, deleteClient, getSubscriptions, addSubscription, removeSubscription, sendEvent, checkMAC } from 'actions/clients'
 import { getUserTransactions, updateCredits } from 'actions/transactions'
 import { getTariffPlans } from 'actions/general'
+import { updateAuthResellerCredits } from 'actions/auth'
 
 
 const validPhoneNo = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
@@ -239,6 +240,18 @@ class EditClient extends Component {
       description: `${startCase(this.state.credits.action)}ed ${this.state.credits.value} credits`,
       transactionTo: this.state.editingClient.stb_mac
     })
+    .then(()=>{
+      this.props.getUserTransactions(this.state.editingClient.stb_mac)
+      .then(() => { 
+        const creditsTo = this.state.credits.action==="add" ? this.state.credits.value : this.state.credits.value*-1
+        const creditsFrom = -1*creditsTo
+        this.props.getUsers()
+        .then(()=>{
+          this.setEditingClient(this.props.match.params.id)
+          this.props.updateAuthResellerCredits(creditsFrom)
+        })
+      })
+    })
   }
 
   setSubscription = (subscribed, checked) => {
@@ -380,6 +393,12 @@ class EditClient extends Component {
                   onChange={(e)=>this.setState({credits: {...this.state.credits, value: e.target.value}})}
                   fullWidth
                   disabled={this.props.loading}
+                  error={this.state.credits.value < 1 || this.state.credits.value > 12 || this.props.authCreditsAvailable < this.state.credits.value}
+                  helperText={
+                    this.state.credits.value < 1|| this.state.credits.value > 12 ? 'Credits can only be transferred in the range from 1 to 12' 
+                    : this.props.authCreditsAvailable < this.state.credits.value ? "You don't have enough credits"
+                    : null
+                  }
                 />
                 <br/><br/>
                 <FormControl component="fieldset">
@@ -394,7 +413,14 @@ class EditClient extends Component {
                     <FormControlLabel value="recover" control={<Radio />} label="Recover" />
                   </RadioGroup>
                 </FormControl>
-                <Button variant="contained" type="submit" color="primary" disabled={this.props.loading} style={{float: 'right'}} onClick={()=>this.updateCredits()}>
+                <Button 
+                  variant="contained" 
+                  type="submit" 
+                  color="primary" 
+                  disabled={this.props.loading || this.state.credits.value < 1 || this.state.credits.value > 12  || this.props.authCreditsAvailable < this.state.credits.value} 
+                  style={{float: 'right'}} 
+                  onClick={()=>this.updateCredits()}
+                >
                   Submit&nbsp;
                   <SaveIcon />
                 </Button>
@@ -569,6 +595,8 @@ class EditClient extends Component {
 const mapStateToProps = state => ({
   token: state.auth.token,
   clients: state.users.clients,
+  authCreditsAvailable: state.auth.creditsAvailable,
+  authCreditsOnHold: state.auth.creditsOnHold,
   tariffPlans: state.general.tariffPlans,
   authUsername: state.auth.username, 
   mobileView: state.general.mobileView
@@ -587,6 +615,7 @@ const mapDispatchToProps = dispatch => ({
   sendEvent: event => dispatch(sendEvent(event)),
   checkMAC: mac => dispatch(checkMAC(mac)),
   getUserTransactions: username => dispatch(getUserTransactions(username)),
+  updateAuthResellerCredits: creditsAvailable => dispatch(updateAuthResellerCredits(creditsAvailable))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditClient)

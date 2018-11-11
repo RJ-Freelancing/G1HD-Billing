@@ -30,6 +30,12 @@ const auth = (state = initialState, action) => {
         ...state,
         creditsAvailable: state.creditsAvailable+action.payload
       }
+    case 'UPDATE_AUTH_RESELLER_CREDITS':
+    return {
+      ...state,
+      creditsAvailable: state.creditsAvailable+action.payload,
+      creditsOnHold: state.creditsOnHold+(action.payload*-1)
+    }
     case (action.type.match(/_FAILED$/) || {}).input:    
       if (action.error.response.status===401)
         return {...initialState}
