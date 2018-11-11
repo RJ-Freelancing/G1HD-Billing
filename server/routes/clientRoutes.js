@@ -17,14 +17,15 @@ const router = require('express-promise-router')()
 router.route('/:id')
   .all(
     passportJWT,
-    validateParam(schemas.idSchema, 'id'),
-    validateMAC
+    validateParam(schemas.idSchema, 'id')
   )
   .put(
+    validateMAC,
     validateBody(schemas.updateSchema),
     updateClient
   )
   .delete(
+    // validateMAC - No need as a rare case the mac might be there in ministra but not in local mongo
     deleteClient
   )
 

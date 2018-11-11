@@ -62,10 +62,9 @@ export async function addClient(req, res, next) {
   }
   else {
     const clientMac = stb_mac
-    const parentUser = req.user.username
-    const expiryDate = req.value.body.tariff_expired_date
-    const client = await clientRepo.create([{clientMac, parentUser, expiryDate}], {lean:true})
-    await userRepo.findOneAndUpdate({username : parentUser},{ $push: { childUsernames : clientMac} } )
+    const parentUsername = req.user.username
+    const client = await clientRepo.create([{clientMac, parentUsername}], {lean:true})
+    await userRepo.findOneAndUpdate({username : parentUsername},{ $push: { childUsernames : clientMac} } )
     await res.status(201).json({client})
   }
 }
@@ -89,6 +88,9 @@ export async function updateClient(req, res, next) {
 }
 
 export async function deleteClient(req, res, next) {
+  if(await checkPermissionRights(req.params.id, req.user, 0) == false) return res.status(403).json({ error: `You Have No Rights To Perform This Action.`})
+  const client = await clientRepo.findOne({ clientMac : req.params.id})
+  if (!client) return res.status(404).json({ error: `Client with mac Address ${req.params.id} was not found in mongo DB` }) 
   await axios.delete(ministraAPI+'accounts/'+req.params.id, config)
     .then(response => {
       res.locals.deletingClient = response.data
@@ -100,8 +102,8 @@ export async function deleteClient(req, res, next) {
     return res.status(404).json({ error: `failed to delete client ${req.params.id} : ${res.locals.deletingClient.error}`})
   }
   else {
-    await userRepo.findOneAndUpdate({username : res.locals.mongoClient.parentUser},{ $pull: { childUsernames : res.locals.mongoClient.clientMac} } )
-    await res.locals.mongoClient.remove()
+    await userRepo.findOneAndUpdate({username : client.parentUsername},{ $pull: { childUsernames : client.clientMac} } )
+    await client.remove()
     return res.status(200).json(req.params.id)
   }
 }

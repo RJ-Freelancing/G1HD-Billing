@@ -10,9 +10,13 @@ const clientSchema = new Schema({
     required: true,
     unique: true
   },
-  parentUser: {
+  parentUsername: {
     type: String,
     required: true,
+  },
+  accountBalance: {
+    type: Number,
+    default: 0
   }
 }, options)
 
