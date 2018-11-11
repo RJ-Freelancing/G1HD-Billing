@@ -61,6 +61,8 @@ class EnhancedTableHead extends React.Component {
     return (
       <TableHead>
           <TableRow>
+            {!viewOnly && <TableCell style={{position: 'sticky', top: 0, backgroundColor: "#fff", zIndex: 10, paddingRight: 0, paddingLeft: 5}}/>}
+
             {rows.map(row => {
               return (
                 <TableCell
@@ -84,7 +86,6 @@ class EnhancedTableHead extends React.Component {
                 </TableCell>
               )
             }, this)}
-            {!viewOnly && <TableCell style={{position: 'sticky', top: 0, backgroundColor: "#fff", zIndex: 10}}/>}
           </TableRow>
 
       </TableHead>
@@ -239,21 +240,9 @@ class EnhancedTable extends React.Component {
                         tabIndex={-1}
                         key={idx}
                       >
-                        {Object.entries(n).map(([field, value]) => {
-                          const fieldProperties = this.props.rows.find(row=>row.field===field)
-                          switch (fieldProperties.type) {
-                            case 'boolean':
-                              return <TableCell key={field} style={{textAlign: 'center', paddingLeft: 0}}> <Icon style={{color: value ? 'green' : 'red'}}>{value ? 'thumb_up' : 'thumb_down'}</Icon> </TableCell>
-                            case 'integer':
-                              return <TableCell key={field} style={{textAlign: 'center', paddingLeft: 0}}> {value} </TableCell>
-                            case 'date':
-                              return <TableCell key={field}> {format(Date.parse(value), 'd MMMM YYYY')} </TableCell>
-                            default:
-                              return <TableCell key={field}> {value} </TableCell>
-                          }
-                        })}
                         {!viewOnly &&
-                          <TableCell>
+                          <TableCell style={{paddingRight: 0, paddingLeft: 5}}>
+                            <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr'}}>
                             <Tooltip title="Edit">
                               <IconButton aria-label="Edit" style={{padding: 9}} onClick={()=>this.props.gotoLink(n)}>
                                 <EditIcon fontSize="small" color="primary"/>
@@ -270,8 +259,23 @@ class EnhancedTable extends React.Component {
                                 </IconButton>
                               </Tooltip>
                             }
+                            </div>
                           </TableCell>
                         }
+                        {Object.entries(n).map(([field, value]) => {
+                          const fieldProperties = this.props.rows.find(row=>row.field===field)
+                          switch (fieldProperties.type) {
+                            case 'boolean':
+                              return <TableCell key={field} style={{textAlign: 'center', paddingLeft: 0}}> <Icon style={{color: value ? 'green' : 'red'}}>{value ? 'thumb_up' : 'thumb_down'}</Icon> </TableCell>
+                            case 'integer':
+                              return <TableCell key={field} style={{textAlign: 'center', paddingLeft: 0}}> {value} </TableCell>
+                            case 'date':
+                              return <TableCell key={field}> {format(Date.parse(value), 'd MMMM YYYY')} </TableCell>
+                            default:
+                              return <TableCell key={field}> {value} </TableCell>
+                          }
+                        })}
+
                       </TableRow>
                     )
 
