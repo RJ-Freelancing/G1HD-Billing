@@ -374,9 +374,10 @@ class EditInternalUser extends Component {
             }
           </CreditsWrapper>
         <TransactionWrapper elevation={24}>
-          <Typography variant="h4" style={{padding: 20, paddingBottom: 0}}> Transactions </Typography>
+          {/* <Typography variant="h4" style={{padding: 20, paddingBottom: 0}}> Transactions </Typography> */}
           {/* <br/><br/> */}
           <Table
+            title='Transactions'
             rows={rows}
             data={this.getTableData(this.state.transactions)}
             orderBy='createdAt'

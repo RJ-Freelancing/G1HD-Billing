@@ -67,7 +67,7 @@ const Sidebar = (props) => {
         mobileView && props.toggleMobileSideBar(false)
         if (props.activePage!==link) {props.gotoLink(link);props.clearNotification()}
       }}
-      style={{background: props.activePage===link ? 'radial-gradient(circle, #9553eb, #714ad0, #5040b5, #2f3598, #082a7c)' : 'inherit'}}
+      style={{background: props.activePage===link ? 'radial-gradient(circle, #9553eb, #714ad0, #5040b5, #2f3598, #082a7c)' : ''}}
     >
       <ListItemIcon classes={{root: classes.menuItem}}>
         <Icon>{icon}</Icon>
@@ -110,7 +110,7 @@ const Sidebar = (props) => {
       onClick={()=>{props.gotoLink('/profile');props.clearNotification()}}
       button 
       classes={{root: classes.menu}}  
-      style={{background: props.activePage==='/profile' ? 'radial-gradient(circle, #9553eb, #714ad0, #5040b5, #2f3598, #082a7c)' : 'inherit'}}
+      style={{background: props.activePage==='/profile' ? 'radial-gradient(circle, #9553eb, #714ad0, #5040b5, #2f3598, #082a7c)' : ''}}
     >
       <ListItemIcon classes={{root: classes.menuItem}}><SettingsIcon/></ListItemIcon>
       <ListItemText primary="My account" primaryTypographyProps={{className: classes.menuItem}}/>

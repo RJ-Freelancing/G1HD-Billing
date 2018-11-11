@@ -49,6 +49,7 @@ const mapStateToProps = state => ({
   token: state.auth.token,
   authUsername: state.auth.username,
   transactions: state.users.transactions,
+  mobileView: state.general.mobileView
 })
 
 const mapDispatchToProps = dispatch => ({
