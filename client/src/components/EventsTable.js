@@ -276,7 +276,7 @@ class EnhancedTable extends React.Component {
                             case 'integer':
                               return <TableCell key={field} style={{textAlign: 'center', paddingLeft: 0}}> {value} </TableCell>
                             case 'date':
-                              return <TableCell key={field}> {format(Date.parse(value), 'd MMMM YYYY')} </TableCell>
+                              return <TableCell key={field}> {format(Date.parse(value), 'dd MMM YYYY @ HH:mm:ss')} </TableCell>
                             default:
                               return <TableCell key={field}> {value} </TableCell>
                           }
