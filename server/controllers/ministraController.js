@@ -19,8 +19,11 @@ export async function permissionCheck(req, res, next) {
   if (req.params.id !== undefined) {
     if (await checkPermissionMinistra(req.params.id, req.user) == false) return res.status(403).json({ error: `You Have No Rights To Perform This Action.` })
   }
-  else {
+  else if(req.value.body.ids !== undefined) {
     if (await checkPermissionMinistra(req.value.body.ids, req.user) == false) return res.status(403).json({ error: `You Have No Rights To Perform This Action.` })
+  }
+  else {
+    if (await checkPermissionMinistra(req.value.body.id, req.user) == false) return res.status(403).json({ error: `You Have No Rights To Perform This Action.` })
   }
   next()
 }
@@ -37,9 +40,9 @@ export async function sendMsg(req, res, next) {
 
 export async function sendEvent(req, res, next) {
   const ministraPayLoad = querystring.stringify(req.value.body)
-  var mac = req.value.body.ids
-  if (mac == "" && req.user.userType !== "super-admin") return res.status(403).json("You Have No Rights To Perform This Action.")
-  if (mac == undefined) return res.status(404).json("Mac Ids are missing...")
+  var mac = req.value.body.id
+  if (mac == "*" && req.user.userType !== "super-admin") return res.status(403).json("You Have No Rights To Perform This Action.")
+  if (mac == "*") mac = ''
   await ministraPostCalls('send_event/', ministraPayLoad, mac, res)
 }
 

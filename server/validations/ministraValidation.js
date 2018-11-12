@@ -8,7 +8,7 @@ export const schemas = {
   }),
 
   eventSchema: Joi.object({
-    ids: Joi.array().items(Joi.string().regex(/^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/).error(new Error('ID should be a valid mac Address.'))),
+    id: Joi.string().regex(/^[*]$|^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/).error(new Error('ID should be a valid mac Address or *.')).required(),
     event: Joi.string().required(),
     msg: Joi.string(),
     ttl: Joi.number(),
