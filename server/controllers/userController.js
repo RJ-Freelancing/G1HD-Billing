@@ -8,7 +8,7 @@ import { checkPermissionRights, validParent } from '../_helpers/checkPermission'
 const tokenExpiryHours = process.env.TOKEN_EXPIRY_HOURS
 
 export async function login(req, res, next) {
-  const { user } = req
+  const user = req.user
   if (user.accountStatus == false) return res.status(403).json({ error: `Your account is locked. Please contact your Adminstrator for more information.` })
   const token = getToken(user)
   res.status(201).json({ user, token })
@@ -120,7 +120,8 @@ async function getChildren(list, isMinistra) {
     return await userRepo.find({ username: { $in: childUsernames } }, null, { sort: { creditsAvailable: 1 } })
   }
   else if (isMinistra == 1) {
-    const macAdresses = await (childUsernames.length == 0 ? "1" : childUsernames)
+    const macAdresses = await (childUsernames.length == 0 ? [''] : childUsernames)
+    console.log('macAdresses: ', macAdresses);
     const ministraClients = await getClients(macAdresses)
     const mongoClients = await clientRepo.find({ clientMac: { $in: macAdresses } })
     return mergeArrayObjectsByKey(ministraClients, mongoClients, 'stb_mac', 'clientMac')

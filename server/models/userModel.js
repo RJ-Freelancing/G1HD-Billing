@@ -60,6 +60,12 @@ const userSchema = new Schema({
   }
 }, options)
 
+userSchema.methods.toJSON = function() {
+  var obj = this.toObject();
+  delete obj.password;
+  return obj;
+ }
+
 userSchema.pre('save', async function (next) {
   try {
     const salt = await bcrypt.genSalt(10)

@@ -50,7 +50,7 @@ export function getClients(macAdresses) {
         console.log("Error querying Ministra DB : " + err)
         return reject(err);
       }
-      console.log('Data successfully received from Ministra Db:\n')
+      console.log('Data successfully received from Ministra DB:\n')
       connection.pause();
       resolve(rows);
       connection.resume();
