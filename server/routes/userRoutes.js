@@ -41,7 +41,7 @@ router.route('/upgrade/:username')
   passportJWT,
   validateParam(schemas.usernameSchema, 'username'),
   validateUsername,
-  validateBody(schemas.addSchema),
+  validateBody(schemas.upgradeSchema),
   upgradeUserRole
 )
 

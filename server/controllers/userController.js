@@ -95,15 +95,16 @@ export async function deleteUser(req, res, next) {
 }
 
 export async function upgradeUserRole(req, res, next) {
-  const { username, email, password, firstName, lastName, phoneNo, userType, accountStatus, creditsAvailable, creditsOnHold } = req.value.body
+  const { username, userType } = req.value.body
+  const { email, password, firstName, lastName, phoneNo, accountStatus } = res.locals.user
   const parentUsername = req.user.username
   if (await validParent(req.user.userType, userType, res.locals.user) == false) return res.status(403).json({ error: `You have no rights to add this user.` })
   const existingUser = await userRepo.findOne({ username })
   if (existingUser)
     return res.status(401).json({ error: `User already exists with username: ${username}` })
-  await userRepo.create([{ username, email, password, firstName, lastName, phoneNo, userType, accountStatus, parentUsername, creditsAvailable, creditsOnHold, childUsernames : req.params.username }], { lean: true })
+  await userRepo.create([{ username, email, password, firstName, lastName, phoneNo, userType, accountStatus, parentUsername, childUsernames : req.params.username }], { lean: true })
   if (!req.user.childUsernames.includes(username)) {
-    await req.user.update({ $push: { childUsernames: username.toLowerCase() } })
+    await req.user.update({ $push: { childUsernames: username.toLowerCase() }})
   }
   const oldParentUsername = res.locals.user.parentUsername
   await res.locals.user.update({parentUsername : req.value.body.username})
