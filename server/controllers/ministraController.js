@@ -78,17 +78,49 @@ async function ministraGetCalls(attribute, res) {
     })
 }
 
+// async function ministraPostCalls(attribute, ministraPayLoad, mac, res) {
+//   await axios.post(ministraAPI + attribute + mac,
+//     ministraPayLoad, config)
+//     .then(response => {
+//       if (response.data.status !== 'OK') return res.status(404).json(response.data.error)
+//       return res.status(201).json(response.data.results)
+//     })
+//     .catch(error => {
+//       console.log("Ministra API Error : " + error)
+//       return res.status(404).json(error)
+//     })
+// }
+
 async function ministraPostCalls(attribute, ministraPayLoad, mac, res) {
-  await axios.post(ministraAPI + attribute + mac,
-    ministraPayLoad, config)
-    .then(response => {
-      if (response.data.status !== 'OK') return res.status(404).json(response.data.error)
-      return res.status(201).json(response.data.results)
+  var results = []
+  if(mac.length > 1){
+    await mac.forEach(element => {
+       axios.post(ministraAPI + attribute + element,
+        ministraPayLoad, config)
+        .then(response => {
+          console.log("element : " + element + ". results : " + results)
+          if (response.data.status !== 'OK') return res.status(404).json(response.data.error)
+          results.push(response.data.results)
+        })
+        .catch(error => {
+          console.log("Ministra API Error : " + error)
+          return res.status(404).json(error)
+        })
+    });
+  }
+  else {
+    await axios.post(ministraAPI + attribute + mac,
+      ministraPayLoad, config)
+      .then(response => {
+        if (response.data.status !== 'OK') return res.status(404).json(response.data.error)
+        return res.status(201).json(response.data.results)
+      })
+      .catch(error => {
+        console.log("Ministra API Error : " + error)
+        return res.status(404).json(error)
     })
-    .catch(error => {
-      console.log("Ministra API Error : " + error)
-      return res.status(404).json(error)
-    })
+  }
+  return res.status(201).json(results)
 }
 
 async function ministraPutCalls(attribute, ministraPayLoad, mac, res) {
