@@ -1,7 +1,7 @@
 import passport from '../_helpers/passport'
 import { validateBody } from '../validations'
 import { schemas } from '../validations/configValidation'
-import { updateConfig, getConfig } from '../controllers/configController'
+import { updateConfig, getConfig, readLog, getLogFiles } from '../controllers/configController'
 
 
 const passportJWT = passport.authenticate('jwt', { session: false })
@@ -16,6 +16,18 @@ router.route('/')
   .get(
     passportJWT,
     getConfig
+  )
+
+router.route('/log/:filename')
+  .get(
+    passportJWT,
+    readLog
+  )
+
+router.route('/getlogfiles')
+  .get(
+    passportJWT,
+    getLogFiles
   )
 
 export default router
