@@ -5,7 +5,7 @@ import path from 'path'
 const logDirectory = path.join(__dirname, '/../logs/')
 
 export async function updateConfig(req, res, next) {
-  if (req.user.userType !== 'super-admin') res.status(403).json({ error: `You Have No Rights To Perform This Action.` })
+  if (req.user.userType !== 'super-admin') return res.status(403).json({ error: `You Have No Rights To Perform This Action.` })
   const { configName, configValue } = req.value.body
   var query = { configName },
     update = { configName, configValue },
@@ -27,7 +27,7 @@ export async function getConfig(req, res, next) {
 }
 
 export async function readLog(req, res, next) {
-  if (req.user.userType !== 'super-admin') res.status(403).json({ error: `You Have No Rights To Perform This Action.` })
+  if (req.user.userType !== 'super-admin') return res.status(403).json({ error: `You Have No Rights To Perform This Action.` })
   const logFileName = req.params.filename
   console.log('logDirectory: ', logDirectory+logFileName);
   await fs.readFile(logDirectory+logFileName, 'utf8', (err, data) => {
@@ -37,7 +37,7 @@ export async function readLog(req, res, next) {
 }
 
 export async function getLogFiles(req, res, next) {
-  if (req.user.userType !== 'super-admin') res.status(403).json({ error: `You Have No Rights To Perform This Action.` })
+  if (req.user.userType !== 'super-admin') return res.status(403).json({ error: `You Have No Rights To Perform This Action.` })
   let logFileList = []
   await fs.readdir(logDirectory, (err, files) => {
     if (err) return res.status(404).json({ error: err})
