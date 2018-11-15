@@ -1,6 +1,7 @@
 import transactionRepo from '../models/transactionModel'
 import userRepo from '../models/userModel'
 import clientRepo from '../models/clientModel'
+import configRepo from '../models/configModel'
 import { checkPermissionRights } from '../_helpers/checkPermission'
 import axios from 'axios'
 import dateFns from 'date-fns'
@@ -56,6 +57,8 @@ export async function addTransaction(req, res, next) {
     await clientRepo.findOneAndUpdate({ clientMac: transactionTo }, { $inc: { accountBalance: credits } })
   }
   else {
+    const config = await configRepo.findOne({ configName : "minimumTransferrableCredits" })
+    if (credits > 0 && credits < config.configValue) return res.status(400).json(`Minimum Transferrable Credits is ${config.configValue}.`)
     const user = await userRepo.findOne({ username: transactionTo })
     if (credits < 0 && user.creditsAvailable < (-1 * credits)) return res.status(400).json("Not enough balance to recover the credits. Try again with lesser credits.")
     if (req.user.creditsAvailable > credits) await req.user.update({ creditsAvailable: (req.user.creditsAvailable - credits) })
