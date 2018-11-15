@@ -26,7 +26,7 @@ export const schemas = {
     lastName: Joi.string(),
     phoneNo: Joi.string().regex(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/),
     userType: Joi.string(),
-    accountStatus: Joi.boolean(),
+    accountStatus: Joi.boolean()
   }),
 
   userLoginSchema: Joi.object({

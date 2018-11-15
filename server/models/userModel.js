@@ -41,6 +41,11 @@ const userSchema = new Schema({
     required: true,
     default: false
   },
+  upgradedAccount: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
   parentUsername: {
     type: String,
     required: true

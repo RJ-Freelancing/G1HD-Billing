@@ -96,9 +96,10 @@ export async function deleteUser(req, res, next) {
 
 export async function upgradeUserRole(req, res, next) {
   const { username, userType } = req.value.body
-  const { email, password, firstName, lastName, phoneNo, accountStatus } = res.locals.user
+  const { email, password, firstName, lastName, phoneNo, accountStatus, upgradedAccount } = res.locals.user
   const parentUsername = req.user.username
   if (await validParent(req.user.userType, userType, res.locals.user) == false) return res.status(403).json({ error: `You have no rights to add this user.` })
+  if(upgradedAccount == true) return res.status(404).json({ error: `This user already has been upgraded to ${userType}.` })
   const existingUser = await userRepo.findOne({ username })
   if (existingUser)
     return res.status(401).json({ error: `User already exists with username: ${username}` })
@@ -107,7 +108,7 @@ export async function upgradeUserRole(req, res, next) {
     await req.user.update({ $push: { childUsernames: username.toLowerCase() }})
   }
   const oldParentUsername = res.locals.user.parentUsername
-  await res.locals.user.update({parentUsername : req.value.body.username})
+  await res.locals.user.update({parentUsername : req.value.body.username, upgradedAccount : true})
   var oldParent = await userRepo.findOne({ username: oldParentUsername })
   await oldParent.update({ $pull: { childUsernames: req.params.username } })
   return res.status(200).json(`User  ${req.params.username } has been successfully upgraded to ${username}.`)
