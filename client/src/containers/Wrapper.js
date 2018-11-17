@@ -2,10 +2,13 @@ import React, { Component } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import Notification from 'components/Notification'
+import Loading from 'components/Loading'
+import InactivityPopup from 'components/InactivityPopup'
+import OfflinePopup from 'components/OfflinePopup'
+import FourOhFour from 'components/FourOhFour'
 import Header from 'containers/Header'
 import Sidebar from 'containers/Sidebar'
-import { logout } from 'actions/auth'
-import FourOhFour from 'components/FourOhFour'
 import Profile from 'containers/Profile'
 import Dashboard from 'containers/Dashboard';
 import InternalUser from 'containers/InternalUser'
@@ -18,12 +21,13 @@ import AddClient from 'containers/AddClient'
 import AddUser from 'containers/AddUser'
 import SuperAdminConfig from 'containers/SuperAdminConfig'
 
-import { setMobileView } from 'actions/general'
+import { logout } from 'actions/auth'
+import { setMobileView, toggleMobileSideBar } from 'actions/general'
 
 
 class Wrapper extends Component {
 
-  componentWillMount = () => {
+  componentWillMount = () => {   
     if (!this.props.token) this.props.history.push('/login')
     this.updateDimensions()
   }
@@ -48,7 +52,11 @@ class Wrapper extends Component {
     if (this.props.mobileView !== mobileView) this.props.setMobileView(mobileView)
   }
 
+  gotoLink = link => this.props.history.push(link)
+
   render() {
+
+    const {token, username, mobileView, location} = this.props
   
     const RootDiv = styled.div`
       flex-grow: 1;
@@ -57,31 +65,24 @@ class Wrapper extends Component {
       position: relative;
       display: flex;
     `
-    
     const ContentDiv = styled.div`
       flex-grow: 1;
       min-width: 0px;
       padding: 16px;
-      margin-left: ${this.props.mobileView ? 'inherit' : '240px'}
-      padding-top: ${this.props.mobileView ? '70px' : '10px'}
+      margin-left: ${mobileView ? 'inherit' : '240px'}
+      padding-top: ${mobileView ? '70px' : '10px'}
     `
+
+    if (!token) return <></>
 
     return (
       <RootDiv>
-         <Header 
-            gotoLink={(link)=>this.props.history.push(link)} 
-          />
-         
-          <Sidebar 
-            gotoLink={(link)=>this.props.history.push(link)} 
-            activePage={this.props.location.pathname} 
-          />
+        {mobileView && <Header gotoLink={this.gotoLink} toggleMobileSideBar={this.props.toggleMobileSideBar} username={username}/>}
+        <Sidebar gotoLink={this.gotoLink} activePage={location.pathname} />
         <ContentDiv>
           <Switch>
             <Route exact path="/" component={Dashboard} />
-            <Route exact path="/admins" component={InternalUser} />
-            <Route exact path="/superResellers" component={InternalUser} />
-            <Route exact path="/resellers" component={InternalUser} />
+            <Route exact path="/(admins|superResellers|resellers)" component={InternalUser} />
             <Route exact path="/clients" component={Client} />
             <Route exact path="/transactions" component={Transaction} />
             <Route exact path="/events" component={Events} />
@@ -94,6 +95,14 @@ class Wrapper extends Component {
             <Route component={FourOhFour} />
           </Switch>
         </ContentDiv>
+        <Loading />
+        <Notification />
+        <OfflinePopup />
+        <InactivityPopup 
+          token={this.props.token}
+          gotoLink={this.gotoLink} 
+          logout={this.props.logout}
+        />
       </RootDiv>
     )
   }
@@ -102,12 +111,12 @@ class Wrapper extends Component {
 const mapStateToProps = state => ({
   token: state.auth.token,
   username: state.auth.username,
-  userType: state.auth.userType,
   mobileView: state.general.mobileView
 })
 
 const mapDispatchToProps = dispatch => ({
   setMobileView: (mobileView) => dispatch(setMobileView(mobileView)),
+  toggleMobileSideBar: (open) => dispatch(toggleMobileSideBar(open)),
   logout: () => dispatch(logout()),
 })
 
