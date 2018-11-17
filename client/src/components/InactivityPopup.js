@@ -16,16 +16,13 @@ export default class InactivityPopup extends Component {
   componentDidMount = () => {
     window.onmousemove = this.resetInactiveTimer
     window.addEventListener("scroll", this.resetInactiveTimer, true)
-    // this.idleTimer = setTimeout(this.onIdle, 120000)
+    this.idleTimer = setTimeout(this.onIdle, 120000)
   }
 
   onIdle = () => {
     this.timer = setInterval(this.progress, 1000)
   }
 
-  componentDidUpdate = () => {
-    if (!this.props.token) this.props.gotoLink('/login')
-  }
 
   componentWillUnmount = () => { 
     clearInterval(this.timer)
@@ -63,7 +60,5 @@ export default class InactivityPopup extends Component {
 
 
 InactivityPopup.propTypes = {
-  token: PropTypes.string.isRequired,
-  gotoLink: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
 };

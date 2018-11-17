@@ -98,11 +98,7 @@ class Wrapper extends Component {
         <Loading />
         <Notification />
         <OfflinePopup />
-        <InactivityPopup 
-          token={this.props.token}
-          gotoLink={this.gotoLink} 
-          logout={this.props.logout}
-        />
+        <InactivityPopup logout={this.props.logout} />
       </RootDiv>
     )
   }

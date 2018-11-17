@@ -8,9 +8,8 @@ import { getUsers } from 'actions/users'
 
 const Wrapper = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, 350px);
-  grid-gap: 40px;
-  margin: 20px 20px;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 20px;
   justify-content: center
 `
 
@@ -26,12 +25,15 @@ class Dashboard extends Component {
   render() {
     return (
       <Wrapper>
-        <DashboardItem elevation={24}/>
-        <DashboardItem elevation={24}/>
-        <DashboardItem elevation={24}/>
-        <DashboardItem elevation={24}/>
-        <DashboardItem elevation={24}/>
-        <DashboardItem elevation={24}/>
+        <DashboardItem elevation={10}/>
+        <DashboardItem elevation={10}/>
+        <DashboardItem elevation={10}/>
+        <DashboardItem elevation={10}/>
+        <DashboardItem elevation={10}/>
+        <DashboardItem elevation={10}/>
+        <DashboardItem elevation={10}/>
+        <DashboardItem elevation={10}/>
+        <DashboardItem elevation={10}/>
       </Wrapper>
     )
   }
