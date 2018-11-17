@@ -16,7 +16,6 @@
     "react-detect-offline": "^2.1.2",
     "react-dom": "^16.5.2",
     "react-input-mask": "^2.0.4",
-    "react-number-format": "^3.6.2",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
     "react-rte": "^0.16.1",

@@ -32,7 +32,6 @@ import Loading from 'components/Loading'
 import { startCase } from 'lodash';
 import SendIcon from '@material-ui/icons/Send'
 
-
 import { getUsers } from 'actions/users'
 import { addClient, updateClient, deleteClient, getSubscriptions, addSubscription, removeSubscription, sendEvent, checkMAC } from 'actions/clients'
 import { getUserTransactions, updateCredits } from 'actions/transactions'
@@ -119,6 +118,7 @@ const TariffPackageRow = styled.div`
 
 const STBDetailsWrapper = styled(Paper)`
   padding: 20px 20px;
+  height: fit-content;
 `
 
 const STBDetails = styled.div`
