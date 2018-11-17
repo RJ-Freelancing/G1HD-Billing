@@ -1,7 +1,6 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
-import Drawer from '@material-ui/core/Drawer'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -9,8 +8,6 @@ import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import Icon from '@material-ui/core/Icon';
 import Typography from '@material-ui/core/Typography'
 import Logo from 'assets/logo.png'
-import SettingsIcon from '@material-ui/icons/Settings'
-import LogoutIcon from '@material-ui/icons/PowerSettingsNew'
 
 import { toggleMobileSideBar, clearNotification } from 'actions/general'
 import { logout } from 'actions/auth'
@@ -22,10 +19,6 @@ const styles = theme => ({
     border: 'none',
     background: 'linear-gradient(to left, #1d239b, #0e2388, #032175, #021e61, #061b4e)',
   },
-  toolbar: {
-    ...theme.mixins.toolbar,
-    minHeight: '65px !important'
-  },
   menu: {
     minHeight: 60, 
     cursor: 'pointer',
@@ -35,12 +28,14 @@ const styles = theme => ({
   }
 })
 
-const permissions = {
-  'super-admin': ['/', '/admins', '/superResellers', '/resellers', '/clients', '/transactions', '/events', '/config'],
-  'admin': ['/', '/superResellers', '/resellers', '/clients', '/transactions', '/events'],
-  'super-reseller': ['/', '/resellers', '/clients', '/transactions', '/events'],
-  'reseller': ['/', '/clients', '/transactions', '/events']
+
+const permissionsDenied = {
+  'super-admin': [],
+  'admin': ['/admins', '/config'],
+  'super-reseller': ['/admins', '/superResellers', '/config'],
+  'reseller': ['/admins', '/superResellers', '/resellers', '/config']
 }
+
 
 const menus = [
   {label: 'Dashboard', link: '/', icon: 'dashboard'},
@@ -51,31 +46,21 @@ const menus = [
   {label: 'Transactions', link: '/transactions', icon: 'attach_money'},
   {label: 'Events', link: '/events', icon: 'near_me'},
   {label: 'Configuration', link: '/config', icon: 'info'},
+  {label: 'My Account', link: '/profile', icon: 'settings'},
 ];
 
 
-const Sidebar = (props) => {
-  const { classes, mobileView, authUserType } = props
-  
-  const Menus = menus.map(({ label, link, icon }, idx)=> 
-    authUserType && permissions[authUserType].includes(link) && 
-    <ListItem 
-      key={idx} 
-      button 
-      classes={{root: classes.menu}} 
-      onClick={()=>{
-        mobileView && props.toggleMobileSideBar(false)
-        if (props.activePage!==link) {props.gotoLink(link);props.clearNotification()}
-      }}
-      style={{background: props.activePage===link ? 'radial-gradient(circle, #9553eb, #714ad0, #5040b5, #2f3598, #082a7c)' : ''}}
-    >
-      <ListItemIcon classes={{root: classes.menuItem}}>
-        <Icon>{icon}</Icon>
-      </ListItemIcon>
-      <ListItemText primary={label} primaryTypographyProps={{className: classes.menuItem}}/>
-    </ListItem>
-  )
 
+const Sidebar = (props) => {
+  const { classes, mobileView, authUserType, activePage, gotoLink, clearNotification, logout } = props
+  
+  const onLinkClick = (link) => {
+    if (mobileView) props.toggleMobileSideBar(false)
+    if (activePage!==link) {
+      gotoLink(link)
+      clearNotification()
+    }
+  }
 
   const logo = (          
     <div style={{textAlign: 'center'}}>
@@ -88,7 +73,7 @@ const Sidebar = (props) => {
   )
 
   const authInfo = (
-    <div style={{textAlign: 'center', paddingBottom: 10}}>
+    <div style={{textAlign: 'center', marginBottom: 20}}>
       <Typography variant="subtitle2" color="inherit" noWrap style={{color: 'white'}}>
         Welcome {props.auth.username}
       </Typography>
@@ -103,62 +88,49 @@ const Sidebar = (props) => {
     </div>
   )
 
+  const renderLinks = menus.map(({ label, link, icon }, idx) =>
+    !permissionsDenied[authUserType].includes(link) &&
+    <ListItem 
+      key={idx} 
+      button 
+      classes={{root: classes.menu}} 
+      style={{background: activePage===link ? 'radial-gradient(circle, #9553eb, #714ad0, #5040b5, #2f3598, #082a7c)' : ''}}
+      onClick={()=>onLinkClick(link)}
+    >
+      <ListItemIcon style={{color: 'white'}}>
+        <Icon>{icon}</Icon>
+      </ListItemIcon>
+      <ListItemText primary={label} primaryTypographyProps={{className: classes.menuItem}} />
+    </ListItem>
+  )
+
   const footer = (
-    <>
-    <br/>
     <ListItem 
-      onClick={()=>{props.gotoLink('/profile');props.clearNotification()}}
+      onClick={logout}
       button 
       classes={{root: classes.menu}}  
-      style={{background: props.activePage==='/profile' ? 'radial-gradient(circle, #9553eb, #714ad0, #5040b5, #2f3598, #082a7c)' : ''}}
+      style={{marginTop: 10}}
     >
-      <ListItemIcon classes={{root: classes.menuItem}}><SettingsIcon/></ListItemIcon>
-      <ListItemText primary="My account" primaryTypographyProps={{className: classes.menuItem}}/>
+      <ListItemIcon classes={{root: classes.menuItem}}><Icon>logout</Icon></ListItemIcon>
+      <ListItemText primary="Logout" primaryTypographyProps={{className: classes.menuItem}} />
     </ListItem>
-    <ListItem 
-      onClick={()=>{props.logout();props.gotoLink('/login')}}
-      button 
-      classes={{root: classes.menu}}  
-    >
-      <ListItemIcon classes={{root: classes.menuItem}}><LogoutIcon/></ListItemIcon>
-      <ListItemText primary="Logout" primaryTypographyProps={{className: classes.menuItem}}/>
-    </ListItem>
-    </>
   )
 
   return (
-    <>
-      {!mobileView ? 
-        <Drawer
-          variant="permanent"
-          classes={{
-            paper: classes.drawerPaper
-          }}
-        >
-          {logo}
-          {authInfo}
-          {Menus}
-          {footer}
-        </Drawer>
-        :
-        <SwipeableDrawer
-          open={props.mobileMenu} 
-          onClose={()=>props.toggleMobileSideBar(false)}
-          onOpen={()=>props.toggleMobileSideBar(true)}
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-        >
-          {logo}
-          {authInfo}
-          {Menus}
-          {footer}
-        </SwipeableDrawer>
-      }
-    </>
+    <SwipeableDrawer
+      open={!mobileView || props.mobileMenu} 
+      variant={!mobileView ? "permanent" : "temporary"}
+      onClose={()=>props.toggleMobileSideBar(false)}
+      onOpen={()=>props.toggleMobileSideBar(true)}
+      classes={{ paper: classes.drawerPaper }}
+    >
+      {logo}
+      {authInfo}
+      {renderLinks}
+      {footer}
+    </SwipeableDrawer>
   )
 }
-
 
 
 const mapStateToProps = state => ({
@@ -171,10 +143,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   toggleMobileSideBar: (open) => dispatch(toggleMobileSideBar(open)),
   clearNotification: () => dispatch(clearNotification()),
-  logout: () => dispatch(logout()),
-
-
+  logout: () => dispatch(logout())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Sidebar))
-
