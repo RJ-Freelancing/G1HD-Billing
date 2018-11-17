@@ -7,7 +7,7 @@ import Loading from 'components/Loading'
 import InactivityPopup from 'components/InactivityPopup'
 import OfflinePopup from 'components/OfflinePopup'
 import FourOhFour from 'components/FourOhFour'
-import Header from 'containers/Header'
+import Header from 'components/Header'
 import Sidebar from 'containers/Sidebar'
 import Profile from 'containers/Profile'
 import Dashboard from 'containers/Dashboard';

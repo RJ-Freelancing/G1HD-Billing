@@ -1,5 +1,6 @@
 import React from 'react'
-import { withStyles } from '@material-ui/core/styles'
+import { format } from 'date-fns'
+import { isEqual } from 'lodash';
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
@@ -19,19 +20,15 @@ import SearchIcon from '@material-ui/icons/Search'
 import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import IconButton from '@material-ui/core/IconButton';
-import { format } from 'date-fns'
 import Icon from '@material-ui/core/Icon';
-import { isEqual } from 'lodash';
+import Checkbox from '@material-ui/core/Checkbox';
+import SendIcon from '@material-ui/icons/Send'
 
 
 
 function desc(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1
-  }
+  if (b[orderBy] < a[orderBy]) return -1
+  if (b[orderBy] > a[orderBy]) return 1
   return 0
 }
 
@@ -56,12 +53,31 @@ class EnhancedTableHead extends React.Component {
   }
 
   render() {
-    const { order, orderBy, viewOnly, rows } = this.props
+    const { order, orderBy, viewOnly, rows, selected, dataLength, selectAll, isEvent } = this.props
     
     return (
       <TableHead>
           <TableRow>
-            {!viewOnly && <TableCell style={{position: 'sticky', top: 0, backgroundColor: "#fff", zIndex: 10, paddingRight: 0, paddingLeft: 5}}/>}
+            {isEvent &&
+              <TableCell style={{textAlign: 'center', padding: 0, position: 'sticky', top: 0, backgroundColor: "#fff", zIndex: 10}}>
+                <Tooltip title="Select All">
+                  <Checkbox
+                    style={{padding: 9}}
+                    checked={selected.length === dataLength}
+                    onChange={selectAll}
+                  />
+                </Tooltip>
+              </TableCell>
+            }
+            {!viewOnly && !isEvent && 
+              <TableCell style={{
+                position: 'sticky', 
+                top: 0, 
+                backgroundColor: "#fff", 
+                zIndex: 10, 
+                paddingRight: 0, 
+                paddingLeft: 5
+            }}/>}
 
             {rows.map(row => {
               return (
@@ -94,62 +110,46 @@ class EnhancedTableHead extends React.Component {
 }
 
 
-const toolbarStyles = theme => ({
-  root: {
-    paddingRight: theme.spacing.unit,
-  },
-  spacer: {
-    flex: '1 1 1 100%',
-  },
-  actions: {
-    color: theme.palette.text.secondary,
-    padding: '0px 10px'
-  },
-  title: {
-    flex: '0 0 auto',
-  },
-  margin: {
-    margin: theme.spacing.unit,
-    padding: '0px 20px',
-  },
-})
-
-let EnhancedTableToolbar = props => {
-  const { classes, title, mobileView, viewOnly, addNew, canAdd } = props
+const EnhancedTableToolbar = props => {
+  const { title, mobileView, viewOnly, addNew, canAdd, fuzzySearchFilter, selected, sendEvent } = props
 
   return (
     <Toolbar>
       {title && 
-        <div className={classes.title}>
-          <Typography variant="h6" id="tableTitle">
-            {title}
-          </Typography>
+        <div style={{flex: '0 0 auto'}}>
+          <Typography variant="h6" id="tableTitle"> {title} </Typography>
+        </div>
+      }
+      {selected.length > 0 &&
+        <div>
+          <Tooltip title="Send Event">
+            <Button aria-label="Send Event" variant={mobileView ? 'fab' : 'contained'} color="primary" mini={mobileView} onClick={()=>sendEvent(selected)}>
+              <SendIcon/>
+              {!mobileView &&
+                <Typography variant="subtitle1" noWrap color="inherit">
+                  Send Event
+                </Typography>
+              }
+            </Button>
+          </Tooltip>
         </div>
       }
       <TextField
-        className={classes.margin}
+        style={{margin: '0px 20px'}}
         id="input-with-icon-textfield"
-        placeholder="Type to search..."
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-        }}
+        placeholder="Type to filter..."
+        autoFocus
+        InputProps={{ startAdornment: ( <InputAdornment position="start"> <SearchIcon /> </InputAdornment> ) }}
         fullWidth
+        onChange={fuzzySearchFilter}
       />
-      <div className={classes.spacer} />
+      <div style={{flex: '1 1 1 100%'}} />
       {!viewOnly && canAdd &&
         <div>
           <Tooltip title="Add New">
             <Button aria-label="Add New" variant={mobileView ? 'fab' : 'contained'} color="primary" mini={mobileView} onClick={addNew}>
               <AddIcon/>
-              {!mobileView &&
-                <Typography variant="subtitle1" noWrap color="inherit">
-                  Add New
-                </Typography>
-              }
+              { !mobileView && <Typography variant="subtitle1" noWrap color="inherit"> Add New </Typography> }
             </Button>
           </Tooltip>
         </div>
@@ -158,37 +158,19 @@ let EnhancedTableToolbar = props => {
   )
 }
 
-
-EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar)
-
-const styles = theme => ({
-  root: {
-    width: '100vw',
-    marginTop: theme.spacing.unit,
-    overflowX: "auto"
-  },
-  tableWrapper: {
-    overflowX: 'auto'
-  },
-})
-
-class EnhancedTable extends React.Component {
+export default class EnhancedTable extends React.Component {
   state = {
     order: this.props.orderByDirection,
     orderBy: this.props.orderBy,
     data: this.props.data,
     page: 0,
     rowsPerPage: 20,
+    selected: []
   }
 
   handleRequestSort = (event, property) => {
     const orderBy = property
-    let order = 'desc'
-
-    if (this.state.orderBy === property && this.state.order === 'desc') {
-      order = 'asc'
-    }
-
+    const order = (this.state.orderBy === property && this.state.order === 'desc') ? 'asc' : 'desc'
     this.setState({ order, orderBy })
   }
 
@@ -206,21 +188,63 @@ class EnhancedTable extends React.Component {
     }
   }
 
+  handleRowSelect = id => {
+    if (this.state.selected.includes(id))
+      this.setState({selected: this.state.selected.filter(selectedID => selectedID !== id)})
+    else
+      this.setState({selected: [...this.state.selected, id]})
+  }
+
+  handleSelectAll = () => {
+    if (this.state.selected.length === this.state.data.length)
+      this.setState({selected: []})
+    else
+      this.setState({selected: [...this.state.data.map(n => n.stb_mac)]})
+  }
+
+  fuzzySearchFilter = (event) => {
+    let filteredData = [...this.state.data]
+    const filterValue = event.target.value
+    console.log(filterValue)
+    console.log(filteredData)
+    
+    // search and filter filteredData for value filterValue
+
+    this.setState({data: filteredData})
+  }
+
 
   render() {
-    const { classes, mobileView, rows, tableHeight, title, viewOnly, addNew, canAdd, incrementClientCredit } = this.props
-    const { data, order, orderBy, rowsPerPage, page } = this.state
+    const { 
+      mobileView, 
+      rows, 
+      tableHeight, 
+      title, 
+      viewOnly, 
+      addNew, 
+      canAdd, 
+      incrementClientCredit, 
+      authCreditsAvailable, 
+      authCreditsOnHold,
+      gotoLink,
+      sendEvent
+    } = this.props
+
+    const { data, order, orderBy, rowsPerPage, page, selected } = this.state
 
     return (
-      <Paper className={classes.root} style={{width: mobileView ? '93vw' : '100%'}} elevation={5}>
+      <Paper style={{overflowX: "auto", width: mobileView ? '93vw' : '100%'}} elevation={5}>
         <EnhancedTableToolbar 
           title={title} 
           mobileView={mobileView} 
           viewOnly={viewOnly}
           canAdd={canAdd}
           addNew={addNew}
+          selected={selected}
+          sendEvent={sendEvent}
+          fuzzySearchFilter={this.fuzzySearchFilter}
         />
-        <div className={classes.tableWrapper} style={{height: tableHeight}} >
+        <div style={{height: tableHeight, overflowX: 'auto'}} >
           <Table aria-labelledby="tableTitle">
             <EnhancedTableHead
               order={order}
@@ -229,57 +253,75 @@ class EnhancedTable extends React.Component {
               rows={rows}
               viewOnly={viewOnly}
               mobileView={mobileView}
+              isEvent={sendEvent}
+              selected={selected}
+              dataLength={data.length}
+              selectAll={this.handleSelectAll}
             />
             <TableBody>
               {stableSort(data, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((n, idx) => {
-                    return (
-                      <TableRow
-                        hover
-                        tabIndex={-1}
-                        key={idx}
-                      >
-                        {!viewOnly &&
-                          <TableCell style={{paddingRight: 0, paddingLeft: 5}}>
-                            <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr'}}>
-                            <Tooltip title="Edit">
-                              <IconButton aria-label="Edit" style={{padding: 9}} onClick={()=>this.props.gotoLink(n)}>
-                                <EditIcon fontSize="small" color="primary"/>
-                              </IconButton>
-                            </Tooltip>
-                            {incrementClientCredit && 
-                              <Tooltip title={(this.props.authCreditsAvailable+this.props.authCreditsOnHold < 1) ? "No credits available to transfer" : "Add 1 Credit"}>
-                                <IconButton 
-                                  aria-label="Add 1 Credit" 
-                                  style={{padding: 9}} 
-                                  onClick={()=>(this.props.authCreditsAvailable+this.props.authCreditsOnHold < 1) ? {} : this.props.incrementClientCredit(n.stb_mac)}
-                                >
-                                  <PlusOneIcon fontSize="small" color="primary"/>
-                                </IconButton>
-                              </Tooltip>
-                            }
-                            </div>
-                          </TableCell>
+                .map((n, idx) => 
+                  <TableRow 
+                    hover 
+                    tabIndex={-1} 
+                    key={idx} 
+                    onClick={()=>sendEvent && this.handleRowSelect(n.stb_mac)}
+                    selected={sendEvent && this.state.selected.includes(n.stb_mac)}
+                    style={{cursor: sendEvent ? 'pointer' : ''}}
+                  >
+                    {sendEvent && 
+                      <TableCell style={{textAlign: 'center', padding: 0}}>
+                        <Tooltip title="Select">
+                          <Checkbox
+                            style={{padding: 9}}
+                            checked={this.state.selected.includes(n.stb_mac)}
+                            onChange={()=>this.handleRowSelect(n.stb_mac)}
+                          />
+                        </Tooltip>
+                      </TableCell>
+                    }
+                    {!viewOnly && !sendEvent &&
+                      <TableCell style={{paddingRight: 0, textAlign: 'center'}}>
+                        <div style={{display: 'grid', gridTemplateColumns: incrementClientCredit ? '1fr 1fr' : '1fr'}}>
+                        <Tooltip title="Edit">
+                          <IconButton aria-label="Edit" style={{padding: 9}} onClick={()=>gotoLink(n)}>
+                            <EditIcon fontSize="small" color="primary"/>
+                          </IconButton>
+                        </Tooltip>
+                        {incrementClientCredit && 
+                          <Tooltip title={(authCreditsAvailable+authCreditsOnHold < 1) ? "No credits available to transfer" : "Add 1 Credit"}>
+                            <IconButton 
+                              aria-label="Add 1 Credit" 
+                              style={{padding: 9}} 
+                              onClick={()=>(authCreditsAvailable+authCreditsOnHold < 1) ? {} : incrementClientCredit(n.stb_mac)}
+                            >
+                              <PlusOneIcon fontSize="small" color="primary"/>
+                            </IconButton>
+                          </Tooltip>
                         }
-                        {Object.entries(n).map(([field, value]) => {
-                          const fieldProperties = this.props.rows.find(row=>row.field===field)
-                          switch (fieldProperties.type) {
-                            case 'boolean':
-                              return <TableCell key={field} style={{textAlign: 'center', paddingLeft: 0}}> <Icon style={{color: value ? 'green' : 'red'}}>{value ? 'thumb_up' : 'thumb_down'}</Icon> </TableCell>
-                            case 'integer':
-                              return <TableCell key={field} style={{textAlign: 'center', paddingLeft: 0}}> {value} </TableCell>
-                            case 'date':
-                              return <TableCell key={field}> {format(Date.parse(value), 'dd MMM YYYY @ HH:mm:ss')} </TableCell>
-                            default:
-                              return <TableCell key={field}> {value} </TableCell>
-                          }
-                        })}
-
-                      </TableRow>
-                    )
-
-                })}
+                        </div>
+                      </TableCell>
+                    }
+                    {Object.entries(n).map(([field, value]) => {
+                      const fieldProperties = rows.find(row=>row.field===field)
+                      switch (fieldProperties.type) {
+                        case 'boolean':
+                          return (
+                            <TableCell key={field} style={{textAlign: 'center', paddingLeft: 0}}> 
+                              <Icon style={{color: value ? 'green' : 'red'}}>{value ? 'thumb_up' : 'thumb_down'}</Icon> 
+                            </TableCell>
+                          )
+                        case 'integer':
+                          return <TableCell key={field} style={{textAlign: 'center', paddingLeft: 0}}> {value} </TableCell>
+                        case 'date':
+                          return <TableCell key={field}> {format(Date.parse(value), 'dd MMM YYYY @ HH:mm:ss')} </TableCell>
+                        default:
+                          return <TableCell key={field}> {value} </TableCell>
+                      }
+                    })}
+                  </TableRow>
+                )}
             </TableBody>
           </Table>
         </div>
@@ -288,12 +330,8 @@ class EnhancedTable extends React.Component {
           count={data.length}
           rowsPerPage={rowsPerPage}
           page={page}
-          backIconButtonProps={{
-            'aria-label': 'Previous Page',
-          }}
-          nextIconButtonProps={{
-            'aria-label': 'Next Page',
-          }}
+          backIconButtonProps={{'aria-label': 'Previous Page'}}
+          nextIconButtonProps={{'aria-label': 'Next Page'}}
           onChangePage={this.handleChangePage}
           onChangeRowsPerPage={this.handleChangeRowsPerPage}
           rowsPerPageOptions={[20, 50, 100]}
@@ -302,6 +340,3 @@ class EnhancedTable extends React.Component {
     )
   }
 }
-
-
-export default withStyles(styles)(EnhancedTable)

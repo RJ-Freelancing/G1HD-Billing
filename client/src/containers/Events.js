@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { getUsers } from 'actions/users'
-import Table from 'components/EventsTable'
+import Table from 'components/Table'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button';
@@ -77,14 +77,14 @@ class Events extends Component {
   render() {
     return (
       <div>
-        <Paper>
+        <Paper style={{marginBottom: 10}}>
           <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr'}}>
-          <Typography variant="h6" style={{marginLeft: 20}}>Select MAC IDs to send Event</Typography>
-          {this.props.authUserType === 'super-admin' && 
-            <Button variant="contained" color="primary" disabled={this.props.loading} onClick={()=>this.setState({ids: [], open: true})}>
-              Click Here To Send All
-            </Button>          
-          }
+            <Typography variant="h6" style={{marginLeft: 20}}>Select MAC IDs to send Event</Typography>
+            {this.props.authUserType === 'super-admin' && 
+              <Button variant="contained" color="primary" disabled={this.props.loading} onClick={()=>this.setState({ids: [], open: true})}>
+                Click Here To Send All
+              </Button>          
+            }
           </div>
         </Paper>
         <Table
