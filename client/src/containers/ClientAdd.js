@@ -48,7 +48,7 @@ const ClientEdit = styled.div`
 `
 
 
-class AddClient extends Component {
+class ClientAdd extends Component {
 
   constructor(props) {
     super(props)
@@ -246,4 +246,4 @@ const mapDispatchToProps = dispatch => ({
   updateCredits: (transaction) => dispatch(updateCredits(transaction))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddClient)
+export default connect(mapStateToProps, mapDispatchToProps)(ClientAdd)

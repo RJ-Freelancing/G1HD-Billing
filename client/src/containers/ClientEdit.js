@@ -55,7 +55,7 @@ const ClientEditWrapper = styled(Paper)`
   padding: 20px 20px;
 `
 
-const ClientEdit = styled.div`
+const ClientProfile = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   grid-gap: 20px;
@@ -148,7 +148,7 @@ const rows = [
 
 
 
-class EditClient extends Component {
+class ClientEdit extends Component {
 
   constructor(props) {
     super(props)
@@ -315,7 +315,7 @@ class EditClient extends Component {
           <br/>
           {this.state.editingClient &&
             <form onSubmit={this.updateClient} style={{padding: 10}}>
-              <ClientEdit>
+              <ClientProfile>
                 <TextField
                   label="Username"
                   type="username"
@@ -369,7 +369,7 @@ class EditClient extends Component {
                     />
                   }
                 />
-              </ClientEdit>
+              </ClientProfile>
               <br/><br/>
               <Button variant="contained" type="submit" color="primary" disabled={this.props.loading || this.checkValidation() || isEqual(this.state.editingClient, client)}>
                 Update&nbsp;
@@ -635,4 +635,4 @@ const mapDispatchToProps = dispatch => ({
   updateAuthResellerCredits: creditsAvailable => dispatch(updateAuthResellerCredits(creditsAvailable))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditClient)
+export default connect(mapStateToProps, mapDispatchToProps)(ClientEdit)

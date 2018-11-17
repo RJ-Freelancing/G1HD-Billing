@@ -40,7 +40,7 @@ const UserEditWrapper = styled(Paper)`
   padding: 20px 20px;
 `
 
-const UserEdit = styled.div`
+const UserProfile = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 20px;
@@ -70,7 +70,7 @@ const rows = [
 
 
 
-class EditInternalUser extends Component {
+class UserEdit extends Component {
 
   constructor(props) {
     super(props)
@@ -206,7 +206,7 @@ class EditInternalUser extends Component {
           <br/>
           {this.state.editingUser &&
             <form onSubmit={this.updateUser} style={{padding: 10}}>
-              <UserEdit>
+              <UserProfile>
                 <TextField
                   label="Username"
                   type="username"
@@ -283,7 +283,7 @@ class EditInternalUser extends Component {
                     />
                   }
                 />
-              </UserEdit>
+              </UserProfile>
               <br/><br/>
               <Button variant="contained" type="submit" color="primary" disabled={(!this.state.newPassword) && (this.props.loading || this.checkValidation() || isEqual(this.state.editingUser, this.state.user))}>
                 Update&nbsp;
@@ -427,4 +427,4 @@ const mapDispatchToProps = dispatch => ({
   updateAuthCreditsAvailable: creditsAvailable => dispatch(updateAuthCreditsAvailable(creditsAvailable))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditInternalUser)
+export default connect(mapStateToProps, mapDispatchToProps)(UserEdit)

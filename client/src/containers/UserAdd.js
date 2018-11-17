@@ -40,7 +40,7 @@ const ClientEdit = styled.div`
 `
 
 
-class AddUser extends Component {
+class UserAdd extends Component {
 
   constructor(props) {
     super(props)
@@ -254,4 +254,4 @@ const mapDispatchToProps = dispatch => ({
   getUsers: () => dispatch(getUsers()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddUser)
+export default connect(mapStateToProps, mapDispatchToProps)(UserAdd)

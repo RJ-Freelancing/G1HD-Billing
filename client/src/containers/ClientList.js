@@ -23,7 +23,7 @@ const rows = [
 ]
 
 
-class Client extends Component {
+class ClientList extends Component {
 
   componentDidMount = () => this.props.getUsers()
 
@@ -89,4 +89,4 @@ const mapDispatchToProps = dispatch => ({
   updateAuthResellerCredits: creditsAvailable => dispatch(updateAuthResellerCredits(creditsAvailable))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Client)
+export default connect(mapStateToProps, mapDispatchToProps)(ClientList)

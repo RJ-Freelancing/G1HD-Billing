@@ -22,7 +22,7 @@ const rows = [
 
 
 
-class InternalUser extends Component {
+class UserList extends Component {
 
   componentDidMount = () => this.props.getUsers()
 
@@ -81,4 +81,4 @@ const mapDispatchToProps = dispatch => ({
   getUsers: () => dispatch(getUsers()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(InternalUser)
+export default connect(mapStateToProps, mapDispatchToProps)(UserList)

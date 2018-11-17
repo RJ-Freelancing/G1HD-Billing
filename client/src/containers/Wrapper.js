@@ -11,14 +11,14 @@ import Header from 'components/Header'
 import Sidebar from 'containers/Sidebar'
 import Profile from 'containers/Profile'
 import Dashboard from 'containers/Dashboard';
-import InternalUser from 'containers/InternalUser'
-import Client from 'containers/Client'
+import UserList from 'containers/UserList'
+import UserAdd from 'containers/UserAdd'
+import UserEdit from 'containers/UserEdit'
+import ClientList from 'containers/ClientList'
+import ClientAdd from 'containers/ClientAdd'
+import ClientEdit from 'containers/ClientEdit'
 import Transaction from 'containers/Transaction'
 import Events from 'containers/Events'
-import EditInternalUser from 'containers/EditInternalUser'
-import EditClient from 'containers/EditClient'
-import AddClient from 'containers/AddClient'
-import AddUser from 'containers/AddUser'
 import SuperAdminConfig from 'containers/SuperAdminConfig'
 
 import { logout } from 'actions/auth'
@@ -82,16 +82,16 @@ class Wrapper extends Component {
         <ContentDiv>
           <Switch>
             <Route exact path="/" component={Dashboard} />
-            <Route exact path="/(admins|superResellers|resellers)" component={InternalUser} />
-            <Route exact path="/clients" component={Client} />
+            <Route exact path="/(admins|superResellers|resellers)" component={UserList} />
+            <Route exact path="/clients" component={ClientList} />
             <Route exact path="/transactions" component={Transaction} />
             <Route exact path="/events" component={Events} />
             <Route exact path="/config" component={SuperAdminConfig} />
             <Route exact path="/profile" component={Profile} />
-            <Route exact path="/users/new" component={AddUser} />
-            <Route exact path="/clients/new" component={AddClient} />
-            <Route path="/users/:id" component={EditInternalUser} />
-            <Route path="/clients/:id" component={EditClient} />
+            <Route exact path="/users/new" component={UserAdd} />
+            <Route exact path="/clients/new" component={ClientAdd} />
+            <Route path="/users/:id" component={UserEdit} />
+            <Route path="/clients/:id" component={ClientEdit} />
             <Route component={FourOhFour} />
           </Switch>
         </ContentDiv>
