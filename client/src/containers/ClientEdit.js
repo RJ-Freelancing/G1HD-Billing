@@ -102,8 +102,8 @@ const TariffPackagesHeader = styled.div`
 const TariffPackages = styled.div`
   display: grid;
   grid-gap: 20px;
-  height: 300px;
-  overflow-y: scroll;
+  // height: 100%;
+  overflow-y: auto;
 `
 
 const TariffPackageRow = styled.div`
@@ -218,14 +218,8 @@ class ClientEdit extends Component {
     this.deleteConfirmationProceed = () => {
       this.setState({deleteConfirmation: false}, ()=>{
         this.props.deleteClient(this.state.editingClient.stb_mac)
-        .then(clientDeleteResponse => {
-          if (clientDeleteResponse.type==='DELETE_CLIENT_SUCCESS') {
-            this.props.getUsers()
-            .then(()=>this.props.history.push('/clients'))
-          }
-        })
-      })
-    }
+        .then(() => this.props.history.push('/clients'))
+    })}
     this.setState({deleteConfirmation: true})
   }
 
@@ -290,11 +284,9 @@ class ClientEdit extends Component {
   render() {   
     if (!this.state.client)
       return (
-        <Wrapper>
-          <Typography variant="h4" noWrap>
-              Client with MAC {this.props.match.params.id} was not found
-          </Typography>
-        </Wrapper>
+        <Typography variant="h4" noWrap>
+            Client with MAC {this.props.match.params.id} was not found
+        </Typography>
       )
 
     return (
@@ -370,7 +362,8 @@ class ClientEdit extends Component {
             </form>
           }
         </ClientEditWrapper>
-        <CreditsWrapper elevation={24}>
+        <div>
+          <CreditsWrapper elevation={24}>
             <Typography variant="h4"> Credits </Typography>
             {this.state.client && this.props.authUsername===this.state.client.parentUsername  &&
               <div>
@@ -424,7 +417,7 @@ class ClientEdit extends Component {
                   onClick={()=>this.updateCredits()}
                 >
                   Submit
-                  <SaveIcon />
+                  <SaveIcon style={{marginLeft: 5}}/>
                 </Button>
               </div>
             }
@@ -434,28 +427,28 @@ class ClientEdit extends Component {
               Credits Available<br/> <div style={{fontSize: 50}}> {this.state.client.accountBalance} </div>
             </div>
             }
-            <br/><br/><br/>
-            <Paper style={{padding: 20, textAlign: 'center'}}>
-              <TextField
-                label="Send Message"
-                type="text"
-                value={this.state.msg ? this.state.msg : ''}
-                onChange={(e)=>this.setState({msg: e.target.value})}
-                fullWidth
-                multiline
-                rows={5}
-                rowsMax="5"
-                disabled={this.props.loading}
-                placeholder="Send a message to this client to display in portal"
-              /><br/><br/>
-              <Button variant="contained" color="primary" disabled={this.props.loading || this.state.msg===""} onClick={this.sendMessage}>
-                Send
-                <SendIcon />
-              </Button>
-            </Paper>
-        </CreditsWrapper>
+          </CreditsWrapper>
 
-
+          <Paper style={{padding: 20, textAlign: 'center', marginTop: 10}}>
+            <Typography variant="h4" style={{textAlign: 'left', paddingBottom: 10}}> Send Message </Typography>
+            <TextField
+              // label="Send Message"
+              type="text"
+              value={this.state.msg ? this.state.msg : ''}
+              onChange={(e)=>this.setState({msg: e.target.value})}
+              fullWidth
+              multiline
+              rows={5}
+              rowsMax="5"
+              disabled={this.props.loading}
+              placeholder="Send a message to this client to display in portal"
+            /><br/><br/>
+            <Button variant="contained" color="primary" disabled={this.props.loading || this.state.msg===""} onClick={this.sendMessage}>
+              Send
+              <SendIcon style={{marginLeft: 5}}/>
+            </Button>
+          </Paper>
+        </div>
         <TariffWrapper elevation={24}>
           <Typography variant="h4"> Edit Tariff Plan</Typography>
           <br/><br/>

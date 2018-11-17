@@ -151,12 +151,7 @@ class UserEdit extends Component {
     this.confirmationProceed = () => {
       this.setState({confirmation: false}, ()=>{
         this.props.deleteUser(this.state.user.username)
-        .then(userDeleteResponse => {
-          if (userDeleteResponse.type==='DELETE_USER_SUCCESS') {
-            this.props.getUsers()
-            .then(()=>this.props.history.push(`/${this.state.user.userType}s`))
-          }
-        })
+        .then(() => this.props.history.push(`/${this.state.user.userType}s`))
       })
     }
     this.setState({confirmation: true, confirmationMessage: "Are you sure you want to delete this user ?", newPassword: ""})

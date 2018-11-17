@@ -39,8 +39,8 @@ const users = (state = initialState, action) => {
       }
     case 'UPDATE_USER_SUCCESS':
       // Find the updated user and merge with payload
-      const username = action.meta.previousAction.payload.request.url.split('/').pop()     
-      const user = this.findInternalUserFromUsername(state, username)
+      let username = action.meta.previousAction.payload.request.url.split('/').pop()     
+      let user = this.findInternalUserFromUsername(state, username)
       if (user) {
         return {
           ...state, 
@@ -55,7 +55,7 @@ const users = (state = initialState, action) => {
       return state
     case 'UPDATE_CLIENT_SUCCESS':
       // Find the updated client and merge with payload
-      const stb_mac = action.meta.previousAction.payload.request.url.split('/').pop()     
+      let stb_mac = action.meta.previousAction.payload.request.url.split('/').pop()     
       return {
         ...state, 
         clients: state.clients.map(client => {
@@ -65,9 +65,20 @@ const users = (state = initialState, action) => {
             return client
         })
       }
-    case 'DELETE_CLIENT_SUCCESS':
+    case 'DELETE_USER_SUCCESS':
+      // Find the deleted user and remove from appropiate list
+      username = action.meta.previousAction.payload.request.url.split('/').pop()     
+      user = this.findInternalUserFromUsername(state, username)
       return {
         ...state, 
+        [user.userType]: state[user.userType].filter(user.username===username)
+      }
+    case 'DELETE_CLIENT_SUCCESS':
+      // Find the deleted client and remove from clients list
+      stb_mac = action.meta.previousAction.payload.request.url.split('/').pop()     
+      return {
+        ...state, 
+        clients: state.clients.filter(client=>client.stb_mac===stb_mac)
       }
     case 'UPDATE_CREDIT_SUCCESS':          
       const {transactionTo, credits} = action.payload.data.transaction[0]    
