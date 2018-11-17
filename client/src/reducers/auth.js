@@ -25,21 +25,23 @@ const auth = (state = initialState, action) => {
         ...state,
         ...action.payload.data
       }
-    case 'UPDATE_CREDITS_AVAILABLE':
-      return {
-        ...state,
-        creditsAvailable: state.creditsAvailable+action.payload
-      }
-    case 'UPDATE_AUTH_RESELLER_CREDITS':
-    return {
-      ...state,
-      creditsAvailable: state.creditsAvailable+action.payload,
-      creditsOnHold: state.creditsOnHold+(action.payload*-1)
-    }
+    case 'UPDATE_CREDIT_SUCCESS':          
+      const {credits} = action.payload.data.transaction[0]  
+      if (state.userType==='reseller')  
+        return {
+          ...state, 
+          creditsAvailable: credits < 0 ? state.creditsAvailable-credits : state.creditsAvailable-1,
+          creditsOnHold: credits > 1 ? state.creditsOnHold+credits-1 : state.creditsOnHold
+        }
+      else
+        return {
+          ...state, 
+          creditsAvailable: state.creditsAvailable+credits,
+        }
     case (action.type.match(/_FAILED$/) || {}).input:    
       if (action.error.response.status===401)
         return {...initialState}
-      else return {...state}
+      else return state
     default:
       return state
   }

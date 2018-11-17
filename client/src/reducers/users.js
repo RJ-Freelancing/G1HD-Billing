@@ -6,6 +6,19 @@ const initialState = {
   transactions: []
 };
 
+
+const findInternalUserFromUsername = (state, username) => {
+  let user
+  user = state.admins.find(admin=>admin.username===username)
+  if (!user)
+    user = state.superResellers.find(superReseller=>superReseller.username===username)
+  if (!user)
+    user = state.resellers.find(reseller=>reseller.username===username)
+  if (!user)
+    user = state.clients.find(client=>client.stb_mac===username)
+  return user
+}
+
 const users = (state = initialState, action) => {
   switch (action.type) {
     case 'GET_USERS_SUCCESS':   
@@ -24,8 +37,24 @@ const users = (state = initialState, action) => {
         ...state, 
         // clients: [...state.clients, action.payload.data]
       }
+    case 'UPDATE_USER_SUCCESS':
+      // Find the updated user and merge with payload
+      const username = action.meta.previousAction.payload.request.url.split('/').pop()     
+      const user = this.findInternalUserFromUsername(state, username)
+      if (user) {
+        return {
+          ...state, 
+          [user.userType]: state[user.userType].map(user => {
+            if (user.username===username)
+              return {...user, ...action.payload.data}
+            else
+              return user
+          })
+        }
+      }
+      return state
     case 'UPDATE_CLIENT_SUCCESS':
-      // FIND UPDATED USER AND UPDATE WITH PAYLOAD
+      // Find the updated client and merge with payload
       const stb_mac = action.meta.previousAction.payload.request.url.split('/').pop()     
       return {
         ...state, 
@@ -36,25 +65,37 @@ const users = (state = initialState, action) => {
             return client
         })
       }
-    case 'INCREMENT_CLIENT_CREDIT':
-      return {
-        ...state, 
-        clients: state.clients.map(client => {
-          if (client.stb_mac===action.payload )
-            return {...client, accountBalance:client.accountBalance+1}
-          else
-            return client
-        })
-      }
     case 'DELETE_CLIENT_SUCCESS':
       return {
         ...state, 
       }
-    case 'ADD_CREDIT_SUCCESS':
-      return {
-        ...state, 
-        transactions: [...state.transactions, action.payload.data]
+    case 'UPDATE_CREDIT_SUCCESS':          
+      const {transactionTo, credits} = action.payload.data.transaction[0]    
+      const transactionToUser = findInternalUserFromUsername(state, transactionTo)  
+      if (transactionToUser.userType) {
+        return {
+          ...state, 
+          transactions: [...state.transactions, action.payload.data],
+          [`${transactionToUser.userType}s`]: state[`${transactionToUser.userType}s`].map(user => {
+            if (user.username===transactionTo)
+              return {...user, creditsAvailable: user.creditsAvailable+credits}
+            else
+              return user
+          })
+        }
+      } else {
+        return {
+          ...state, 
+          transactions: [...state.transactions, action.payload.data],
+          clients: state.clients.map(client => {
+            if (client.stb_mac===transactionTo)
+              return {...client, accountBalance: client.accountBalance+credits}
+            else
+              return client
+          })
+        }
       }
+
     case 'LOGOUT':
       return {
         ...initialState

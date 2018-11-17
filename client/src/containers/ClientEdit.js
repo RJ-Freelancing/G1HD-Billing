@@ -36,7 +36,6 @@ import { getUsers } from 'actions/users'
 import { addClient, updateClient, deleteClient, getSubscriptions, addSubscription, removeSubscription, sendEvent, checkMAC } from 'actions/clients'
 import { getUserTransactions, updateCredits } from 'actions/transactions'
 import { getTariffPlans } from 'actions/general'
-import { updateAuthResellerCredits } from 'actions/auth'
 
 
 const validPhoneNo = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
@@ -62,6 +61,7 @@ const ClientProfile = styled.div`
   @media only screen and (max-width: 768px) {
     grid-template-columns: 1fr;
   }
+  padding-bottom: 10px;
 `
 
 const CreditsWrapper = styled(Paper)`
@@ -153,6 +153,7 @@ class ClientEdit extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      client: null,
       editingClient: null,
       deleteConfirmation: false,
       credits: {
@@ -169,35 +170,27 @@ class ClientEdit extends Component {
   }
 
   componentDidMount = () => {   
-    if (!this.props.token) this.props.history.push('/login')
-    else {
-      this.props.getTariffPlans()
-      this.setEditingClient(this.props.match.params.id)
+    this.props.getTariffPlans()
+    const stb_mac = this.props.match.params.id
+    const client = this.findClientFromMAC(stb_mac)
+    if (client) {
+      this.props.getUserTransactions(stb_mac)
+      .then(resnponseTransactions => { 
+        this.setState({client, editingClient: {...client}, transactions: resnponseTransactions.payload.data})
+      })
     }
   }
 
   componentDidUpdate = (prevProps, prevState, snapshot) => {
-    if (!this.props.token) this.props.history.push('/login')
-    else {
-      let client = this.props.clients.find(client=>client.stb_mac===this.props.match.params.id)
-      if (!isEqual(prevState.editingClient, client) && client && prevState.editingClient && prevState.editingClient.tariff_plan!==client.tariff_plan) {
-        this.setEditingClient(this.props.match.params.id)
-      }
+    const stb_mac = this.props.match.params.id
+    const client = this.findClientFromMAC(stb_mac)
+    if (!isEqual(prevState.client, client)) {
+      this.setState({client, editingClient: {...client}})
     }
   }
 
-  setEditingClient = (stb_mac) => {
-    let client = this.props.clients.find(client=>client.stb_mac===stb_mac)
-    this.props.getUserTransactions(stb_mac)
-    .then(resnponseTransactions => {     
-      this.setState({editingClient: {...client}, transactions: resnponseTransactions.payload.data}, ()=>{
-        this.props.getSubscriptions(stb_mac)
-        .then(resoponse => {    
-          if (resoponse.payload)
-            this.setState({subscriptions: resoponse.payload.data[0].subscribed})
-        })
-      })
-    })
+  findClientFromMAC = stb_mac => {
+    return this.props.clients.find(client=>client.stb_mac===stb_mac)
   }
 
   handleTextChange = (field, value) => {
@@ -207,8 +200,8 @@ class ClientEdit extends Component {
   updateClient = (event) => {
     event.preventDefault()
     const { stb_mac } = this.state.editingClient
-    const { full_name, phone, comment } = this.state.editingClient
-    this.props.updateClient(stb_mac, {full_name:full_name, phone, comment})
+    const { full_name, phone, comment, status } = this.state.editingClient
+    this.props.updateClient(stb_mac, {full_name, phone, comment, status})
   }
 
   checkValidation = () => {
@@ -242,17 +235,8 @@ class ClientEdit extends Component {
       description: `${startCase(this.state.credits.action)}ed ${this.state.credits.value} credits`,
       transactionTo: this.state.editingClient.stb_mac
     })
-    .then(()=>{
-      this.props.getUserTransactions(this.state.editingClient.stb_mac)
-      .then(() => { 
-        const creditsTo = this.state.credits.action==="add" ? this.state.credits.value : this.state.credits.value*-1
-        const creditsFrom = -1*creditsTo
-        this.props.getUsers()
-        .then(()=>{
-          this.setEditingClient(this.props.match.params.id)
-          this.props.updateAuthResellerCredits(creditsFrom)
-        })
-      })
+    .then((transactionResponse)=>{
+      this.setState({transactions: [...this.state.transactions, transactionResponse.payload.data.transaction[0]]})
     })
   }
 
@@ -304,42 +288,31 @@ class ClientEdit extends Component {
   } 
 
   render() {   
-    const client = this.props.clients.find(client=>client.stb_mac===this.props.match.params.id)
-    if (!client) return <Wrapper></Wrapper>  
+    if (!this.state.client)
+      return (
+        <Wrapper>
+          <Typography variant="h4" noWrap>
+              Client with MAC {this.props.match.params.id} was not found
+          </Typography>
+        </Wrapper>
+      )
+
     return (
       <Wrapper>
         <ClientEditWrapper elevation={24}>
           <Typography variant="h4" noWrap>
-            Edit Client
+            Edit Client: {this.state.client.login}
           </Typography>
           <br/>
           {this.state.editingClient &&
             <form onSubmit={this.updateClient} style={{padding: 10}}>
               <ClientProfile>
                 <TextField
-                  label="Username"
-                  type="username"
-                  value={client && client.login}
-                  fullWidth
-                  disabled
-                />
-                <TextField
                   label="Full Name"
                   type="name"
                   value={this.state.editingClient.full_name}
                   onChange={(e)=>this.handleTextChange('full_name', e.target.value)}
                   fullWidth
-                  disabled={this.props.loading}
-                />
-                <TextField
-                  label="Comments"
-                  type="comment"
-                  value={this.state.editingClient.comment ? this.state.editingClient.comment : ''}
-                  onChange={(e)=>this.handleTextChange('comment', e.target.value)}
-                  fullWidth
-                  multiline
-                  rows={3}
-                  rowsMax="3"
                   disabled={this.props.loading}
                 />
                 <InputMask mask="999-999-9999" 
@@ -357,6 +330,17 @@ class ClientEdit extends Component {
                     />
                   )}
                 </InputMask>
+                <TextField
+                  label="Comments"
+                  type="comment"
+                  value={this.state.editingClient.comment ? this.state.editingClient.comment : ''}
+                  onChange={(e)=>this.handleTextChange('comment', e.target.value)}
+                  fullWidth
+                  multiline
+                  rows={3}
+                  rowsMax="3"
+                  disabled={this.props.loading}
+                />
                 <FormControlLabel
                   label={`Account Status (${this.state.editingClient.status===1 ? 'Active' : 'Inactive'})`}
                   control={
@@ -370,21 +354,25 @@ class ClientEdit extends Component {
                   }
                 />
               </ClientProfile>
-              <br/><br/>
-              <Button variant="contained" type="submit" color="primary" disabled={this.props.loading || this.checkValidation() || isEqual(this.state.editingClient, client)}>
-                Update&nbsp;
-                <SaveIcon />
+              <Button 
+                variant="contained" 
+                type="submit" 
+                color="primary" 
+                disabled={this.props.loading || this.checkValidation() || isEqual(this.state.editingClient, this.state.client)}
+              >
+                Update
+                <SaveIcon style={{marginLeft: 5}}/>
               </Button>
               <Button variant="contained" type="submit" color="secondary" disabled={this.props.loading} style={{float: 'right'}} onClick={this.deleteClient}>
-                Delete&nbsp;
-                <DeleteIcon />
+                Delete
+                <DeleteIcon style={{marginLeft: 5}}/>
               </Button>
             </form>
           }
         </ClientEditWrapper>
         <CreditsWrapper elevation={24}>
             <Typography variant="h4"> Credits </Typography>
-            {client && this.props.authUsername===client.parentUsername  &&
+            {this.state.client && this.props.authUsername===this.state.client.parentUsername  &&
               <div>
                 <br/><br/>
                 <TextField
@@ -399,12 +387,12 @@ class ClientEdit extends Component {
                     (this.state.credits.value < 1) || 
                     (this.state.credits.value > 12) || 
                     (this.state.credits.action==='add' && (this.props.authCreditsAvailable+this.props.authCreditsOnHold < this.state.credits.value)) ||
-                    (this.state.credits.action==='recover' && (client.accountBalance-this.state.credits.value < 0))
+                    (this.state.credits.action==='recover' && (this.state.client.accountBalance-this.state.credits.value < 0))
                   }
                   helperText={
                     (this.state.credits.value < 1 || this.state.credits.value > 12) ? 'Credits can only be transferred in the range from 1 to 12' 
                     : (this.state.credits.action==='add' && (this.props.authCreditsAvailable+this.props.authCreditsOnHold < this.state.credits.value)) ? "You don't have enough credits to transfer"
-                    : (this.state.credits.action==='recover' && (client.accountBalance-this.state.credits.value < 0)) ? 'Client has not enough credits to recover'
+                    : (this.state.credits.action==='recover' && (this.state.client.accountBalance-this.state.credits.value < 0)) ? 'Client has not enough credits to recover'
                     : null
                   }
                 />
@@ -430,20 +418,20 @@ class ClientEdit extends Component {
                     (this.state.credits.value < 1) || 
                     (this.state.credits.value > 12) || 
                     (this.state.credits.action==='add' && (this.props.authCreditsAvailable+this.props.authCreditsOnHold < this.state.credits.value)) ||
-                    (this.state.credits.action==='recover' && (client.accountBalance-this.state.credits.value < 0))
+                    (this.state.credits.action==='recover' && (this.state.client.accountBalance-this.state.credits.value < 0))
                   } 
                   style={{float: 'right'}} 
                   onClick={()=>this.updateCredits()}
                 >
-                  Submit&nbsp;
+                  Submit
                   <SaveIcon />
                 </Button>
               </div>
             }
             <br/><br/>
-            {client && 
+            {this.state.client && 
             <div style={{textAlign: 'center'}}>
-              Credits Available<br/> <div style={{fontSize: 50}}> {client.accountBalance} </div>
+              Credits Available<br/> <div style={{fontSize: 50}}> {this.state.client.accountBalance} </div>
             </div>
             }
             <br/><br/><br/>
@@ -461,7 +449,7 @@ class ClientEdit extends Component {
                 placeholder="Send a message to this client to display in portal"
               /><br/><br/>
               <Button variant="contained" color="primary" disabled={this.props.loading || this.state.msg===""} onClick={this.sendMessage}>
-                Send&nbsp;
+                Send
                 <SendIcon />
               </Button>
             </Paper>
@@ -471,96 +459,92 @@ class ClientEdit extends Component {
         <TariffWrapper elevation={24}>
           <Typography variant="h4"> Edit Tariff Plan</Typography>
           <br/><br/>
-          {client &&
-            <TariffDetails>
-              <TariffHeader>
-                <Select
-                  label="Tarriff Plan"
-                  value={client.tariff_plan}
-                  onChange={(e)=>this.props.updateClient(client.stb_mac, {tariff_plan: e.target.value})}
-                  inputProps={{ id: 'tariff_plan' }}
-                >
-                  {
-                    this.props.tariffPlans.map(plan=>(
-                      <MenuItem key={plan.id} value={parseInt(plan.id)}> {plan.name} </MenuItem>
-                    ))
-                  }
-                </Select>
-                <Typography variant="body2" style={{alignSelf: 'center', justifySelf: 'center'}}>
-                  Tariff Expires on : <strong>{format(Date.parse(client.tariff_expired_date), 'd MMMM YYYY')}</strong>
-                </Typography>
-              </TariffHeader>
-              <TariffPackagesHeader>
-                <div>Name</div><div style={{justifySelf: 'center'}}>Optional</div><div style={{justifySelf: 'center'}}>Subscribed</div>
-              </TariffPackagesHeader>
-              <TariffPackages>
+          <TariffDetails>
+            <TariffHeader>
+              <Select
+                label="Tarriff Plan"
+                value={this.state.client.tariff_plan}
+                onChange={(e)=>this.props.updateClient(this.state.client.stb_mac, {tariff_plan: e.target.value})}
+                inputProps={{ id: 'tariff_plan' }}
+              >
                 {
-                  this.props.tariffPlans.find(plan=>parseInt(plan.id)===client.tariff_plan) &&
-                  this.props.tariffPlans.find(plan=>parseInt(plan.id)===client.tariff_plan).packages.map(tariffPackage=>(
-                    <TariffPackageRow key={tariffPackage.name}>
-                      <div>{tariffPackage.name}</div>
-                      <div style={{justifySelf: 'center'}}>{tariffPackage.optional==="1" ? "Yes": "No"}</div>
-                      <Checkbox 
-                        checked={tariffPackage.optional==="1" ? this.state.subscriptions.includes(tariffPackage.id) : true} 
-                        disabled={tariffPackage.optional==="1" ? false: true}  
-                        style={{padding: 10, justifySelf: 'center', height: 15}}
-                        onChange={(e)=>this.setSubscription(tariffPackage.id, e.target.checked)}
-                      />
-                    </TariffPackageRow>
+                  this.props.tariffPlans.map(plan=>(
+                    <MenuItem key={plan.id} value={parseInt(plan.id)}> {plan.name} </MenuItem>
                   ))
                 }
-              </TariffPackages>
-            </TariffDetails>
-          }
+              </Select>
+              <Typography variant="body2" style={{alignSelf: 'center', justifySelf: 'center'}}>
+                Tariff Expires on : <strong>{format(Date.parse(this.state.client.tariff_expired_date), 'd MMMM YYYY')}</strong>
+              </Typography>
+            </TariffHeader>
+            <TariffPackagesHeader>
+              <div>Name</div><div style={{justifySelf: 'center'}}>Optional</div><div style={{justifySelf: 'center'}}>Subscribed</div>
+            </TariffPackagesHeader>
+            <TariffPackages>
+              {
+                this.props.tariffPlans.find(plan=>parseInt(plan.id)===this.state.client.tariff_plan) &&
+                this.props.tariffPlans.find(plan=>parseInt(plan.id)===this.state.client.tariff_plan).packages.map(tariffPackage=>(
+                  <TariffPackageRow key={tariffPackage.name}>
+                    <div>{tariffPackage.name}</div>
+                    <div style={{justifySelf: 'center'}}>{tariffPackage.optional==="1" ? "Yes": "No"}</div>
+                    <Checkbox 
+                      checked={tariffPackage.optional==="1" ? this.state.subscriptions.includes(tariffPackage.id) : true} 
+                      disabled={tariffPackage.optional==="1" ? false: true}  
+                      style={{padding: 10, justifySelf: 'center', height: 15}}
+                      onChange={(e)=>this.setSubscription(tariffPackage.id, e.target.checked)}
+                    />
+                  </TariffPackageRow>
+                ))
+              }
+            </TariffPackages>
+          </TariffDetails>
         </TariffWrapper>
         <STBDetailsWrapper elevation={24}>
           <Typography variant="h4"> STB Details </Typography>
           <br/><br/>
-          {client && 
-            <STBDetails>           
-              <Typography variant="subtitle2" style={{alignSelf: 'center'}}>MAC Address</Typography>
-              <Typography variant="body2">
-                {client.stb_mac}
-                <Tooltip title="Change MAC">
-                  <IconButton aria-label="Change MAC" style={{padding: 9}} onClick={()=>this.setState({changeMAC: true})}>
-                    <EditIcon fontSize="small" color="primary"/>
-                  </IconButton>
-                </Tooltip>
-              </Typography>
-              <Typography variant="subtitle2">Receiver Status</Typography>
-              <Typography variant="body2">{client.online==="1" ? 'Online' : 'Offline'}</Typography>
-              <Typography variant="subtitle2">IP</Typography>
-              <Typography variant="body2">{client.ip}</Typography>
-              <Typography variant="subtitle2">STB Type</Typography>
-              <Typography variant="body2">{client.stb_type}</Typography>
-              <Typography variant="subtitle2">STB Serial</Typography>
-              <Typography variant="body2">{client.serial_number}</Typography>
-              <Typography variant="subtitle2">Last Active</Typography>
-              <Typography variant="body2">{format(Date.parse(client.last_active), 'd MMMM YYYY @ HH:mm:ss')}</Typography>
-            </STBDetails>
-          }
+          <STBDetails>           
+            <Typography variant="subtitle2" style={{alignSelf: 'center'}}>MAC Address</Typography>
+            <Typography variant="body2">
+              {this.state.client.stb_mac}
+              <Tooltip title="Change MAC">
+                <IconButton aria-label="Change MAC" style={{padding: 9}} onClick={()=>this.setState({changeMAC: true})}>
+                  <EditIcon fontSize="small" color="primary"/>
+                </IconButton>
+              </Tooltip>
+            </Typography>
+            <Typography variant="subtitle2">Receiver Status</Typography>
+            <Typography variant="body2">{this.state.client.online==="1" ? 'Online' : 'Offline'}</Typography>
+            <Typography variant="subtitle2">IP</Typography>
+            <Typography variant="body2">{this.state.client.ip}</Typography>
+            <Typography variant="subtitle2">STB Type</Typography>
+            <Typography variant="body2">{this.state.client.stb_type}</Typography>
+            <Typography variant="subtitle2">STB Serial</Typography>
+            <Typography variant="body2">{this.state.client.serial_number}</Typography>
+            <Typography variant="subtitle2">Last Active</Typography>
+            <Typography variant="body2">{format(Date.parse(this.state.client.last_active), 'd MMMM YYYY @ HH:mm:ss')}</Typography>
+          </STBDetails>
         </STBDetailsWrapper>
 
         <TransactionWrapper elevation={24}>
-          <Typography variant="h4" style={{padding: 20, paddingBottom: 0}}> Transactions </Typography>
+          <Typography variant="h4" style={{padding: 20, paddingBottom: 5}}> Transactions </Typography>
           <Table
             rows={rows}
             data={this.getTableData(this.state.transactions)}
             orderBy='createdAt'
             orderByDirection='desc'
             mobileView={this.props.mobileView}
-            tableHeight='100%'
+            tableHeight='450px'
             viewOnly={true}
           />
         </TransactionWrapper>
         <Confirmation
           open={this.state.deleteConfirmation}
-          message={(client.accountBalance > 0) ? 'Client has active credits. Please recover them before deleting.'
+          message={(this.state.client.accountBalance > 0) ? 'Client has active credits. Please recover them before deleting.'
             : 'Are you sure you want to delete this client ?'
           }
           confirmationProceed={this.deleteConfirmationProceed}
           confirmationCancel={this.deleteConfirmationCancel}
-          disabled={client.accountBalance > 0}
+          disabled={this.state.client.accountBalance > 0}
         />
 
         <Dialog
@@ -570,10 +554,10 @@ class ClientEdit extends Component {
         >
           <form onSubmit={this.changeMAC}>
             <DialogTitle id="form-dialog-title">
-              Changing MAC Address for {client && client.login}
+              Changing MAC Address for {this.state.client.login}
             </DialogTitle>
             <DialogContent>
-              <Typography variant="body1" style={{paddingBottom: 20, textAlign: 'center'}}> Current MAC Address: {client && client.stb_mac} </Typography>           
+              <Typography variant="body1" style={{paddingBottom: 20, textAlign: 'center'}}> Current MAC Address: {this.state.client.stb_mac} </Typography>           
               <InputMask mask="**:**:**:**:**:**" 
                 value={this.state.newMAC}  
                 onChange={(e)=>this.setState({newMAC: e.target.value.toUpperCase()})}
@@ -632,7 +616,6 @@ const mapDispatchToProps = dispatch => ({
   sendEvent: event => dispatch(sendEvent(event)),
   checkMAC: mac => dispatch(checkMAC(mac)),
   getUserTransactions: username => dispatch(getUserTransactions(username)),
-  updateAuthResellerCredits: creditsAvailable => dispatch(updateAuthResellerCredits(creditsAvailable))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ClientEdit)

@@ -106,8 +106,3 @@ export const checkMAC = mac => ({
   failure: "Something went wrong while checking MAC !"
 })
 
-
-export const incrementClientCredit = stb_mac => ({
-  type: 'INCREMENT_CLIENT_CREDIT',
-  payload: stb_mac
-})

@@ -1,27 +1,26 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { isEqual } from 'lodash';
-import { startCase } from 'lodash';
+import { isEqual } from 'lodash'
+import { startCase } from 'lodash'
 import styled from 'styled-components'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
-import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
-import SaveIcon from '@material-ui/icons/Save';
-import DeleteIcon from '@material-ui/icons/Delete';
-import InputMask from 'react-input-mask';
-import Switch from '@material-ui/core/Switch';
-import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
+import Paper from '@material-ui/core/Paper'
+import Button from '@material-ui/core/Button'
+import SaveIcon from '@material-ui/icons/Save'
+import DeleteIcon from '@material-ui/icons/Delete'
+import InputMask from 'react-input-mask'
+import Switch from '@material-ui/core/Switch'
+import FormControl from '@material-ui/core/FormControl'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Radio from '@material-ui/core/Radio'
+import RadioGroup from '@material-ui/core/RadioGroup'
 import Table from 'components/Table'
-import Confirmation from 'components/Confirmation';
+import Confirmation from 'components/Confirmation'
 
 import { getUsers, updateUser, deleteUser } from 'actions/users'
 import { getUserTransactions, updateCredits } from 'actions/transactions'
 import { getConfig } from 'actions/users'
-import { updateAuthCreditsAvailable } from 'actions/auth'
 
 
 
@@ -54,10 +53,10 @@ const CreditsWrapper = styled(Paper)`
 `
 
 const TransactionWrapper = styled(Paper)`
+  grid-column: 1 / -1;
   @media only screen and (max-width: 768px) {
     grid-column: 1;
   }
-  grid-column: 1 / -1;
 `
 
 const rows = [
@@ -89,31 +88,33 @@ class UserEdit extends Component {
   }
 
   componentDidMount = () => {   
-    if (!this.props.token) this.props.history.push('/login')
-    else {
-      this.props.getConfig()
-      this.loadInternalUserFromUsername(this.props.match.params.id)
+    this.props.getConfig()
+    const username = this.props.match.params.id
+    const user = this.findInternalUserFromUsername(username)
+    if (user) {
+      this.props.getUserTransactions(username)
+      .then(resnponseTransactions => { 
+        this.setState({user, editingUser: {...user}, transactions: resnponseTransactions.payload.data})
+      })
     }
   }
 
   componentDidUpdate = (prevProps, prevState, snapshot) => {
-    if (!isEqual(prevState.user, this.state.user)) {
-      if (!this.props.token) this.props.history.push('/login')
-      else this.loadInternalUserFromUsername(this.props.match.params.id)
+    const username = this.props.match.params.id
+    const user = this.findInternalUserFromUsername(username)
+    if (!isEqual(prevState.user, user)) {
+      this.setState({user, editingUser: {...user}})
     }
   }
 
-  loadInternalUserFromUsername = (username) => {
-    let user;
+  findInternalUserFromUsername = (username) => {
+    let user
     user = this.props.admins.find(admin=>admin.username===username)
     if (!user)
       user = this.props.superResellers.find(admin=>admin.username===username)
     if (!user)
       user = this.props.resellers.find(admin=>admin.username===username)
-    this.props.getUserTransactions(username)
-    .then(resnponseTransactions => { 
-      this.setState({user, editingUser: {...user}, transactions: resnponseTransactions.payload.data})
-    })
+    return user
   }
 
   handleTextChange = (field, value) => {
@@ -121,15 +122,15 @@ class UserEdit extends Component {
   }
 
   checkValidation = () => {
-    const usernameEmpty = this.state.editingUser.username==="";
-    const phoneNoInvalid = this.state.editingUser.phoneNo && !this.state.editingUser.phoneNo.match(validPhoneNo);
+    const usernameEmpty = this.state.editingUser.username===""
+    const phoneNoInvalid = this.state.editingUser.phoneNo && !this.state.editingUser.phoneNo.match(validPhoneNo)
     return usernameEmpty || phoneNoInvalid
   }
 
   confirmationProceed = () => this.setState({confirmation: false})
   confirmationCancel = () => this.setState({confirmation: false})
 
-  updateUser = (event) => {
+  updateUser = (event) => {   
     event.preventDefault()
     const { username } = this.state.editingUser
     const { email, firstName, lastName, phoneNo, accountStatus } = this.state.editingUser
@@ -137,13 +138,11 @@ class UserEdit extends Component {
       this.confirmationProceed = () => {
         this.setState({confirmation: false}, ()=>{
           this.props.updateUser(username, {email, password: this.state.newPassword, firstName, lastName, phoneNo, accountStatus})
-          .then(()=>this.props.getUsers())
         })
       }
       this.setState({confirmation: true, confirmationMessage: "You are changing the user's password. Are you sure you want to continue ?"})
     } else {
       this.props.updateUser(username, {email, firstName, lastName, phoneNo, accountStatus})
-      .then(()=>this.props.getUsers())
     }
   }
 
@@ -160,7 +159,7 @@ class UserEdit extends Component {
         })
       })
     }
-    this.setState({confirmation: true, confirmationMessage: "Are you sure you want to delete this user ?"})
+    this.setState({confirmation: true, confirmationMessage: "Are you sure you want to delete this user ?", newPassword: ""})
   }
 
   updateCredits = () => {
@@ -169,17 +168,8 @@ class UserEdit extends Component {
       description: `${startCase(this.state.credits.action)}ed ${this.state.credits.value} credits`,
       transactionTo: this.state.user.username
     })
-    .then(()=>{
-      this.props.getUserTransactions(this.state.user.username)
-      .then(() => { 
-        const creditsTo = this.state.credits.action==="add" ? this.state.credits.value : this.state.credits.value*-1
-        const creditsFrom = -1*creditsTo
-        this.props.getUsers()
-        .then(()=>{
-          this.loadInternalUserFromUsername(this.props.match.params.id)
-          this.props.updateAuthCreditsAvailable(creditsFrom)
-        })
-      })
+    .then((transactionResponse)=>{
+      this.setState({transactions: [...this.state.transactions, transactionResponse.payload.data.transaction[0]]})
     })
   }
 
@@ -197,23 +187,25 @@ class UserEdit extends Component {
 
   
   render() {    
+    if (!this.state.user)
+      return (
+        <Wrapper>
+          <Typography variant="h4" noWrap>
+              User with username {this.props.match.params.id} was not found
+          </Typography>
+        </Wrapper>
+      )
+
     return (
       <Wrapper>
         <UserEditWrapper elevation={24}>
           <Typography variant="h4" noWrap>
-            Edit User
+            Edit User:  {this.state.user.username}
           </Typography>
           <br/>
           {this.state.editingUser &&
             <form onSubmit={this.updateUser} style={{padding: 10}}>
               <UserProfile>
-                <TextField
-                  label="Username"
-                  type="username"
-                  value={this.state.editingUser.username}
-                  fullWidth
-                  disabled
-                />
                 <TextField
                   label="Email"
                   type="email"
@@ -225,6 +217,21 @@ class UserEdit extends Component {
                   error={Boolean(this.state.editingUser.email) && this.state.editingUser.email===""}
                   helperText={this.state.editingUser.email && this.state.editingUser.email==="" ? "Required" : null}
                 />
+                <InputMask mask="999-999-9999" 
+                  value={this.state.editingUser.phoneNo}  
+                  onChange={(e)=>this.handleTextChange('phoneNo', e.target.value)}
+                >
+                  {(inputProps) => (
+                    <TextField 
+                      {...inputProps} 
+                      label="Phone"
+                      fullWidth
+                      disabled={this.props.loading}
+                      error={Boolean(this.state.editingUser.phoneNo) && !this.state.editingUser.phoneNo.match(validPhoneNo)}
+                      helperText={this.state.editingUser.phoneNo && !this.state.editingUser.phoneNo.match(validPhoneNo) ? "Invalid Phone" : null}
+                    />
+                  )}
+                </InputMask>
                 <TextField
                   label="First Name"
                   type="firstName"
@@ -256,21 +263,7 @@ class UserEdit extends Component {
                   fullWidth
                   disabled={this.props.loading}
                 />
-                <InputMask mask="999-999-9999" 
-                  value={this.state.editingUser.phoneNo}  
-                  onChange={(e)=>this.handleTextChange('phoneNo', e.target.value)}
-                >
-                  {(inputProps) => (
-                    <TextField 
-                      {...inputProps} 
-                      label="Phone"
-                      fullWidth
-                      disabled={this.props.loading}
-                      error={Boolean(this.state.editingUser.phoneNo) && !this.state.editingUser.phoneNo.match(validPhoneNo)}
-                      helperText={this.state.editingUser.phoneNo && !this.state.editingUser.phoneNo.match(validPhoneNo) ? "Invalid Phone" : null}
-                    />
-                  )}
-                </InputMask>
+
                 <FormControlLabel
                   label={`Account Status (${this.state.editingUser.accountStatus ? 'Active' : 'Inactive'})`}
                   control={
@@ -286,12 +279,12 @@ class UserEdit extends Component {
               </UserProfile>
               <br/><br/>
               <Button variant="contained" type="submit" color="primary" disabled={(!this.state.newPassword) && (this.props.loading || this.checkValidation() || isEqual(this.state.editingUser, this.state.user))}>
-                Update&nbsp;
-                <SaveIcon />
+                Update
+                <SaveIcon style={{marginLeft: 5}} />
               </Button>
               <Button variant="contained" type="submit" color="secondary" disabled={this.props.loading} style={{float: 'right'}} onClick={this.deleteUser}>
-                Delete&nbsp;
-                <DeleteIcon />
+                Delete
+                <DeleteIcon style={{marginLeft: 5}} />
               </Button>
             </form>
           }
@@ -306,7 +299,7 @@ class UserEdit extends Component {
                   type="number"
                   inputProps={{ min: this.state.credits.action==='recover' ? 1 : this.props.minimumTransferrableCredits }}
                   value={this.state.credits.value}
-                  onChange={(e)=>this.setState({credits: {...this.state.credits, value: e.target.value}})}
+                  onChange={(e)=>this.setState({credits: {...this.state.credits, value: parseInt(e.target.value)}})}
                   fullWidth
                   disabled={this.props.loading}
                   error={
@@ -355,8 +348,8 @@ class UserEdit extends Component {
                   style={{float: 'right'}} 
                   onClick={()=>this.updateCredits()}
                 >
-                  Submit&nbsp;
-                  <SaveIcon />
+                  Submit
+                  <SaveIcon style={{marginLeft: 5}}/>
                 </Button>
               </div>
            }
@@ -374,10 +367,8 @@ class UserEdit extends Component {
             }
           </CreditsWrapper>
         <TransactionWrapper elevation={24}>
-          {/* <Typography variant="h4" style={{padding: 20, paddingBottom: 0}}> Transactions </Typography> */}
-          {/* <br/><br/> */}
+          <Typography variant="h4" style={{padding: 20, paddingBottom: 5}}> Transactions </Typography>
           <Table
-            title='Transactions'
             rows={rows}
             data={this.getTableData(this.state.transactions)}
             orderBy='createdAt'
@@ -391,13 +382,14 @@ class UserEdit extends Component {
           <Confirmation
             open={this.state.confirmation }
             message={
-              (this.state.user.childUsernames.length > 0) ? 'User has active children. Please remove/move all children before deleting.'
+              this.state.newPassword ? this.state.confirmationMessage :
+              this.state.user.childUsernames.length > 0 ? 'User has active children. Please remove/move all children before deleting.'
               : (this.state.user.creditsAvailable+this.state.user.creditsOnHold > 0) ? 'User has active credits. Please recover them before deleting.'
               : this.state.confirmationMessage
             }
             confirmationProceed={this.confirmationProceed}
             confirmationCancel={this.confirmationCancel}
-            disabled={this.state.user.childUsernames.length > 0 || (this.state.user.creditsAvailable+this.state.user.creditsOnHold > 0)}
+            disabled={!this.state.newPassword && (this.state.user.childUsernames.length > 0 || (this.state.user.creditsAvailable+this.state.user.creditsOnHold > 0))}
           />
         }
       </Wrapper>
@@ -424,7 +416,6 @@ const mapDispatchToProps = dispatch => ({
   deleteUser: (username) => dispatch(deleteUser(username)),
   getConfig: () => dispatch(getConfig()),
   getUserTransactions: username => dispatch(getUserTransactions(username)),
-  updateAuthCreditsAvailable: creditsAvailable => dispatch(updateAuthCreditsAvailable(creditsAvailable))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserEdit)

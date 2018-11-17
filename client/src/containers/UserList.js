@@ -5,20 +5,7 @@ import { startCase } from 'lodash';
 import { getUsers } from 'actions/users'
 
 
-const rows = [
-  { field: 'username', label: 'Username', type: 'string' },
-  { field: 'email', label: 'Email', type: 'string' },
-  // { field: 'firstName', label: 'First Name', type: 'string' },
-  // { field: 'lastName', label: 'Last Name', type: 'string' },
-  { field: 'phoneNo', label: 'Telephone', type: 'string' },
-  { field: 'accountStatus', label: 'Account Status', type: 'boolean' },
-  { field: 'parentUsername', label: 'Parent', type: 'string' },
-  // { field: 'childrenCount', label: 'No of Children' },
-  { field: 'creditsAvailable', label: 'Credits Available', type: 'integer' },
-  { field: 'creditsOnHold', label: 'Credits on Hold', type: 'integer' },
-  { field: 'createdAt', label: 'Created At', type: 'date' },
-  // { field: 'updatedAt', label: 'Updated At', type: 'date' }
-]
+
 
 
 
@@ -27,7 +14,7 @@ class UserList extends Component {
   componentDidMount = () => this.props.getUsers()
 
   
-  getTableData = (urlPath) => {    
+  getTableData = (rows, urlPath) => {    
     const users = this.props[urlPath]
     let displayData = []
     for (let user of users) {
@@ -50,12 +37,25 @@ class UserList extends Component {
     return true
   }
   
-  render() {   
+  render() {       
+    
+    let rows = [
+      { field: 'username', label: 'Username', type: 'string' },
+      { field: 'email', label: 'Email', type: 'string' },
+      { field: 'phoneNo', label: 'Telephone', type: 'string' },
+      { field: 'accountStatus', label: 'Account Status', type: 'boolean' },
+      { field: 'parentUsername', label: 'Parent', type: 'string' },
+      { field: 'creditsAvailable', label: 'Credits Available', type: 'integer' },
+      { field: 'creditsOnHold', label: 'Credits on Hold', type: 'integer' },
+      { field: 'createdAt', label: 'Created At', type: 'date' },
+    ]
+    if (this.props.location.pathname.substr(1) !== 'resellers') rows.splice(6, 1)
+
     return (
       <Table
         title={startCase(this.props.location.pathname.substr(1))}
         rows={rows}
-        data={this.getTableData(this.props.location.pathname.substr(1))}
+        data={this.getTableData(rows, this.props.location.pathname.substr(1))}
         orderBy='creditsAvailable'
         orderByDirection='asc'
         mobileView={this.props.mobileView}

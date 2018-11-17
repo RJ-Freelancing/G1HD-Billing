@@ -16,12 +16,3 @@ export const logout = () => ({
   type: 'LOGOUT'
 })
 
-export const updateAuthCreditsAvailable = creditsAvailable => ({
-  type: 'UPDATE_CREDITS_AVAILABLE',
-  payload: creditsAvailable
-})
-
-export const updateAuthResellerCredits = creditsAvailable => ({
-  type: 'UPDATE_AUTH_RESELLER_CREDITS',
-  payload: creditsAvailable
-})

@@ -31,7 +31,7 @@ export default class InactivityPopup extends Component {
   }
 
   resetInactiveTimer = () => {
-    if (this.state.inactivity)
+    if (this.state.inactivity && this.state.inactivity < 60)
       this.setState({ inactivity: 0 }, ()=>{
         clearInterval(this.timer)
         clearTimeout(this.idleTimer)
@@ -46,7 +46,7 @@ export default class InactivityPopup extends Component {
   }
 
   render() {
-    if (!this.state.inactivity) return <></>
+    if (!this.state.inactivity || this.state.inactivity > 60) return <></>
 
     return (
       <PopupMessage

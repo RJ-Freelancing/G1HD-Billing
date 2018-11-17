@@ -3,23 +3,19 @@ import Table from 'components/Table'
 import { connect } from 'react-redux'
 import { getUsers } from 'actions/users'
 import { updateCredits } from 'actions/transactions'
-import { incrementClientCredit } from 'actions/clients'
-import { updateAuthResellerCredits } from 'actions/auth'
 
 
 
 const rows = [
   { field: 'stb_mac', label: 'MAC Address', type: 'string'  },
   { field: 'full_name', label: 'Full Name', type: 'string'  },
-  // { field: 'firstName', label: 'First Name', type: 'string'  },
   { field: 'phone', label: 'Telephone', type: 'string'  },
   { field: 'accountBalance', label: 'Credits Available', type: 'integer'  },
-  // { field: 'tariff_plan_id', label: 'Tariff Plan', type: 'string'  },
   { field: 'tariff_expired_date', label: 'Tariff Expiry', type: 'date'  },
-  { field: 'comment', label: 'Reseller', type: 'string'  },
-  { field: 'now_playing_content', label: 'Box Status', type: 'boolean'  },
-  // { field: 'last_active', label: 'Last Active', type: 'date'  },
-  // { field: 'status', label: 'Account Status', type: 'boolean'  }
+  { field: 'parentUsername', label: 'Reseller', type: 'string'  },
+  // { field: 'comment', label: 'Comments', type: 'string'  },
+  // { field: 'now_playing_content', label: 'Box Status', type: 'string'  },
+  { field: 'status', label: 'Account Status', type: 'boolean'  }
 ]
 
 
@@ -44,10 +40,6 @@ class ClientList extends Component {
       credits: 1,
       description: 'Added 1 credit',
       transactionTo: stb_mac
-    })
-    .then(()=>{
-      this.props.incrementClientCredit(stb_mac)
-      this.props.updateAuthResellerCredits(-1)
     })
   }
 
@@ -85,8 +77,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   getUsers: () => dispatch(getUsers()),
   updateCredits: transaction => dispatch(updateCredits(transaction)),
-  incrementClientCredit: stb_mac => dispatch(incrementClientCredit(stb_mac)),
-  updateAuthResellerCredits: creditsAvailable => dispatch(updateAuthResellerCredits(creditsAvailable))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ClientList)
