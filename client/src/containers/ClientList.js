@@ -35,12 +35,12 @@ class ClientList extends Component {
     return displayData
   } 
 
-  incrementClientCredit = (stb_mac) => {
+  incrementClientCredit = (client) => {
     this.props.updateCredits({
       credits: 1,
       description: 'Added 1 credit',
-      transactionTo: stb_mac
-    })
+      transactionTo: client.stb_mac
+    }, client.accountBalance)
   }
 
   render() {
@@ -54,7 +54,7 @@ class ClientList extends Component {
         mobileView={this.props.mobileView}
         gotoLink={(client)=>this.props.history.push(`/clients/${client.stb_mac}`)}
         addNew={()=>this.props.history.push('/clients/new')}
-        incrementClientCredit={this.props.authUserType==='reseller' ? (stb_mac)=>this.incrementClientCredit(stb_mac) : false}
+        incrementClientCredit={this.props.authUserType==='reseller' ? (client)=>this.incrementClientCredit(client) : false}
         authCreditsAvailable={this.props.authCreditsAvailable}
         authCreditsOnHold={this.props.authCreditsOnHold}
         tableHeight={this.props.mobileView ? '70vh' : '80vh'}
@@ -76,7 +76,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   getUsers: () => dispatch(getUsers()),
-  updateCredits: transaction => dispatch(updateCredits(transaction)),
+  updateCredits: (transaction, currentAccountBalance) => dispatch(updateCredits(transaction, currentAccountBalance)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ClientList)

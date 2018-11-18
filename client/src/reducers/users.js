@@ -100,7 +100,8 @@ const users = (state = initialState, action) => {
         }
       } else { // Client
         const currentAccountBalance = action.meta.previousAction.transactionToClientAccountBalance
-        let tariff_expired_date = transactionToUser.tariff_expired_date;
+        let tariff_expired_date = transactionToUser.tariff_expired_date
+        if (!tariff_expired_date) tariff_expired_date=Date.now()
         if (credits > 0) { // Adding credits
           if (currentAccountBalance===0) {          
             tariff_expired_date = addMonths(startOfTomorrow(), credits)

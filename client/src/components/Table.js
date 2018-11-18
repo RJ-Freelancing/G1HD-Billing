@@ -294,7 +294,7 @@ export default class EnhancedTable extends React.Component {
                             <IconButton 
                               aria-label="Add 1 Credit" 
                               style={{padding: 9}} 
-                              onClick={()=>(authCreditsAvailable+authCreditsOnHold < 1) ? {} : incrementClientCredit(n.stb_mac)}
+                              onClick={()=>(authCreditsAvailable+authCreditsOnHold < 1) ? {} : incrementClientCredit(n)}
                             >
                               <PlusOneIcon fontSize="small" color="primary"/>
                             </IconButton>
