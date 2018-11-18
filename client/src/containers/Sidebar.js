@@ -75,14 +75,19 @@ const Sidebar = (props) => {
   const authInfo = (
     <div style={{textAlign: 'center', marginBottom: 20}}>
       <Typography variant="subtitle2" color="inherit" noWrap style={{color: 'white'}}>
-        Welcome {props.auth.username}
+        Welcome {props.auth.username} <br/>
       </Typography>
       <Typography variant="subtitle2" color="inherit" noWrap style={{color: 'white'}}>
-        Credits Available {props.auth.creditsAvailable}
+        Credits Available <strong style={{fontSize: 20}}>{props.auth.creditsAvailable}</strong>
       </Typography>
       {authUserType==='reseller' &&
         <Typography variant="subtitle2" color="inherit" noWrap style={{color: 'white'}}>
-          Credits On Hold {props.auth.creditsOnHold}
+          Credits Owed <strong style={{fontSize: 20}}>{props.auth.creditsOnHold}</strong>
+        </Typography>
+      }
+      {props.auth.creditsOnHold > props.auth.creditsAvailable &&
+        <Typography variant="subtitle2" color="secondary">
+          WARNING ! <br/>You owe more credits than available
         </Typography>
       }
     </div>
