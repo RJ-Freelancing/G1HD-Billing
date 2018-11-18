@@ -9,6 +9,7 @@ import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
 import SaveIcon from '@material-ui/icons/Save'
 import DeleteIcon from '@material-ui/icons/Delete'
+import TrendingUpIcon from '@material-ui/icons/TrendingUp'
 import InputMask from 'react-input-mask'
 import Switch from '@material-ui/core/Switch'
 import FormControl from '@material-ui/core/FormControl'
@@ -18,7 +19,7 @@ import RadioGroup from '@material-ui/core/RadioGroup'
 import Table from 'components/Table'
 import Confirmation from 'components/Confirmation'
 
-import { getUsers, updateUser, deleteUser } from 'actions/users'
+import { getUsers, updateUser, deleteUser, upgradeUser } from 'actions/users'
 import { getUserTransactions, updateCredits } from 'actions/transactions'
 import { getConfig } from 'actions/users'
 
@@ -180,6 +181,10 @@ class UserEdit extends Component {
     return displayData
   } 
 
+  upgradeUser = () => {
+
+  }
+
   
   render() {    
     if (!this.state.user)
@@ -273,14 +278,20 @@ class UserEdit extends Component {
                 />
               </UserProfile>
               <br/><br/>
-              <Button variant="contained" type="submit" color="primary" disabled={(!this.state.newPassword) && (this.props.loading || this.checkValidation() || isEqual(this.state.editingUser, this.state.user))}>
-                Update
-                <SaveIcon style={{marginLeft: 5}} />
-              </Button>
-              <Button variant="contained" type="submit" color="secondary" disabled={this.props.loading} style={{float: 'right'}} onClick={this.deleteUser}>
-                Delete
-                <DeleteIcon style={{marginLeft: 5}} />
-              </Button>
+              <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gridGap: 20}}>
+                <Button variant="contained" type="submit" color="primary" disabled={(!this.state.newPassword) && (this.props.loading || this.checkValidation() || isEqual(this.state.editingUser, this.state.user))}>
+                  Update
+                  <SaveIcon style={{marginLeft: 5}} />
+                </Button>
+                <Button variant="contained" color="primary" disabled={(this.props.loading)} onClick={this.upgradeUser}>
+                  Upgrade User
+                  <TrendingUpIcon style={{marginLeft: 5}} />
+                </Button>
+                <Button variant="contained" type="submit" color="secondary" disabled={this.props.loading} style={{float: 'right'}} onClick={this.deleteUser}>
+                  Delete
+                  <DeleteIcon style={{marginLeft: 5}} />
+                </Button>
+              </div>
             </form>
           }
         </UserEditWrapper>
@@ -375,7 +386,7 @@ class UserEdit extends Component {
         </TransactionWrapper>
         {this.state.user &&
           <Confirmation
-            open={this.state.confirmation }
+            open={this.state.confirmation}
             message={
               this.state.newPassword ? this.state.confirmationMessage :
               this.state.user.childUsernames.length > 0 ? 'User has active children. Please remove/move all children before deleting.'
@@ -411,6 +422,7 @@ const mapDispatchToProps = dispatch => ({
   deleteUser: (username) => dispatch(deleteUser(username)),
   getConfig: () => dispatch(getConfig()),
   getUserTransactions: username => dispatch(getUserTransactions(username)),
+  upgradeUser: (upgradingUser, username, userType) => dispatch(upgradeUser((upgradingUser, username, userType)))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserEdit)

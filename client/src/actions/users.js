@@ -86,3 +86,17 @@ export const updateConfig = config => ({
   success: 'Successfully updated',
   failure: "Something went wrong while retrieving config!"
 })
+
+
+export const upgradeUser = (upgradingUser, username, userType) => ({
+  types: ['LOADING', 'UPGRADE_USER_SUCCESS', 'UPGRADE_USER_FAILED'],
+  payload: {
+    request:{
+      url: `/users/upgrade/${upgradingUser}`,
+      method: 'POST',
+      data: {username, userType}
+    }
+  },
+  success: `Successfully upgraded ${username} to ${userType}`,
+  failure: "Something went wrong while upgrading user !"
+})
