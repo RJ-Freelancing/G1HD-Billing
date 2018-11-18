@@ -228,7 +228,7 @@ class ClientEdit extends Component {
       credits: this.state.credits.action==="add" ? this.state.credits.value : this.state.credits.value*-1,
       description: `${startCase(this.state.credits.action)}ed ${this.state.credits.value} credits`,
       transactionTo: this.state.editingClient.stb_mac
-    })
+    }, this.state.client.accountBalance)
     .then((transactionResponse)=>{
       this.setState({transactions: [...this.state.transactions, transactionResponse.payload.data.transaction[0]]})
     })
@@ -367,7 +367,7 @@ class ClientEdit extends Component {
         <div>
           <CreditsWrapper elevation={24}>
             <Typography variant="h4"> Credits </Typography>
-            {this.state.client && this.props.authUsername===this.state.client.parentUsername  &&
+            {this.props.authUsername===this.state.client.parentUsername  &&
               <div>
                 <br/><br/>
                 <TextField
@@ -381,12 +381,12 @@ class ClientEdit extends Component {
                   error={
                     (this.state.credits.value < 1) || 
                     (this.state.credits.value > 12) || 
-                    (this.state.credits.action==='add' && (this.props.authCreditsAvailable+this.props.authCreditsOnHold < this.state.credits.value)) ||
+                    (this.state.credits.action==='add' && (this.props.authCreditsAvailable<=0 && this.state.client.accountBalance===0)) ||
                     (this.state.credits.action==='recover' && (this.state.client.accountBalance-this.state.credits.value < 0))
                   }
                   helperText={
                     (this.state.credits.value < 1 || this.state.credits.value > 12) ? 'Credits can only be transferred in the range from 1 to 12' 
-                    : (this.state.credits.action==='add' && (this.props.authCreditsAvailable+this.props.authCreditsOnHold < this.state.credits.value)) ? "You don't have enough credits to transfer"
+                    : (this.state.credits.action==='add' && (this.props.authCreditsAvailable<=0 && this.state.client.accountBalance===0)) ? "You don't have enough credits to transfer"
                     : (this.state.credits.action==='recover' && (this.state.client.accountBalance-this.state.credits.value < 0)) ? 'Client has not enough credits to recover'
                     : null
                   }
@@ -412,11 +412,11 @@ class ClientEdit extends Component {
                     (this.props.loading) || 
                     (this.state.credits.value < 1) || 
                     (this.state.credits.value > 12) || 
-                    (this.state.credits.action==='add' && (this.props.authCreditsAvailable+this.props.authCreditsOnHold < this.state.credits.value)) ||
+                    (this.state.credits.action==='add' && (this.props.authCreditsAvailable<=0 && this.state.client.accountBalance===0)) ||
                     (this.state.credits.action==='recover' && (this.state.client.accountBalance-this.state.credits.value < 0))
                   } 
                   style={{float: 'right'}} 
-                  onClick={()=>this.updateCredits()}
+                  onClick={this.updateCredits}
                 >
                   Submit
                   <SaveIcon style={{marginLeft: 5}}/>
@@ -604,7 +604,7 @@ const mapDispatchToProps = dispatch => ({
   deleteClient: stb_mac => dispatch(deleteClient(stb_mac)),
   getUsers: () => dispatch(getUsers()),
   getTariffPlans: () => dispatch(getTariffPlans()),
-  updateCredits: (transaction) => dispatch(updateCredits(transaction)),
+  updateCredits: (transaction, currentAccountBalance) => dispatch(updateCredits(transaction, currentAccountBalance)),
   getSubscriptions: stb_mac => dispatch(getSubscriptions(stb_mac)),
   addSubscription: (stb_mac, subscribedID) => dispatch(addSubscription(stb_mac, subscribedID)),
   removeSubscription: (stb_mac, subscribedID) => dispatch(removeSubscription(stb_mac, subscribedID)),

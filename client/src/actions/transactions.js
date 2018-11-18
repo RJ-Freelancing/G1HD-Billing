@@ -1,4 +1,4 @@
-export const updateCredits = (transaction) => ({
+export const updateCredits = (transaction, transactionToClientAccountBalance=null) => ({
   types: ['LOADING', 'UPDATE_CREDIT_SUCCESS', 'UPDATE_CREDIT_FAILED'],
   payload: {
     request:{
@@ -8,7 +8,8 @@ export const updateCredits = (transaction) => ({
     }
   },
   success: `Successfully updated credits`,
-  failure: "Something went wrong while adding credits!"
+  failure: "Something went wrong while adding credits!",
+  transactionToClientAccountBalance
 })
 
 

@@ -19,7 +19,7 @@ const AlertDialog = ({title, description, image}) => {
           <DialogContentText id="alert-dialog-description">
             {description}
           </DialogContentText>
-          <img src={image} alt="body"/>
+          <img src={image} width='100%' alt="body"/>
         </DialogContent>
       </Dialog>
     </div>

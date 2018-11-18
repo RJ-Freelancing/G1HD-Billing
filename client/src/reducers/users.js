@@ -1,3 +1,7 @@
+import { addMonths, subMonths }  from 'date-fns'
+const endOfToday = require('date-fns/end_of_today')
+
+
 const initialState = {
   admins: [],
   superResellers: [],
@@ -83,7 +87,7 @@ const users = (state = initialState, action) => {
     case 'UPDATE_CREDIT_SUCCESS':          
       const {transactionTo, credits} = action.payload.data.transaction[0]    
       const transactionToUser = findInternalUserFromUsername(state, transactionTo)  
-      if (transactionToUser.userType) {
+      if (transactionToUser.userType) { // Internal User
         return {
           ...state, 
           transactions: [...state.transactions, action.payload.data],
@@ -94,13 +98,28 @@ const users = (state = initialState, action) => {
               return user
           })
         }
-      } else {
+      } else { // Client
+        const currentAccountBalance = action.meta.previousAction.transactionToClientAccountBalance
+        let tariff_expired_date = transactionToUser.tariff_expired_date;
+        if (credits > 0) { // Adding credits
+          if (currentAccountBalance===0) {
+            tariff_expired_date = addMonths(endOfToday(), credits)
+          } else { // currentAccountBalance > 0
+            tariff_expired_date = addMonths(transactionToUser.tariff_expired_date, credits)
+          }
+        } else { // Recovering Credits
+          if (currentAccountBalance + credits === 0) {
+            tariff_expired_date = endOfToday()
+          } else { // currentAccountBalance + credits > 0
+            tariff_expired_date = subMonths(transactionToUser.tariff_expired_date, credits)
+          }
+        }
         return {
           ...state, 
           transactions: [...state.transactions, action.payload.data],
           clients: state.clients.map(client => {
             if (client.stb_mac===transactionTo)
-              return {...client, accountBalance: client.accountBalance+credits}
+              return {...client, accountBalance: client.accountBalance+credits, tariff_expired_date}
             else
               return client
           })
