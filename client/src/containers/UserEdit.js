@@ -393,10 +393,10 @@ class UserEdit extends Component {
             <br/><br/><br/>
             <div style={{textAlign: 'center'}}>
               Credits Available<br/> <div style={{fontSize: 50}}> {this.state.user.creditsAvailable} </div>
-              {this.props.authUserType==='reseller' &&
+              {this.state.user.userType==='reseller' &&
                 <>
                 <br/><br/>
-                Credits On Hold<br/> <div style={{fontSize: 50}}> {this.state.user.creditsOnHold} </div>
+                Credits Owed<br/> <div style={{fontSize: 50}}> {this.state.user.creditsOnHold} </div>
                 </>
               }
             </div>
