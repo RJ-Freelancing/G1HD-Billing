@@ -48,7 +48,7 @@ class SuperAdminConfig extends Component {
   }
 
   componentDidMount = () => {
-    if (this.props.authUserType !== 'super-admin') this.props.history.push('/')
+    if (this.props.authUserType !== 'superAdmin') this.props.history.push('/')
     else this.props.getConfig()
   }
 

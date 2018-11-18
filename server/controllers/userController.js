@@ -36,7 +36,7 @@ export async function getAllUsers(req, res, next) {
   let superResellers = []
   let resellers = []
   let clients = []
-  if (req.user.userType == "super-admin") {
+  if (req.user.userType == "superAdmin") {
     admins = await userRepo.find({ username: { $in: req.user.childUsernames } }, null, { sort: { creditsAvailable: 1 } })
     superResellers = await getChildren(admins, 0)
     resellers = await getChildren(superResellers, 0)
@@ -47,7 +47,7 @@ export async function getAllUsers(req, res, next) {
     resellers = await getChildren(superResellers, 0)
     clients = await getChildren(resellers, 1)
   }
-  if (req.user.userType == "super-reseller") {
+  if (req.user.userType == "superReseller") {
     resellers = await userRepo.find({ username: { $in: req.user.childUsernames } }, null, { sort: { creditsAvailable: 1 } })
     clients = await getChildren(resellers, 1)
   }

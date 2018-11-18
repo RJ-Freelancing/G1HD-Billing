@@ -30,9 +30,9 @@ const styles = theme => ({
 
 
 const permissionsDenied = {
-  'super-admin': [],
+  'superAdmin': [],
   'admin': ['/admins', '/config'],
-  'super-reseller': ['/admins', '/superResellers', '/config'],
+  'superReseller': ['/admins', '/superResellers', '/config'],
   'reseller': ['/admins', '/superResellers', '/resellers', '/config']
 }
 

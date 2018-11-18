@@ -80,7 +80,7 @@ class Events extends Component {
         <Paper style={{marginBottom: 10}}>
           <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr'}}>
             <Typography variant="h6" style={{marginLeft: 20}}>Select MAC IDs to send Event</Typography>
-            {this.props.authUserType === 'super-admin' && 
+            {this.props.authUserType === 'superAdmin' && 
               <Button variant="contained" color="primary" disabled={this.props.loading} onClick={()=>this.setState({ids: [], open: true})}>
                 Click Here To Send All
               </Button>          
@@ -103,7 +103,7 @@ class Events extends Component {
         >
           <form onSubmit={this.sendEvent}>
             <DialogTitle id="form-dialog-title">
-              {this.props.authUserType === 'super-admin' && this.state.ids.length===0 ? 
+              {this.props.authUserType === 'superAdmin' && this.state.ids.length===0 ? 
                 'Sending Event to All Mac Addresses'
               :
                 `Sending Event to Selected ${this.state.ids.length} MAC Addresses`

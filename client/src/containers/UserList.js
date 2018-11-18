@@ -29,7 +29,7 @@ class UserList extends Component {
 
   checkPermissionToAdd = (urlPath) => {
     if (urlPath==="admins")
-      return this.props.authUserType==="super-admin"
+      return this.props.authUserType==="superAdmin"
     if (urlPath==="superResellers")
       return this.props.authUserType==="admin"
     if (urlPath==="resellers")

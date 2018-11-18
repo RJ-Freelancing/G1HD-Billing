@@ -110,7 +110,7 @@ class UserAdd extends Component {
 
   getAddingUserType = () => {
     switch (this.props.authUserType) {
-      case 'super-admin':
+      case 'superAdmin':
         return 'admin'
       case 'admin':
         return 'superReseller'

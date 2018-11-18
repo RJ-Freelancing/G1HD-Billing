@@ -9,7 +9,7 @@ export async function checkPermissionRights(reqestedUser, currentUser, ifUsers) 
       if (!currentUser.childUsernames.includes(reqestedUser)) return false
     }
   }
-  if (currentUser.userType == "super-reseller") {
+  if (currentUser.userType == "superReseller") {
     if (ifUsers == 1) {
       if (currentUser.userType == reqestedUser.userType) {
         if (currentUser.username !== reqestedUser.username) return false
@@ -32,7 +32,7 @@ export async function checkPermissionRights(reqestedUser, currentUser, ifUsers) 
         if (currentUser.username !== reqestedUser.username) return false
       }
       else {
-        if (reqestedUser.userType == 'super-reseller') {
+        if (reqestedUser.userType == 'superReseller') {
           if (!currentUser.childUsernames.includes(reqestedUser.username)) return false
         }
         else {
@@ -54,7 +54,7 @@ export async function checkPermissionMinistra(reqestedMacs, currentUser) {
     if (Array.isArray(reqestedMacs)) return reqestedMacs.every(e => currentUser.childUsernames.includes(e))
     return currentUser.childUsernames.includes(reqestedMacs)
   }
-  if (currentUser.userType == "super-reseller") {
+  if (currentUser.userType == "superReseller") {
     const resellers = await userRepo.find({ username: { $in: currentUser.childUsernames } }, null, { sort: { creditsAvailable: 1 } })
     const childUsers = [].concat(...resellers.map(reseller => reseller.childUsernames))
     if (Array.isArray(reqestedMacs)) return reqestedMacs.every(e => childUsers.includes(e))
@@ -73,19 +73,19 @@ export async function checkPermissionMinistra(reqestedMacs, currentUser) {
 
 export async function validParent(currentUserType, addingUserType, upgradingUser) {
   if(upgradingUser == undefined){
-    if (currentUserType == 'super-admin' && addingUserType == 'admin') return true
-    if (currentUserType == 'admin' && addingUserType == 'super-reseller') return true
-    if (currentUserType == 'super-reseller' && addingUserType == 'reseller') return true
+    if (currentUserType == 'superAdmin' && addingUserType == 'admin') return true
+    if (currentUserType == 'admin' && addingUserType == 'superReseller') return true
+    if (currentUserType == 'superReseller' && addingUserType == 'reseller') return true
     if (currentUserType == 'reseller') return false
-    if (addingUserType == 'super-admin') return false
+    if (addingUserType == 'superAdmin') return false
 }
 else {
     const upgradingUserType = upgradingUser.userType
-    if (currentUserType == 'super-admin' && addingUserType == 'admin' && upgradingUserType == 'super-reseller') return true
-    if (currentUserType == 'admin' && addingUserType == 'super-reseller' && upgradingUserType == 'reseller') return true
-    if (currentUserType == 'super-reseller') return false
+    if (currentUserType == 'superAdmin' && addingUserType == 'admin' && upgradingUserType == 'superReseller') return true
+    if (currentUserType == 'admin' && addingUserType == 'superReseller' && upgradingUserType == 'reseller') return true
+    if (currentUserType == 'superReseller') return false
     if (currentUserType == 'reseller') return false
-    if (addingUserType == 'super-admin') return false
+    if (addingUserType == 'superAdmin') return false
 }
   return false
 }
