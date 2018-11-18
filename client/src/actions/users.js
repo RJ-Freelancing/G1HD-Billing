@@ -88,15 +88,15 @@ export const updateConfig = config => ({
 })
 
 
-export const upgradeUser = (upgradingUser, username, userType) => ({
+export const upgradeUser = (username, upgradingNewUsername, upgradingUserType) => ({
   types: ['LOADING', 'UPGRADE_USER_SUCCESS', 'UPGRADE_USER_FAILED'],
   payload: {
     request:{
-      url: `/users/upgrade/${upgradingUser}`,
+      url: `/users/upgrade/${username}`,
       method: 'POST',
-      data: {username, userType}
+      data: {username: upgradingNewUsername, userType: upgradingUserType}
     }
   },
-  success: `Successfully upgraded ${username} to ${userType}`,
+  success: `Successfully upgraded ${upgradingNewUsername} to ${upgradingUserType}`,
   failure: "Something went wrong while upgrading user !"
 })

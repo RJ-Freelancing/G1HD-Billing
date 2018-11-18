@@ -106,9 +106,6 @@ const users = (state = initialState, action) => {
           })
         }
       }
-    case 'UPGRADE_USER_SUCCESS':
-      console.log(action.payload.data);
-      return state
     case 'LOGOUT':
       return {
         ...initialState

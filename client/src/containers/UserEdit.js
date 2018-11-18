@@ -18,6 +18,11 @@ import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import Table from 'components/Table'
 import Confirmation from 'components/Confirmation'
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Loading from 'components/Loading'
 
 import { getUsers, updateUser, deleteUser, upgradeUser } from 'actions/users'
 import { getUserTransactions, updateCredits } from 'actions/transactions'
@@ -84,7 +89,9 @@ class UserEdit extends Component {
         action: "add"
       },
       newPassword: "",
-      transactions: []
+      transactions: [],
+      upgradingUser: false,
+      upgradingNewUsername: ""
     }
   }
 
@@ -181,10 +188,29 @@ class UserEdit extends Component {
     return displayData
   } 
 
-  upgradeUser = () => {
 
+  upgradeUser = (e) => {
+    e.preventDefault()
+    const username = this.state.user.username
+    const upgradingNewUsername = this.state.upgradingNewUsername
+    const upgradingUserType = this.getUpgradingUserType()
+    this.props.upgradeUser(username, upgradingNewUsername, this.getUpgradingUserType())
+    .then((upgradeResponse)=>{
+      if (upgradeResponse.type==='UPGRADE_USER_SUCCESS')
+        this.props.history.push(`/${upgradingUserType}s`)
+    })
   }
 
+  getUpgradingUserType = () => {
+    switch (this.state.user.userType) {
+      case 'reseller':
+        return 'superReseller'
+      case 'superReseller':
+        return 'admin'
+      default:
+        return false
+    }
+  }
   
   render() {    
     if (!this.state.user)
@@ -195,6 +221,8 @@ class UserEdit extends Component {
           </Typography>
         </Wrapper>
       )
+
+    const userIsUpgradable = !this.state.user.upgradedAccount && ['superReseller', 'reseller'].includes(this.state.user.userType)
 
     return (
       <Wrapper>
@@ -278,15 +306,17 @@ class UserEdit extends Component {
                 />
               </UserProfile>
               <br/><br/>
-              <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gridGap: 20}}>
+              <div style={{display: 'grid', gridTemplateColumns: userIsUpgradable ? '1fr 1fr 1fr' : '1fr 1fr', gridGap: 20}}>
                 <Button variant="contained" type="submit" color="primary" disabled={(!this.state.newPassword) && (this.props.loading || this.checkValidation() || isEqual(this.state.editingUser, this.state.user))}>
                   Update
                   <SaveIcon style={{marginLeft: 5}} />
                 </Button>
-                <Button variant="contained" color="primary" disabled={(this.props.loading)} onClick={this.upgradeUser}>
+                {userIsUpgradable &&
+                <Button variant="contained" color="primary" disabled={(this.props.loading)} onClick={()=>this.getUpgradingUserType() && this.setState({upgradingUser: true})}>
                   Upgrade User
                   <TrendingUpIcon style={{marginLeft: 5}} />
                 </Button>
+                }
                 <Button variant="contained" type="submit" color="secondary" disabled={this.props.loading} style={{float: 'right'}} onClick={this.deleteUser}>
                   Delete
                   <DeleteIcon style={{marginLeft: 5}} />
@@ -360,17 +390,15 @@ class UserEdit extends Component {
               </div>
            }
             <br/><br/><br/>
-            {this.state.user && 
-              <div style={{textAlign: 'center'}}>
-                Credits Available<br/> <div style={{fontSize: 50}}> {this.state.user.creditsAvailable} </div>
-                {this.props.authUserType==='reseller' &&
-                  <>
-                  <br/><br/>
-                  Credits On Hold<br/> <div style={{fontSize: 50}}> {this.state.user.creditsOnHold} </div>
-                  </>
-                }
-              </div>
-            }
+            <div style={{textAlign: 'center'}}>
+              Credits Available<br/> <div style={{fontSize: 50}}> {this.state.user.creditsAvailable} </div>
+              {this.props.authUserType==='reseller' &&
+                <>
+                <br/><br/>
+                Credits On Hold<br/> <div style={{fontSize: 50}}> {this.state.user.creditsOnHold} </div>
+                </>
+              }
+            </div>
           </CreditsWrapper>
         <TransactionWrapper elevation={24}>
           <Typography variant="h4" style={{padding: 20, paddingBottom: 5}}> Transactions </Typography>
@@ -384,20 +412,52 @@ class UserEdit extends Component {
             viewOnly={true}
           />
         </TransactionWrapper>
-        {this.state.user &&
-          <Confirmation
-            open={this.state.confirmation}
-            message={
-              this.state.newPassword ? this.state.confirmationMessage :
-              this.state.user.childUsernames.length > 0 ? 'User has active children. Please remove/move all children before deleting.'
-              : (this.state.user.creditsAvailable+this.state.user.creditsOnHold > 0) ? 'User has active credits. Please recover them before deleting.'
-              : this.state.confirmationMessage
-            }
-            confirmationProceed={this.confirmationProceed}
-            confirmationCancel={this.confirmationCancel}
-            disabled={!this.state.newPassword && (this.state.user.childUsernames.length > 0 || (this.state.user.creditsAvailable+this.state.user.creditsOnHold > 0))}
-          />
-        }
+        <Confirmation
+          open={this.state.confirmation}
+          message={
+            this.state.newPassword ? this.state.confirmationMessage :
+            this.state.user.childUsernames.length > 0 ? 'User has active children. Please remove/move all children before deleting.'
+            : (this.state.user.creditsAvailable+this.state.user.creditsOnHold > 0) ? 'User has active credits. Please recover them before deleting.'
+            : this.state.confirmationMessage
+          }
+          confirmationProceed={this.confirmationProceed}
+          confirmationCancel={this.confirmationCancel}
+          disabled={!this.state.newPassword && (this.state.user.childUsernames.length > 0 || (this.state.user.creditsAvailable+this.state.user.creditsOnHold > 0))}
+        />
+        <Dialog
+          open={this.state.upgradingUser}
+          aria-labelledby="form-dialog-title"
+          fullWidth
+        >
+          <form onSubmit={this.upgradeUser}>
+            <DialogTitle id="form-dialog-title">
+              Upgrade {this.state.user.username} to {this.getUpgradingUserType()}
+            </DialogTitle>
+            <DialogContent>
+              <TextField
+                autoFocus
+                id="upgradingNewUsername"
+                label="Upgrading Username"
+                type="text"
+                required
+                value={this.state.upgradingNewUsername}
+                onChange={(e)=>this.setState({upgradingNewUsername: e.target.value})}
+                fullWidth
+                error={this.state.upgradingNewUsername===''}
+                helperText={this.state.upgradingNewUsername===''? "Required" : null}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={()=>this.setState({upgradingUser: false})} color="secondary">
+                Cancel
+              </Button>
+              <Button variant="contained" type="submit" color="primary" disabled={this.props.loading || this.state.upgradingNewUsername===''} onClick={this.upgradeUser}>
+                Upgrade
+              </Button>
+            </DialogActions>
+          </form>
+          <Loading />
+        </Dialog>
       </Wrapper>
     )
   }
@@ -422,7 +482,7 @@ const mapDispatchToProps = dispatch => ({
   deleteUser: (username) => dispatch(deleteUser(username)),
   getConfig: () => dispatch(getConfig()),
   getUserTransactions: username => dispatch(getUserTransactions(username)),
-  upgradeUser: (upgradingUser, username, userType) => dispatch(upgradeUser((upgradingUser, username, userType)))
+  upgradeUser: (username, upgradingNewUsername, upgradingUserType) => dispatch(upgradeUser(username, upgradingNewUsername, upgradingUserType))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserEdit)
