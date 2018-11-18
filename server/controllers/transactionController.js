@@ -43,20 +43,53 @@ export async function addTransaction(req, res, next) {
   const transactionFrom = req.user.username
   const { credits, description, transactionTo } = req.value.body
   if (!req.user.childUsernames.includes(transactionTo)) return res.status(403).json(`You cant add credits to the user ${transactionTo}`)
-  if (credits > 0 && req.user.creditsAvailable < credits && (req.user.creditsAvailable + req.user.creditsOnHold) < credits) return res.status(400).json(`You have no enough credits to transfer.`)
   if (req.user.userType == "reseller") {
+    // Mongo transactions
     const client = await clientRepo.findOne({ clientMac: transactionTo })
+    if (credits > 0 && req.user.creditsAvailable == 0  && client.accountBalance == 0) return res.status(400).json(`You have no enough credits to transfer.`)
     if (credits < 0 && client.accountBalance < (-1 * credits)) return res.status(400).json("Not enough balance to recover the credits. Try again with lesser credits.")
-    if (req.user.creditsAvailable > credits) {
-      await req.user.update({ creditsAvailable: (req.user.creditsAvailable - credits), creditsOnHold: (req.user.creditsOnHold + credits)  })
+    if (client.accountBalance == 0 && credits > 0){
+      console.log("req.user.creditsYouOwe + (credits-1) : " + req.user.creditsYouOwe + (credits-1));
+      await req.user.update({ creditsAvailable: (req.user.creditsAvailable - 1), creditsYouOwe: (req.user.creditsYouOwe + (credits-1))  })
     }
-    else if ((req.user.creditsAvailable + req.user.creditsOnHold) > credits) {
-      // Intentionally left deducting -1 once you move credits to credits on hold while transferring to client. Let cronjob handle it
-      await req.user.update({ creditsOnHold: ((req.user.creditsAvailable + req.user.creditsOnHold) - credits), creditsAvailable: 0 })
+    if (client.accountBalance > 0 && credits > 0){
+      await req.user.update({ creditsYouOwe: (req.user.creditsYouOwe + credits)  })
+    }
+    if ((client.accountBalance + credits) == 0 && credits < 0){
+      await req.user.update({ creditsAvailable: (req.user.creditsAvailable + 1), creditsYouOwe: (req.user.creditsYouOwe + (credits+1))  })
+    }
+    if ((client.accountBalance + credits) > 0 && credits < 0){
+      await req.user.update({ creditsYouOwe: (req.user.creditsYouOwe + credits)  })
     }
     await clientRepo.findOneAndUpdate({ clientMac: transactionTo }, { $inc: { accountBalance: credits } })
+
+    // Ministra Transactions
+    await axios.get(ministraAPI + 'accounts/' + transactionTo, config)
+      .then(response => {
+        res.locals.clientExpiryDate = response.data.results[0].tariff_expired_date
+      })
+      .catch(error => {
+        console.log("Ministra API Error : " + error)
+      })
+    let expiredDate = []
+    if (res.locals.clientExpiryDate == null || res.locals.clientExpiryDate == "0000-00-00 00:00:00") {
+      expiredDate = await `tariff_expired_date=${expiryDateAfterTransaction(0, credits)}`
+    }
+    else {
+      expiredDate = await `tariff_expired_date=${expiryDateAfterTransaction(res.locals.clientExpiryDate, credits)}`
+    }
+    await axios.put(ministraAPI + 'accounts/' + transactionTo,
+      expiredDate, config)
+      .then(response => {
+        res.locals.updatedUser = response.data
+      })
+      .catch(error => {
+        console.log("Ministra API Error : " + error)
+      })
   }
   else {
+    // Non reseller transactions
+    if (credits > 0 && req.user.creditsAvailable < credits) return res.status(400).json(`You have no enough credits to transfer.`)   
     const config = await configRepo.findOne({ configName : "minimumTransferrableCredits" })
     if (credits > 0 && credits < config.configValue) return res.status(400).json(`Minimum Transferrable Credits is ${config.configValue}.`)
     const user = await userRepo.findOne({ username: transactionTo })
@@ -64,29 +97,7 @@ export async function addTransaction(req, res, next) {
     if (req.user.creditsAvailable > credits) await req.user.update({ creditsAvailable: (req.user.creditsAvailable - credits) })
     await userRepo.findOneAndUpdate({ username: transactionTo }, { $inc: { creditsAvailable: credits } })
   }
-
-  await axios.get(ministraAPI + 'accounts/' + transactionTo, config)
-    .then(response => {
-      res.locals.clientExpiryDate = response.data.results[0].tariff_expired_date
-    })
-    .catch(error => {
-      console.log("Ministra API Error : " + error)
-    })
-  let expiredDate = []
-  if (res.locals.clientExpiryDate == null || res.locals.clientExpiryDate == "0000-00-00 00:00:00") {
-    expiredDate = await `tariff_expired_date=${expiryDateAfterTransaction(0, credits)}`
-  }
-  else {
-    expiredDate = await `tariff_expired_date=${expiryDateAfterTransaction(res.locals.clientExpiryDate, credits)}`
-  }
-  await axios.put(ministraAPI + 'accounts/' + transactionTo,
-    expiredDate, config)
-    .then(response => {
-      res.locals.updatedUser = response.data
-    })
-    .catch(error => {
-      console.log("Ministra API Error : " + error)
-    })
+  // Add transaction history to transaction collection
   const transaction = await transactionRepo.create([{ credits, description, transactionFrom, transactionTo }], { lean: true })
   return res.status(201).json({ transaction })
 }
@@ -94,14 +105,14 @@ export async function addTransaction(req, res, next) {
 function expiryDateAfterTransaction(date, n) {
   var resDate
   if (date == 0) {
-    resDate = new Date()
+    resDate = dateFns.startOfTomorrow()
   }
   else {
-    var currDate = new Date()
+    var startOfTmrw = dateFns.startOfTomorrow()
     resDate = new Date(date)
-    if (resDate < currDate) resDate = currDate
+    if (resDate < startOfTmrw) resDate = startOfTmrw
   }
   resDate = dateFns.addMonths(resDate, n)
-  if (resDate < currDate) resDate = currDate
+  if (resDate < startOfTmrw) resDate = startOfTmrw
   return dateFns.format(resDate, 'YYYY-MM-DD')
 }

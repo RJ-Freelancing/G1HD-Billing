@@ -58,13 +58,13 @@ export async function getAllUsers(req, res, next) {
 }
 
 export async function addUser(req, res, next) {
-  const { username, email, password, firstName, lastName, phoneNo, userType, accountStatus, creditsAvailable, creditsOnHold } = req.value.body
+  const { username, email, password, firstName, lastName, phoneNo, userType, accountStatus, creditsAvailable, creditsYouOwe } = req.value.body
   const parentUsername = req.user.username
   if (await validParent(req.user.userType, userType, res.locals.user) == false) return res.status(403).json({ error: `You have no rights to add this user.` })
   const existingUser = await userRepo.findOne({ username })
   if (existingUser)
     return res.status(401).json({ error: `User already exists with username: ${username}` })
-  const user = await userRepo.create([{ username, email, password, firstName, lastName, phoneNo, userType, accountStatus, parentUsername, creditsAvailable, creditsOnHold }], { lean: true })
+  const user = await userRepo.create([{ username, email, password, firstName, lastName, phoneNo, userType, accountStatus, parentUsername, creditsAvailable, creditsYouOwe }], { lean: true })
   if (!req.user.childUsernames.includes(username)) {
     await req.user.update({ $push: { childUsernames: username.toLowerCase() } })
   }
