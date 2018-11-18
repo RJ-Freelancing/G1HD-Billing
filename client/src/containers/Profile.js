@@ -151,7 +151,7 @@ class Profile extends Component {
             {this.props.auth.userType==='reseller' && 
               <>
                 <Typography variant="subtitle2">Credits on Hold</Typography>
-                <Typography variant="body2">{this.state.creditsOnHold}</Typography>
+                <Typography variant="body2">{this.state.creditsOwed}</Typography>
               </>
             }
             <Typography variant="subtitle2">Date Joined</Typography>

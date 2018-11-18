@@ -82,10 +82,10 @@ const Sidebar = (props) => {
       </Typography>
       {authUserType==='reseller' &&
         <Typography variant="subtitle2" color="inherit" noWrap style={{color: 'white'}}>
-          Credits Owed <strong style={{fontSize: 20}}>{props.auth.creditsOnHold}</strong>
+          Credits Owed <strong style={{fontSize: 20}}>{props.auth.creditsOwed}</strong>
         </Typography>
       }
-      {props.auth.creditsOnHold > props.auth.creditsAvailable &&
+      {props.auth.creditsOwed > props.auth.creditsAvailable &&
         <Typography variant="subtitle2" color="secondary">
           WARNING ! <br/>You owe more credits than available
         </Typography>

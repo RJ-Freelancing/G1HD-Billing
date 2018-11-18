@@ -43,7 +43,8 @@ class Dashboard extends Component {
 
 const mapStateToProps = state => ({
   token: state.auth.token,
-  mobileMenu: state.general.mobileMenu,
+  authUserType: state.auth.userType,
+  mobileView: state.general.mobileView,
   admins: state.users.admins,
   superResellers: state.users.superResellers,
   resellers: state.users.resellers,

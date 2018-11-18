@@ -46,7 +46,7 @@ class UserList extends Component {
       { field: 'accountStatus', label: 'Account Status', type: 'boolean' },
       { field: 'parentUsername', label: 'Parent', type: 'string' },
       { field: 'creditsAvailable', label: 'Credits Available', type: 'integer' },
-      { field: 'creditsOnHold', label: 'Credits Owed', type: 'integer' },
+      { field: 'creditsOwed', label: 'Credits Owed', type: 'integer' },
       { field: 'createdAt', label: 'Created At', type: 'date' },
     ]
     if (this.props.location.pathname.substr(1) !== 'resellers') rows.splice(6, 1)

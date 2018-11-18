@@ -396,7 +396,7 @@ class UserEdit extends Component {
               {this.state.user.userType==='reseller' &&
                 <>
                 <br/><br/>
-                Credits Owed<br/> <div style={{fontSize: 50}}> {this.state.user.creditsOnHold} </div>
+                Credits Owed<br/> <div style={{fontSize: 50}}> {this.state.user.creditsOwed} </div>
                 </>
               }
             </div>
@@ -418,12 +418,12 @@ class UserEdit extends Component {
           message={
             this.state.newPassword ? this.state.confirmationMessage :
             this.state.user.childUsernames.length > 0 ? 'User has active children. Please remove/move all children before deleting.'
-            : (this.state.user.creditsAvailable+this.state.user.creditsOnHold > 0) ? 'User has active credits. Please recover them before deleting.'
+            : (this.state.user.creditsAvailable+this.state.user.creditsOwed > 0) ? 'User has active credits. Please recover them before deleting.'
             : this.state.confirmationMessage
           }
           confirmationProceed={this.confirmationProceed}
           confirmationCancel={this.confirmationCancel}
-          disabled={!this.state.newPassword && (this.state.user.childUsernames.length > 0 || (this.state.user.creditsAvailable+this.state.user.creditsOnHold > 0))}
+          disabled={!this.state.newPassword && (this.state.user.childUsernames.length > 0 || (this.state.user.creditsAvailable+this.state.user.creditsOwed > 0))}
         />
         <Dialog
           open={this.state.upgradingUser}

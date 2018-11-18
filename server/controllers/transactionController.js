@@ -49,17 +49,17 @@ export async function addTransaction(req, res, next) {
     if (credits > 0 && req.user.creditsAvailable == 0  && client.accountBalance == 0) return res.status(400).json(`You have no enough credits to transfer.`)
     if (credits < 0 && client.accountBalance < (-1 * credits)) return res.status(400).json("Not enough balance to recover the credits. Try again with lesser credits.")
     if (client.accountBalance == 0 && credits > 0){
-      console.log("req.user.creditsYouOwe + (credits-1) : " + req.user.creditsYouOwe + (credits-1));
-      await req.user.update({ creditsAvailable: (req.user.creditsAvailable - 1), creditsYouOwe: (req.user.creditsYouOwe + (credits-1))  })
+      console.log("req.user.creditsOwed + (credits-1) : " + req.user.creditsOwed + (credits-1));
+      await req.user.update({ creditsAvailable: (req.user.creditsAvailable - 1), creditsOwed: (req.user.creditsOwed + (credits-1))  })
     }
     if (client.accountBalance > 0 && credits > 0){
-      await req.user.update({ creditsYouOwe: (req.user.creditsYouOwe + credits)  })
+      await req.user.update({ creditsOwed: (req.user.creditsOwed + credits)  })
     }
     if ((client.accountBalance + credits) == 0 && credits < 0){
-      await req.user.update({ creditsAvailable: (req.user.creditsAvailable + 1), creditsYouOwe: (req.user.creditsYouOwe + (credits+1))  })
+      await req.user.update({ creditsAvailable: (req.user.creditsAvailable + 1), creditsOwed: (req.user.creditsOwed + (credits+1))  })
     }
     if ((client.accountBalance + credits) > 0 && credits < 0){
-      await req.user.update({ creditsYouOwe: (req.user.creditsYouOwe + credits)  })
+      await req.user.update({ creditsOwed: (req.user.creditsOwed + credits)  })
     }
     await clientRepo.findOneAndUpdate({ clientMac: transactionTo }, { $inc: { accountBalance: credits } })
 

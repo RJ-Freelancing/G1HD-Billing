@@ -225,7 +225,7 @@ export default class EnhancedTable extends React.Component {
       canAdd, 
       incrementClientCredit, 
       authCreditsAvailable, 
-      authCreditsOnHold,
+      authcreditsOwed,
       gotoLink,
       sendEvent
     } = this.props
@@ -290,11 +290,11 @@ export default class EnhancedTable extends React.Component {
                           </IconButton>
                         </Tooltip>
                         {incrementClientCredit && 
-                          <Tooltip title={(authCreditsAvailable+authCreditsOnHold < 1) ? "No credits available to transfer" : "Add 1 Credit"}>
+                          <Tooltip title={(authCreditsAvailable+authcreditsOwed < 1) ? "No credits available to transfer" : "Add 1 Credit"}>
                             <IconButton 
                               aria-label="Add 1 Credit" 
                               style={{padding: 9}} 
-                              onClick={()=>(authCreditsAvailable+authCreditsOnHold < 1) ? {} : incrementClientCredit(n)}
+                              onClick={()=>(authCreditsAvailable+authcreditsOwed < 1) ? {} : incrementClientCredit(n)}
                             >
                               <PlusOneIcon fontSize="small" color="primary"/>
                             </IconButton>

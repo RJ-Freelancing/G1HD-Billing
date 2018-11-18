@@ -59,7 +59,7 @@ const userSchema = new Schema({
     type: Number,
     default: 0
   },
-  creditsYouOwe: {
+  creditsOwed: {
     type: Number,
     default: 0
   }

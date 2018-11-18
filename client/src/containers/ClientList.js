@@ -56,7 +56,7 @@ class ClientList extends Component {
         addNew={()=>this.props.history.push('/clients/new')}
         incrementClientCredit={this.props.authUserType==='reseller' ? (client)=>this.incrementClientCredit(client) : false}
         authCreditsAvailable={this.props.authCreditsAvailable}
-        authCreditsOnHold={this.props.authCreditsOnHold}
+        authcreditsOwed={this.props.authcreditsOwed}
         tableHeight={this.props.mobileView ? '70vh' : '80vh'}
         canAdd={this.props.authUserType==='reseller'}
       />
@@ -71,7 +71,7 @@ const mapStateToProps = state => ({
   clients: state.users.clients,
   mobileView: state.general.mobileView,
   authCreditsAvailable: state.auth.creditsAvailable,
-  authCreditsOnHold: state.auth.creditsOnHold,
+  authcreditsOwed: state.auth.creditsOwed,
 })
 
 const mapDispatchToProps = dispatch => ({

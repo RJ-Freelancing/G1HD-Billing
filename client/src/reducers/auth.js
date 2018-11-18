@@ -34,12 +34,12 @@ const auth = (state = initialState, action) => {
             return {
               ...state, 
               creditsAvailable: state.creditsAvailable - 1,
-              creditsOnHold: state.creditsOnHold + (credits-1)
+              creditsOwed: state.creditsOwed + (credits-1)
             }
           } else { // currentAccountBalance > 0
             return {
               ...state, 
-              creditsOnHold: state.creditsOnHold + credits
+              creditsOwed: state.creditsOwed + credits
             }
           }
         } else { // Recovering Credits
@@ -47,12 +47,12 @@ const auth = (state = initialState, action) => {
             return {
               ...state, 
               creditsAvailable: state.creditsAvailable + 1,
-              creditsOnHold: state.creditsOnHold + (credits+1)
+              creditsOwed: state.creditsOwed + (credits+1)
             }
           } else { // currentAccountBalance + credits > 0
             return {
               ...state, 
-              creditsOnHold: state.creditsOnHold + credits
+              creditsOwed: state.creditsOwed + credits
             }
           }
         }
