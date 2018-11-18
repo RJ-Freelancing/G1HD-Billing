@@ -227,7 +227,7 @@ class UserEdit extends Component {
     return (
       <Wrapper>
         <UserEditWrapper elevation={24}>
-          <Typography variant="h4" noWrap>
+          <Typography variant="h4">
             Edit User:  {this.state.user.username}
           </Typography>
           <br/>
@@ -313,11 +313,11 @@ class UserEdit extends Component {
                 </Button>
                 {userIsUpgradable &&
                 <Button variant="contained" color="primary" disabled={(this.props.loading)} onClick={()=>this.getUpgradingUserType() && this.setState({upgradingUser: true})}>
-                  Upgrade User
+                  Upgrade
                   <TrendingUpIcon style={{marginLeft: 5}} />
                 </Button>
                 }
-                <Button variant="contained" type="submit" color="secondary" disabled={this.props.loading} style={{float: 'right'}} onClick={this.deleteUser}>
+                <Button variant="contained" type="submit" color="secondary" disabled={this.props.loading} onClick={this.deleteUser}>
                   Delete
                   <DeleteIcon style={{marginLeft: 5}} />
                 </Button>

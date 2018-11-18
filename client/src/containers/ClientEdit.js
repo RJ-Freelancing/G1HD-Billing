@@ -284,7 +284,7 @@ class ClientEdit extends Component {
   render() {   
     if (!this.state.client)
       return (
-        <Typography variant="h4" noWrap>
+        <Typography variant="h4">
             Client with MAC {this.props.match.params.id} was not found
         </Typography>
       )
@@ -346,19 +346,21 @@ class ClientEdit extends Component {
                   }
                 />
               </ClientProfile>
-              <Button 
-                variant="contained" 
-                type="submit" 
-                color="primary" 
-                disabled={this.props.loading || this.checkValidation() || isEqual(this.state.editingClient, this.state.client)}
-              >
-                Update
-                <SaveIcon style={{marginLeft: 5}}/>
-              </Button>
-              <Button variant="contained" type="submit" color="secondary" disabled={this.props.loading} style={{float: 'right'}} onClick={this.deleteClient}>
-                Delete
-                <DeleteIcon style={{marginLeft: 5}}/>
-              </Button>
+              <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: 20}}>
+                <Button 
+                  variant="contained" 
+                  type="submit" 
+                  color="primary" 
+                  disabled={this.props.loading || this.checkValidation() || isEqual(this.state.editingClient, this.state.client)}
+                >
+                  Update
+                  <SaveIcon style={{marginLeft: 5}}/>
+                </Button>
+                <Button variant="contained" type="submit" color="secondary" disabled={this.props.loading} onClick={this.deleteClient}>
+                  Delete
+                  <DeleteIcon style={{marginLeft: 5}}/>
+                </Button>
+              </div>
             </form>
           }
         </ClientEditWrapper>
