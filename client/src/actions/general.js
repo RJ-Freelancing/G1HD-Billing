@@ -25,3 +25,12 @@ export const getTariffPlans = () => ({
   success: false,
   failure: "Something went wrong while retrieving tariff plans!"
 })
+
+
+export const showLoading = () => ({
+  type: 'LOADING'
+})
+
+export const hideLoading = () => ({
+  type: 'HIDE_LOADING'
+})

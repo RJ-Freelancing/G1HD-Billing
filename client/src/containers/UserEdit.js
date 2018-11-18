@@ -24,9 +24,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Loading from 'components/Loading'
 
-import { getUsers, updateUser, deleteUser, upgradeUser } from 'actions/users'
+import { getUsers, updateUser, deleteUser, upgradeUser, getConfig } from 'actions/users'
 import { getUserTransactions, updateCredits } from 'actions/transactions'
-import { getConfig } from 'actions/users'
 
 
 
@@ -96,13 +95,14 @@ class UserEdit extends Component {
   }
 
   componentDidMount = () => {   
-    this.props.getConfig()
     const username = this.props.match.params.id
     const user = this.findInternalUserFromUsername(username)
     if (user) {
       this.props.getUserTransactions(username)
       .then(resnponseTransactions => { 
-        this.setState({user, editingUser: {...user}, transactions: resnponseTransactions.payload.data})
+        this.setState({user, editingUser: {...user}, transactions: resnponseTransactions.payload.data}, ()=>{
+          this.props.getConfig()
+        })
       })
     }
   }
@@ -115,13 +115,13 @@ class UserEdit extends Component {
     }
   }
 
-  findInternalUserFromUsername = (username) => {
+  findInternalUserFromUsername = (username) => {   
     let user
     user = this.props.admins.find(admin=>admin.username===username)
     if (!user)
-      user = this.props.superResellers.find(admin=>admin.username===username)
+      user = this.props.superResellers.find(superReseller=>superReseller.username===username)
     if (!user)
-      user = this.props.resellers.find(admin=>admin.username===username)
+      user = this.props.resellers.find(reseller=>reseller.username===username)
     return user
   }
 
@@ -256,7 +256,6 @@ class UserEdit extends Component {
                       {...inputProps} 
                       label="Phone"
                       fullWidth
-                      disabled={this.props.loading}
                       error={Boolean(this.state.editingUser.phoneNo) && !this.state.editingUser.phoneNo.match(validPhoneNo)}
                       helperText={this.state.editingUser.phoneNo && !this.state.editingUser.phoneNo.match(validPhoneNo) ? "Invalid Phone" : null}
                     />
@@ -474,7 +473,8 @@ const mapStateToProps = state => ({
   resellers: state.users.resellers,
   authUsername: state.auth.username, 
   mobileView: state.general.mobileView,
-  minimumTransferrableCredits: state.config.minimumTransferrableCredits
+  minimumTransferrableCredits: state.config.minimumTransferrableCredits,
+  loading: state.general.loading
 })
 
 const mapDispatchToProps = dispatch => ({

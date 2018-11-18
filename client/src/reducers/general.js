@@ -15,6 +15,11 @@ const general = (state = initialState, action) => {
         ...state,
         loading: true,
       }
+    case 'HIDE_LOADING':
+      return {
+        ...state,
+        loading: false,
+      }
     case 'CLEAR_NOTIFICATION':
       return {
         ...state,

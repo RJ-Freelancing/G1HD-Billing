@@ -26,7 +26,7 @@ export const getTransactions = username => ({
 
 
 export const getUserTransactions = username => ({
-  types: ['NO_LOADING', 'GET_USER_TRANSACTIONS_SUCCESS', 'GET_USER_TRANSACTIONS_FAILED'],
+  types: ['LOADING', 'GET_USER_TRANSACTIONS_SUCCESS', 'GET_USER_TRANSACTIONS_FAILED'],
   payload: {
     request:{
       url: `/transactions/${username}`,
