@@ -1,5 +1,5 @@
 import { addMonths }  from 'date-fns'
-const endOfToday = require('date-fns/end_of_today')
+import startOfTomorrow from 'date-fns/start_of_tomorrow'
 
 
 const initialState = {
@@ -102,14 +102,14 @@ const users = (state = initialState, action) => {
         const currentAccountBalance = action.meta.previousAction.transactionToClientAccountBalance
         let tariff_expired_date = transactionToUser.tariff_expired_date;
         if (credits > 0) { // Adding credits
-          if (currentAccountBalance===0) {
-            tariff_expired_date = addMonths(endOfToday(), credits)
+          if (currentAccountBalance===0) {          
+            tariff_expired_date = addMonths(startOfTomorrow(), credits)
           } else { // currentAccountBalance > 0
             tariff_expired_date = addMonths(transactionToUser.tariff_expired_date, credits)
           }
         } else { // Recovering Credits
           if (currentAccountBalance + credits === 0) {
-            tariff_expired_date = endOfToday()
+            tariff_expired_date = startOfTomorrow()
           } else { // currentAccountBalance + credits > 0
             tariff_expired_date = addMonths(transactionToUser.tariff_expired_date, credits)
           }
