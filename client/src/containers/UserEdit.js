@@ -198,6 +198,8 @@ class UserEdit extends Component {
     .then((upgradeResponse)=>{
       if (upgradeResponse.type==='UPGRADE_USER_SUCCESS')
         this.props.history.push(`/${upgradingUserType}s`)
+      else
+        this.setState({upgradingUser: false})
     })
   }
 
