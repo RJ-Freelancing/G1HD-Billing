@@ -102,7 +102,7 @@ export async function upgradeUserRole(req, res, next) {
   if(upgradedAccount == true) return res.status(404).json({ error: `This user already has been upgraded to ${userType}.` })
   const existingUser = await userRepo.findOne({ username })
   if (existingUser)
-    return res.status(401).json({ error: `User already exists with username: ${username}` })
+    return res.status(404).json({ error: `User already exists with username: ${username}` })
   await userRepo.create([{ username, email, password, firstName, lastName, phoneNo, userType, accountStatus, parentUsername, childUsernames : req.params.username }], { lean: true })
   if (!req.user.childUsernames.includes(username)) {
     await req.user.update({ $push: { childUsernames: username.toLowerCase() }})

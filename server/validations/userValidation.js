@@ -14,7 +14,7 @@ export const schemas = {
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
     phoneNo: Joi.string().regex(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/),
-    userType: Joi.string().required().valid(['superAdmin', 'admin', 'superRseller', 'reseller']),
+    userType: Joi.string().required().valid(['superAdmin', 'admin', 'superReseller', 'reseller']),
     accountStatus: Joi.boolean().required(),
   }),
 
@@ -25,7 +25,7 @@ export const schemas = {
     firstName: Joi.string(),
     lastName: Joi.string(),
     phoneNo: Joi.string().regex(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/),
-    userType: Joi.string().valid(['superAdmin', 'admin', 'superRseller', 'reseller']),
+    userType: Joi.string().valid(['superAdmin', 'admin', 'superReseller', 'reseller']),
     accountStatus: Joi.boolean()
   }),
 

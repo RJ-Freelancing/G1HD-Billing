@@ -3,6 +3,7 @@ import querystring from 'querystring'
 import { checkPermissionRights } from '../_helpers/checkPermission'
 import clientRepo from '../models/clientModel'
 import userRepo from '../models/userModel'
+import transactionRepo from '../models/transactionModel'
 
 const ministraAPI = process.env.MINISTRA_HOST + 'stalker_portal/api/'
 const ministaUser = process.env.MINISTRA_USER
@@ -84,7 +85,7 @@ export async function updateClient(req, res, next) {
     await res.locals.mongoClient.update({ clientMac: returnMac })
     await userRepo.findOneAndUpdate({ username: res.locals.mongoClient.parentUsername }, { $push: { childUsernames: returnMac } })
     await userRepo.findOneAndUpdate({ username: res.locals.mongoClient.parentUsername }, { $pull: { childUsernames: req.params.id } })
-
+    await transactionRepo.update({ transactionTo : req.params.id }, { transactionTo : returnMac }, {multi: true})
   }
   await axios.put(ministraAPI + 'accounts/' + req.params.id,
     querystring.stringify(req.value.body), config)
