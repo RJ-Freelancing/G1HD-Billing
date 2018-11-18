@@ -1,4 +1,4 @@
-import { addMonths, subMonths }  from 'date-fns'
+import { addMonths }  from 'date-fns'
 const endOfToday = require('date-fns/end_of_today')
 
 
@@ -111,7 +111,7 @@ const users = (state = initialState, action) => {
           if (currentAccountBalance + credits === 0) {
             tariff_expired_date = endOfToday()
           } else { // currentAccountBalance + credits > 0
-            tariff_expired_date = subMonths(transactionToUser.tariff_expired_date, credits)
+            tariff_expired_date = addMonths(transactionToUser.tariff_expired_date, credits)
           }
         }
         return {
