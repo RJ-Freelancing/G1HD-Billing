@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { getUsers } from 'actions/users'
 import Table from 'components/Table'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
@@ -46,7 +45,6 @@ class Events extends Component {
     }
   }  
 
-  componentDidMount = () => this.props.getUsers()
 
   getTableData = () => {    
     let displayData = []
@@ -213,7 +211,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getUsers: () => dispatch(getUsers()),
   sendEvent: event => dispatch(sendEvent(event))
 
 })

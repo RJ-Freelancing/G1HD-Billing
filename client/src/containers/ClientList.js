@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Table from 'components/Table'
 import { connect } from 'react-redux'
-import { getUsers } from 'actions/users'
+
 import { updateCredits } from 'actions/transactions'
 
 
@@ -20,8 +20,6 @@ const rows = [
 
 
 class ClientList extends Component {
-
-  componentDidMount = () => this.props.getUsers()
 
   getTableData = () => {    
     let displayData = []
@@ -75,7 +73,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getUsers: () => dispatch(getUsers()),
   updateCredits: (transaction, currentAccountBalance) => dispatch(updateCredits(transaction, currentAccountBalance)),
 })
 

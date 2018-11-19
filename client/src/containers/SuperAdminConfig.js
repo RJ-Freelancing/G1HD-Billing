@@ -10,7 +10,7 @@ import SaveIcon from '@material-ui/icons/Save'
 import Button from '@material-ui/core/Button';
 
 
-import { getConfig, updateConfig } from 'actions/users'
+import { updateConfig } from 'actions/users'
 
 
 const Wrapper = styled.div`
@@ -49,7 +49,6 @@ class SuperAdminConfig extends Component {
 
   componentDidMount = () => {
     if (this.props.authUserType !== 'superAdmin') this.props.history.push('/')
-    else this.props.getConfig()
   }
 
 
@@ -131,7 +130,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getConfig: () => dispatch(getConfig()),
   updateConfig: config => dispatch(updateConfig(config))
 })
 

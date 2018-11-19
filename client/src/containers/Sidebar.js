@@ -52,13 +52,13 @@ const menus = [
 
 
 const Sidebar = (props) => {
-  const { classes, mobileView, authUserType, activePage, gotoLink, clearNotification, logout } = props
+  const { classes, mobileView, authUserType, activePage, gotoLink, clearNotification, logout, notificationShow } = props
   
   const onLinkClick = (link) => {
     if (mobileView) props.toggleMobileSideBar(false)
     if (activePage!==link) {
       gotoLink(link)
-      clearNotification()
+      if (notificationShow) clearNotification()
     }
   }
 
@@ -142,7 +142,8 @@ const mapStateToProps = state => ({
   auth: state.auth,
   authUserType: state.auth.userType,
   mobileMenu: state.general.mobileMenu,
-  mobileView: state.general.mobileView
+  mobileView: state.general.mobileView,
+  notificationShow: state.general.notificationShow
 })
 
 const mapDispatchToProps = dispatch => ({

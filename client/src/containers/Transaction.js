@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import Table from 'components/Table'
 import { connect } from 'react-redux'
-import { getTransactions } from 'actions/transactions'
+
+
 
 const rows = [
   { field: 'createdAt', label: 'Date', type: 'date'},
@@ -14,8 +15,6 @@ const rows = [
 
 class Transaction extends Component {
 
-  componentDidMount = () => this.props.getTransactions(this.props.authUsername)
-  
   getTableData = () => {    
     let displayData = []
     for (let transaction of this.props.transactions) {
@@ -53,7 +52,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getTransactions: username => dispatch(getTransactions(username)),
 
 })
 

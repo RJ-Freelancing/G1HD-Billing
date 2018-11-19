@@ -2,17 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Table from 'components/Table'
 import { startCase } from 'lodash';
-import { getUsers } from 'actions/users'
-
-
-
-
 
 
 class UserList extends Component {
-
-  componentDidMount = () => this.props.getUsers()
-
   
   getTableData = (rows, urlPath) => {    
     const users = this.props[urlPath]
@@ -78,7 +70,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getUsers: () => dispatch(getUsers()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserList)
