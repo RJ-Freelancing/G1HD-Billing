@@ -93,14 +93,12 @@ class ClientAdd extends Component {
           })
           .then(creditAddResponse => {
             if (creditAddResponse.type==='ADD_CREDIT_SUCCESS') {
-              this.props.getUsers()
-              .then(()=>this.props.history.push(`/clients/${this.state.newClient.stb_mac}`))
+              this.props.history.push(`/clients/${this.state.newClient.stb_mac}`)
             }
           })
         }
         else {
-          this.props.getUsers()
-          .then(()=>this.props.history.push(`/clients/${this.state.newClient.stb_mac}`))
+          this.props.history.push(`/clients/${this.state.newClient.stb_mac}`)
         }
       }
     })

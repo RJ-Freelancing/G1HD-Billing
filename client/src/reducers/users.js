@@ -36,10 +36,15 @@ const users = (state = initialState, action) => {
         transactions: action.payload.data
       }
     case 'ADD_CLIENT_SUCCESS':
-    case 'ADD_USER_SUCCESS':
       return {
         ...state, 
-        // clients: [...state.clients, action.payload.data]
+        clients: [...state.clients, action.payload.data.client[0]]
+      }
+    case 'ADD_USER_SUCCESS':
+      const userType = action.meta.previousAction.payload.request.data.userType
+      return {
+        ...state, 
+        [`${userType}s`]: [...state[`${userType}s`], action.payload.data.user[0]]
       }
     case 'UPDATE_USER_SUCCESS':
       // Find the updated user and merge with payload

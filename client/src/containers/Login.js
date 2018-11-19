@@ -11,8 +11,11 @@ import Paper from '@material-ui/core/Paper';
 import { Offline } from "react-detect-offline";
 import PopupMessage from 'components/PopupMessage'
 import NoInternetGIF from 'assets/noInternet.gif'
-
 import Typography from '@material-ui/core/Typography'
+
+
+import { getTransactions } from 'actions/transactions'
+import { getUsers, getConfig } from 'actions/users'
 
 
 const Wrapper = styled(Paper)`
@@ -57,6 +60,13 @@ class Login extends Component {
     event.preventDefault()
     const { username, password } = this.state
     this.props.login({username, password})
+    .then(loginResponse => {
+      if (loginResponse.type === 'LOGIN_SUCCESS') {
+        this.props.getUsers()
+        this.props.getTransactions(loginResponse.payload.data.user.username)
+        this.props.getConfig()
+      }
+    })
   }
 
   render() {  
@@ -112,7 +122,10 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  login: credentials => dispatch(login(credentials))
+  login: credentials => dispatch(login(credentials)),
+  getTransactions: username => dispatch(getTransactions(username)),
+  getConfig: () => dispatch(getConfig()),
+  getUsers: () => dispatch(getUsers())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)

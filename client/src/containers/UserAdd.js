@@ -85,14 +85,12 @@ class UserAdd extends Component {
           })
           .then(creditAddResponse => {
             if (creditAddResponse.type==='ADD_CREDIT_SUCCESS') {
-              this.props.getUsers()
-              .then(()=>this.props.history.push(`/users/${this.state.newUser.username}`))
+              this.props.history.push(`/users/${this.state.newUser.username}`)
             }
           })
         }
         else {
-          this.props.getUsers()
-          .then(()=>this.props.history.push(`/users/${this.state.newUser.username}`))
+          this.props.history.push(`/users/${this.state.newUser.username}`)
         }
       }
     })

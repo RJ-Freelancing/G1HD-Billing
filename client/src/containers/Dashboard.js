@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import Paper from '@material-ui/core/Paper';
 
-import { getUsers } from 'actions/users'
 
 
 const Wrapper = styled.div`
@@ -20,8 +19,6 @@ const DashboardItem = styled(Paper)`
 
 
 class Dashboard extends Component {
-  componentDidMount = () => this.props.getUsers()
-
   render() {
     return (
       <Wrapper>
@@ -52,7 +49,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getUsers: () => dispatch(getUsers())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)
