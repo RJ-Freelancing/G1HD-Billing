@@ -98,7 +98,8 @@ export async function addTransaction(req, res, next) {
     await userRepo.findOneAndUpdate({ username: transactionTo }, { $inc: { creditsAvailable: credits } })
   }
   // Add transaction history to transaction collection
-  const transaction = await transactionRepo.create([{ credits, description, transactionFrom, transactionTo }], { lean: true })
+  const createdTransaction = await transactionRepo.create([{ credits, description, transactionFrom, transactionTo }], { lean: true })
+  const transaction = createdTransaction[0]
   return res.status(201).json({ transaction })
 }
 

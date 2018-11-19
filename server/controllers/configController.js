@@ -15,7 +15,6 @@ export async function updateConfig(req, res, next) {
     if (error) return res.status(404).json(error)
   })
   return res.status(200).json(config)
-
 }
 
 export async function getConfig(req, res, next) {

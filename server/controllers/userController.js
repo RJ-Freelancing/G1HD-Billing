@@ -64,11 +64,12 @@ export async function addUser(req, res, next) {
   const existingUser = await userRepo.findOne({ username })
   if (existingUser)
     return res.status(422).json({ error: `User already exists with username: ${username}` })
-  const user = await userRepo.create([{ username, email, password, firstName, lastName, phoneNo, userType, accountStatus, parentUsername, creditsAvailable, creditsOwed }], { lean: true })
+  const createdUser = await userRepo.create([{ username, email, password, firstName, lastName, phoneNo, userType, accountStatus, parentUsername, creditsAvailable, creditsOwed }], { lean: true })
   if (!req.user.childUsernames.includes(username)) {
     await req.user.update({ $push: { childUsernames: username.toLowerCase() } })
   }
-  const token = getToken(user)
+  const token = getToken(createdUser)
+  const user = createdUser[0]
   return res.status(201).json({ user, token })
 }
 
