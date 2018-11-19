@@ -55,7 +55,7 @@ class ClientList extends Component {
         incrementClientCredit={this.props.authUserType==='reseller' ? (client)=>this.incrementClientCredit(client) : false}
         authCreditsAvailable={this.props.authCreditsAvailable}
         authcreditsOwed={this.props.authcreditsOwed}
-        tableHeight={this.props.mobileView ? '70vh' : '80vh'}
+        tableHeight={this.props.mobileView ? '75vh' : '85vh'}
         canAdd={this.props.authUserType==='reseller'}
       />
     )

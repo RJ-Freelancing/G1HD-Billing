@@ -37,7 +37,7 @@ class Transaction extends Component {
         orderByDirection='desc'
         mobileView={this.props.mobileView}
         viewOnly={true}
-        tableHeight={this.props.mobileView ? '70vh' : '80vh'}
+        tableHeight={this.props.mobileView ? '75vh' : '85vh'}
       />
     )
   }

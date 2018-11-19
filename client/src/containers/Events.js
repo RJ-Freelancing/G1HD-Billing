@@ -92,7 +92,7 @@ class Events extends Component {
           orderByDirection='desc'
           mobileView={this.props.mobileView}
           sendEvent={(ids)=>this.setState({ids, open: true})}
-          tableHeight={this.props.mobileView ? '70vh' : '78vh'}
+          tableHeight={this.props.mobileView ? '68vh' : '80vh'}
         />
         <Dialog
           open={this.state.open}
