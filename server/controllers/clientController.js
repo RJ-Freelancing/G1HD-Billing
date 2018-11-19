@@ -4,6 +4,7 @@ import { checkPermissionRights } from '../_helpers/checkPermission'
 import clientRepo from '../models/clientModel'
 import userRepo from '../models/userModel'
 import transactionRepo from '../models/transactionModel'
+import { mergeArrayObjectsByKey } from '../controllers/userController'
 
 const ministraAPI = process.env.MINISTRA_HOST + 'stalker_portal/api/'
 const ministaUser = process.env.MINISTRA_USER
@@ -63,10 +64,18 @@ export async function addClient(req, res, next) {
   }
   else {
     const clientMac = stb_mac
+    await axios.get(ministraAPI + 'accounts/' + clientMac, config)
+    .then(response => {
+      res.locals.newClient = response.data
+    })
+    .catch(error => {
+      console.log("Ministra API Error : " + error)
+    })
+    const newMinistraClient = res.locals.newClient.results
     const parentUsername = req.user.username
     const client = await clientRepo.create([{ clientMac, parentUsername }], { lean: true })
     await userRepo.findOneAndUpdate({ username: parentUsername }, { $push: { childUsernames: clientMac } })
-    await res.status(201).json({ client })
+    await res.status(201).json(mergeArrayObjectsByKey(newMinistraClient, client, 'stb_mac', 'clientMac')[0])
   }
 }
 

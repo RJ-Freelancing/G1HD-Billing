@@ -140,7 +140,7 @@ async function getChildren(list, isMinistra) {
   }
 }
 
-function mergeArrayObjectsByKey(obj1Array, obj2Array, key1, key2) {
+export function mergeArrayObjectsByKey(obj1Array, obj2Array, key1, key2) {
   return obj1Array.map(obj1 => {
     const mongoClient = obj2Array.find(obj2 => obj2._doc[key2] == obj1[key1])
     if (mongoClient)
