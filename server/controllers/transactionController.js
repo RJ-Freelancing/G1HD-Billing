@@ -23,12 +23,12 @@ export async function checkPermission(req, res, next) {
   const macRegex = /^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/
   if (macRegex.test(req.params.id)) {
     const client = await clientRepo.findOne({ clientMac: req.params.id })
-    if (!client) return res.status(404).json({ error: `Client with mac Address ${req.params.id} was not found in mongo DB` })
+    if (!client) return res.status(422).json({ error: `Client with mac Address ${req.params.id} was not found in mongo DB` })
     if (await checkPermissionRights(req.params.id, req.user, 0) == false) return res.status(403).json({ error: `You Have No Rights To Perform This Action.` })
   }
   else {
     const user = await userRepo.findOne({ username: req.params.id })
-    if (!user) return res.status(404).json({ error: `User with username ${req.params.id} was not found in DB` })
+    if (!user) return res.status(422).json({ error: `User with username ${req.params.id} was not found in DB` })
     if (await checkPermissionRights(user, req.user, 1) == false) return res.status(403).json({ error: `You Have No Rights To Perform This Action.` })
   }
   next()

@@ -42,7 +42,7 @@ export async function sendEvent(req, res, next) {
   const ministraPayLoad = querystring.stringify(req.value.body)
   var mac = req.value.body.ids
   if (mac == "" && req.user.userType !== "superAdmin") return res.status(403).json("You Have No Rights To Perform This Action.")
-  if (mac == undefined) return res.status(404).json("Mac Ids are missing...")
+  if (mac == undefined) return res.status(422).json("Mac Ids are missing...")
   if (mac.length > 30) {
     resultMap = await hugeMinistaPostCalls('send_event/', ministraPayLoad, mac, res)
   }

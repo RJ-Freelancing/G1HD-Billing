@@ -26,9 +26,9 @@ export async function validateMAC(req, res, next) {
     .catch(error => {
       console.log("Ministra API Error : " + error)
     })
-  if (res.locals.client.status !== 'OK') return res.status(404).json({ error: `client with mac Address ${req.params.id} was not found in the ministra system` })
+  if (res.locals.client.status !== 'OK') return res.status(422).json({ error: `client with mac Address ${req.params.id} was not found in the ministra system` })
   const client = await clientRepo.findOne({ clientMac: req.params.id })
-  if (!client) return res.status(404).json({ error: `Client with mac Address ${req.params.id} was not found in mongo DB` })
+  if (!client) return res.status(422).json({ error: `Client with mac Address ${req.params.id} was not found in mongo DB` })
   res.locals.mongoClient = client
   if (await checkPermissionRights(req.params.id, req.user, 0) == false) return res.status(403).json({ error: `You Have No Rights To Perform This Action.` })
   next()
@@ -59,7 +59,7 @@ export async function addClient(req, res, next) {
       console.log("Ministra API Error : " + error)
     })
   if (res.locals.addedUser.status !== 'OK') {
-    return res.status(404).json({ error: `Failed to add a client to the system : ${res.locals.addedUser.error}` })
+    return res.status(422).json({ error: `Failed to add a client to the system : ${res.locals.addedUser.error}` })
   }
   else {
     const clientMac = stb_mac
@@ -77,7 +77,7 @@ export async function updateClient(req, res, next) {
     if (returnMac == req.params.id) return res.status(400).json("No change in Mac Address.")
     await axios.get(ministraAPI + 'accounts/' + returnMac, config)
       .then(response => {
-        if (response.data.status == 'OK') return res.status(400).json("Mac Already Exists on the System. Please delete that mac before proceeding")
+        if (response.data.status == 'OK') return res.status(422).json("Mac Already Exists on the System. Please delete that mac before proceeding")
       })
       .catch(error => {
         console.log("Ministra API Error : " + error)
@@ -104,7 +104,7 @@ export async function updateClient(req, res, next) {
 export async function deleteClient(req, res, next) {
   if (await checkPermissionRights(req.params.id, req.user, 0) == false) return res.status(403).json({ error: `You Have No Rights To Perform This Action.` })
   const client = await clientRepo.findOne({ clientMac: req.params.id })
-  if (!client) return res.status(404).json({ error: `Client with mac Address ${req.params.id} was not found in mongo DB` })
+  if (!client) return res.status(422).json({ error: `Client with mac Address ${req.params.id} was not found in mongo DB` })
   if (client.accountBalance > 0) return res.status(400).json({ error: `The Client has ${client.accountBalance} in his account. Please recover the credits from this Client ${req.params.id} before you delete.` })
   await axios.delete(ministraAPI + 'accounts/' + req.params.id, config)
     .then(response => {
@@ -114,7 +114,7 @@ export async function deleteClient(req, res, next) {
       console.log("Ministra API Error : " + error)
     })
   if (res.locals.deletingClient.status !== 'OK') {
-    return res.status(404).json({ error: `failed to delete client ${req.params.id} : ${res.locals.deletingClient.error}` })
+    return res.status(422).json({ error: `failed to delete client ${req.params.id} : ${res.locals.deletingClient.error}` })
   }
   else {
     await userRepo.findOneAndUpdate({ username: client.parentUsername }, { $pull: { childUsernames: client.clientMac } })

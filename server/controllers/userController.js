@@ -87,7 +87,7 @@ export async function updateUser(req, res, next) {
 
 export async function deleteUser(req, res, next) {
   if (req.user.userType == "reseller") return res.status(403).json({ error: `Only your superReseller/admin can delete your account.` })
-  if (res.locals.user.childUsernames.length !== 0) return res.status(404).json({ error: `The user ${res.locals.user.username} has childs. Please remove/switch childs before you delete this user.`})
+  if (res.locals.user.childUsernames.length !== 0) return res.status(422).json({ error: `The user ${res.locals.user.username} has childs. Please remove/switch childs before you delete this user.`})
   const username = res.locals.user.username
   await userRepo.findOneAndUpdate({ username: res.locals.user.parentUsername }, { $pull: { childUsernames: username } })
   await res.locals.user.remove()
@@ -99,10 +99,10 @@ export async function upgradeUserRole(req, res, next) {
   const { email, password, firstName, lastName, phoneNo, accountStatus, upgradedAccount } = res.locals.user
   const parentUsername = req.user.username
   if (await validParent(req.user.userType, userType, res.locals.user) == false) return res.status(403).json({ error: `You have no rights to add this user.` })
-  if(upgradedAccount == true) return res.status(404).json({ error: `This user already has been upgraded to ${userType}.` })
+  if(upgradedAccount == true) return res.status(422).json({ error: `This user already has been upgraded to ${userType}.` })
   const existingUser = await userRepo.findOne({ username })
   if (existingUser)
-    return res.status(404).json({ error: `User already exists with username: ${username}` })
+    return res.status(422).json({ error: `User already exists with username: ${username}` })
   await userRepo.create([{ username, email, password, firstName, lastName, phoneNo, userType, accountStatus, parentUsername, childUsernames : req.params.username }], { lean: true })
   if (!req.user.childUsernames.includes(username)) {
     await req.user.update({ $push: { childUsernames: username.toLowerCase() }})
