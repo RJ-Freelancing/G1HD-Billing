@@ -38,13 +38,13 @@ const users = (state = initialState, action) => {
     case 'ADD_CLIENT_SUCCESS':
       return {
         ...state, 
-        clients: [...state.clients, action.payload.data.client[0]]
+        clients: [...state.clients, action.payload.data.client]
       }
     case 'ADD_USER_SUCCESS':
       const userType = action.meta.previousAction.payload.request.data.userType
       return {
         ...state, 
-        [`${userType}s`]: [...state[`${userType}s`], action.payload.data.user[0]]
+        [`${userType}s`]: [...state[`${userType}s`], action.payload.data.user]
       }
     case 'UPDATE_USER_SUCCESS':
       // Find the updated user and merge with payload
@@ -90,7 +90,7 @@ const users = (state = initialState, action) => {
         clients: state.clients.filter(client=>client.stb_mac===stb_mac)
       }
     case 'UPDATE_CREDIT_SUCCESS':          
-      const {transactionTo, credits} = action.payload.data.transaction[0]    
+      const {transactionTo, credits} = action.payload.data.transaction
       const transactionToUser = findInternalUserFromUsername(state, transactionTo)  
       if (transactionToUser.userType) { // Internal User
         return {

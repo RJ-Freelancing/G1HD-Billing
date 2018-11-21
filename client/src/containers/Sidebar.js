@@ -101,6 +101,7 @@ const Sidebar = (props) => {
       classes={{root: classes.menu}} 
       style={{background: activePage===link ? 'radial-gradient(circle, #9553eb, #714ad0, #5040b5, #2f3598, #082a7c)' : ''}}
       onClick={()=>onLinkClick(link)}
+      disabled={props.loading}
     >
       <ListItemIcon style={{color: 'white'}}>
         <Icon>{icon}</Icon>
@@ -143,7 +144,8 @@ const mapStateToProps = state => ({
   authUserType: state.auth.userType,
   mobileMenu: state.general.mobileMenu,
   mobileView: state.general.mobileView,
-  notificationShow: state.general.notificationShow
+  notificationShow: state.general.notificationShow,
+  loading: state.general.loading
 })
 
 const mapDispatchToProps = dispatch => ({

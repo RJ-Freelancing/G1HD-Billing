@@ -26,7 +26,7 @@ const auth = (state = initialState, action) => {
         ...action.payload.data
       }
     case 'UPDATE_CREDIT_SUCCESS':              
-      const {credits} = action.payload.data.transaction[0]  
+      const {credits} = action.payload.data.transaction  
       if (state.userType==='reseller') {
         const currentAccountBalance = action.meta.previousAction.transactionToClientAccountBalance
         if (credits > 0) { // Adding credits

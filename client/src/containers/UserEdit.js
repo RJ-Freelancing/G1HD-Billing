@@ -172,7 +172,7 @@ class UserEdit extends Component {
       transactionTo: this.state.user.username
     })
     .then((transactionResponse)=>{
-      this.setState({transactions: [...this.state.transactions, transactionResponse.payload.data.transaction[0]]})
+      this.setState({transactions: [...this.state.transactions, transactionResponse.payload.data.transaction]})
     })
   }
 

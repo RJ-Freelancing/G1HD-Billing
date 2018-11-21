@@ -1,19 +1,19 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Offline } from "react-detect-offline";
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import styled from 'styled-components'
-import { login } from 'actions/auth'
 import Logo from 'assets/logo.png'
 import Notification from 'components/Notification'
 import Loading from 'components/Loading'
 import Paper from '@material-ui/core/Paper';
-import { Offline } from "react-detect-offline";
 import PopupMessage from 'components/PopupMessage'
 import NoInternetGIF from 'assets/noInternet.gif'
 import Typography from '@material-ui/core/Typography'
 
 
+import { login } from 'actions/auth'
 import { getTransactions } from 'actions/transactions'
 import { getUsers, getConfig } from 'actions/users'
 

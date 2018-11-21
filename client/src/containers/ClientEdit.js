@@ -230,7 +230,7 @@ class ClientEdit extends Component {
       transactionTo: this.state.editingClient.stb_mac
     }, this.state.client.accountBalance)
     .then((transactionResponse)=>{
-      this.setState({transactions: [...this.state.transactions, transactionResponse.payload.data.transaction[0]]})
+      this.setState({transactions: [...this.state.transactions, transactionResponse.payload.data.transaction]})
     })
   }
 
