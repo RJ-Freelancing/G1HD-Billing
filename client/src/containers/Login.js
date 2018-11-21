@@ -16,6 +16,7 @@ import Typography from '@material-ui/core/Typography'
 import { login } from 'actions/auth'
 import { getTransactions } from 'actions/transactions'
 import { getUsers, getConfig } from 'actions/users'
+import { getTariffPlans } from 'actions/general'
 
 
 const Wrapper = styled(Paper)`
@@ -65,6 +66,7 @@ class Login extends Component {
         this.props.getUsers()
         .then(()=>this.props.getTransactions(loginResponse.payload.data.user.username))
         .then(()=>this.props.getConfig())
+        .then(()=>this.props.getTariffPlans())
       }
     })
   }
@@ -125,7 +127,8 @@ const mapDispatchToProps = dispatch => ({
   login: credentials => dispatch(login(credentials)),
   getTransactions: username => dispatch(getTransactions(username)),
   getConfig: () => dispatch(getConfig()),
-  getUsers: () => dispatch(getUsers())
+  getUsers: () => dispatch(getUsers()),
+  getTariffPlans: () => dispatch(getTariffPlans()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)

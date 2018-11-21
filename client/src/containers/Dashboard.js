@@ -7,7 +7,7 @@ import Paper from '@material-ui/core/Paper';
 
 const Wrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-gap: 20px;
   justify-content: center
 `

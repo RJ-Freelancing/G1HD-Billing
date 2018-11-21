@@ -59,7 +59,7 @@ const auth = (state = initialState, action) => {
       } else { // Not a reseller
         return {
           ...state, 
-          creditsAvailable: state.creditsAvailable + credits,
+          creditsAvailable: state.creditsAvailable - credits,
         }
       }
     case (action.type.match(/_FAILED$/) || {}).input:    

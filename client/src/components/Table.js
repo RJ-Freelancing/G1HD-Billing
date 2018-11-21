@@ -183,7 +183,7 @@ export default class EnhancedTable extends React.Component {
   }
 
   componentDidUpdate = (prevProps, prevState, snapshot) => {   
-    if (!isEqual(prevState.data, this.props.data)) {
+    if (!isEqual(prevProps.data, this.props.data)) {
       this.setState({data: this.props.data})
     }
   }
@@ -207,6 +207,7 @@ export default class EnhancedTable extends React.Component {
     const filterValue = event.target.value
     console.log(filterValue)
     console.log(filteredData)
+    filteredData.pop()
     
     // search and filter filteredData for value filterValue
 
@@ -290,11 +291,11 @@ export default class EnhancedTable extends React.Component {
                           </IconButton>
                         </Tooltip>
                         {incrementClientCredit && 
-                          <Tooltip title={(authCreditsAvailable+authcreditsOwed < 1) ? "No credits available to transfer" : "Add 1 Credit"}>
+                          <Tooltip title={(authCreditsAvailable < 1) ? "No credits available to transfer" : "Add 1 Credit"}>
                             <IconButton 
                               aria-label="Add 1 Credit" 
                               style={{padding: 9}} 
-                              onClick={()=>(authCreditsAvailable+authcreditsOwed < 1) ? {} : incrementClientCredit(n)}
+                              onClick={()=>(authCreditsAvailable < 1) ? {} : incrementClientCredit(n)}
                             >
                               <PlusOneIcon fontSize="small" color="primary"/>
                             </IconButton>

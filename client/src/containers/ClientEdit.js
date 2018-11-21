@@ -170,7 +170,6 @@ class ClientEdit extends Component {
   }
 
   componentDidMount = () => {   
-    this.props.getTariffPlans()
     const stb_mac = this.props.match.params.id
     const client = this.findClientFromMAC(stb_mac)
     if (client) {
@@ -178,6 +177,8 @@ class ClientEdit extends Component {
       .then(resnponseTransactions => { 
         this.setState({client, editingClient: {...client}, transactions: resnponseTransactions.payload.data})
       })
+    } else {
+      this.setState({client: false})
     }
   }
 
@@ -283,11 +284,18 @@ class ClientEdit extends Component {
 
   render() {   
     if (!this.state.client)
-      return (
-        <Typography variant="h4">
-            Client with MAC {this.props.match.params.id} was not found
-        </Typography>
-      )
+      if (this.state.client === false)
+        return (
+          <Typography variant="h4">
+              Client with MAC {this.props.match.params.id} was not found
+          </Typography>
+        )
+      else 
+        return (
+          <Typography variant="h4">
+              Client is loading
+          </Typography>
+        )
 
     return (
       <Wrapper>
