@@ -200,8 +200,14 @@ class ClientAdd extends Component {
                   fullWidth
                   inputProps={{ min: 0, max: 12 }}
                   disabled={this.props.loading}
-                  error={this.state.newClient.credits > 12 || this.state.newClient.credits < 0}
-                  helperText={ (this.state.newClient.credits > 12 || this.state.newClient.credits < 0) ? "Credits can range from 0 to 12" : null}
+                  error={
+                    (this.state.newClient.credits > 12 || this.state.newClient.credits < 0) ||
+                    (this.props.authCreditsAvailable<=0 && this.state.newClient.credits > 0)
+                  }
+                  helperText={ 
+                    (this.state.newClient.credits > 12 || this.state.newClient.credits < 0) ? "Credits can range from 0 to 12" : 
+                    (this.props.authCreditsAvailable<=0 && this.state.newClient.credits > 0) ? "You don't have enough credits to add" :
+                    null}
                 />
               <FormControlLabel
                 label={`Account Status (${this.state.newClient.status===1 ? 'Active' : 'Inactive'})`}
@@ -217,7 +223,7 @@ class ClientAdd extends Component {
               />
             </ClientEdit>
             <br/><br/>
-            <Button variant="contained" type="submit" color="primary" disabled={this.props.loading || this.checkValidation()}>
+            <Button variant="contained" type="submit" color="primary" disabled={this.props.loading || this.checkValidation() || (this.props.authCreditsAvailable<=0 && this.state.newClient.credits > 0)}>
               Submit&nbsp;
               <SaveIcon />
             </Button>
@@ -234,6 +240,7 @@ const mapStateToProps = state => ({
   authUsername: state.auth.username, 
   clients: state.users.clients,
   tariffPlans: state.general.tariffPlans,
+  authCreditsAvailable: state.auth.creditsAvailable,
   mobileView: state.general.mobileView
 })
 
