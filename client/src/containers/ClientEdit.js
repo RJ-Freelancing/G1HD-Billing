@@ -102,7 +102,6 @@ const TariffPackagesHeader = styled.div`
 const TariffPackages = styled.div`
   display: grid;
   grid-gap: 20px;
-  // height: 100%;
   overflow-y: auto;
 `
 

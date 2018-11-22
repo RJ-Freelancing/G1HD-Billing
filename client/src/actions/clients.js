@@ -95,7 +95,7 @@ export const sendEvent = event => ({
 
 
 export const checkMAC = mac => ({
-  types: ['LOADING', 'CHECK_MAC_SUCCESS', 'CHECK_MAC_FAILED'],
+  types: ['NO_LOADING', 'CHECK_MAC_SUCCESS', 'CHECK_MAC_FAILED'],
   payload: {
     request:{
       url: `/clients/checkmac/${mac}`,
