@@ -12,6 +12,19 @@ export const login = ({username, password}) => ({
 })
 
 
+export const refreshToken = () => ({
+  types: ['NO_LOADING', 'LOGIN_SUCCESS', 'LOGIN_FAILED'],
+  payload: {
+    request:{
+      url: '/auth/refreshToken',
+      method: 'GET',
+    }
+  },
+  success: false,
+  failure: "Something went wront when trying to refresh token."
+})
+
+
 export const logout = () => ({
   type: 'LOGOUT'
 })

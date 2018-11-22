@@ -16,6 +16,7 @@ const general = (state = initialState, action) => {
         loading: true,
       }
     case 'HIDE_LOADING':
+    case 'NO_LOADING':
       return {
         ...state,
         loading: false,

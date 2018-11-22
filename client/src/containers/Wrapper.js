@@ -21,7 +21,7 @@ import Transaction from 'containers/Transaction'
 import Events from 'containers/Events'
 import SuperAdminConfig from 'containers/SuperAdminConfig'
 
-import { logout } from 'actions/auth'
+import { refreshToken, logout } from 'actions/auth'
 import { setMobileView, toggleMobileSideBar } from 'actions/general'
 
 
@@ -98,7 +98,7 @@ class Wrapper extends Component {
         <Loading />
         <Notification />
         <OfflinePopup />
-        <InactivityPopup logout={this.props.logout} />
+        <InactivityPopup logout={this.props.logout} refreshToken={this.props.refreshToken}/>
       </RootDiv>
     )
   }
@@ -113,6 +113,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   setMobileView: (mobileView) => dispatch(setMobileView(mobileView)),
   toggleMobileSideBar: (open) => dispatch(toggleMobileSideBar(open)),
+  refreshToken: () => dispatch(refreshToken()),
   logout: () => dispatch(logout()),
 })
 

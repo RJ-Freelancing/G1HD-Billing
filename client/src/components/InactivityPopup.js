@@ -9,7 +9,7 @@ export default class InactivityPopup extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      inactivity: 0
+      inactivity: 0,
     }
   }
 
@@ -17,6 +17,7 @@ export default class InactivityPopup extends Component {
     window.onmousemove = this.resetInactiveTimer
     window.addEventListener("scroll", this.resetInactiveTimer, true)
     this.idleTimer = setTimeout(this.onIdle, 120000)
+    this.refreshTokenTimer = setInterval(this.props.refreshToken, 280000)
   }
 
   onIdle = () => {
@@ -28,6 +29,7 @@ export default class InactivityPopup extends Component {
     clearInterval(this.timer)
     clearTimeout(this.idleTimer)
     window.removeEventListener("scroll", this.resetInactiveTimer)
+    clearInterval(this.refreshTokenTimer)
   }
 
   resetInactiveTimer = () => {
@@ -60,5 +62,6 @@ export default class InactivityPopup extends Component {
 
 
 InactivityPopup.propTypes = {
+  refreshToken: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
 };
