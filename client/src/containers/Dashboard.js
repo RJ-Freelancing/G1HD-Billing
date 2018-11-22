@@ -86,8 +86,11 @@ class Dashboard extends Component {
         else 
           this.setState({checkMACResults: {status: 'Something went wrong while checking MAC availability'}})
       })
-    } else {
-      this.setState({checkMACResults: ''})
+    } else {     
+      if (!this.state.checkMAC.includes('_'))
+        this.setState({checkMACResults: {status: 'Invalid MAC ID'}})
+      else
+        this.setState({checkMACResults: ''})
     }
   }
 
@@ -137,7 +140,7 @@ class Dashboard extends Component {
             </InputMask>
             {this.state.checkMACResults && 
               <>
-                <div style={{display: 'grid', gridTemplateColumns: '1fr', alignItems: 'center', alignItems: 'center', justifyItems: 'center'}}>
+                <div style={{display: 'grid', gridTemplateColumns: '1fr', alignItems: 'center', justifyItems: 'center'}}>
                   <Typography  style={{textAlign: 'left', color: 'white'}} variant="h5"> 
                     {checkMACResults.status==='Available.' ? <ThumbUpIcon fontSize="large"/> : <ThumbDownIcon fontSize="large"/>} 
                   </Typography>
