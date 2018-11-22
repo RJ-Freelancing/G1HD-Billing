@@ -32,15 +32,7 @@ function desc(a, b, orderBy) {
   return 0
 }
 
-function stableSort(array, cmp) {
-  const stabilizedThis = array.map((el, index) => [el, index])
-  stabilizedThis.sort((a, b) => {
-    const order = cmp(a[0], b[0])
-    if (order !== 0) return order
-    return a[1] - b[1]
-  })
-  return stabilizedThis.map(el => el[0])
-}
+
 
 function getSorting(order, orderBy) {
   return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy)
@@ -168,10 +160,12 @@ export default class EnhancedTable extends React.Component {
     selected: []
   }
 
-  handleRequestSort = (event, property) => {
+  handleRequestSort = (event, property) => {   
     const orderBy = property
     const order = (this.state.orderBy === property && this.state.order === 'desc') ? 'asc' : 'desc'
-    this.setState({ order, orderBy })
+    this.setState({ order, orderBy }, ()=> {
+      this.stableSort(this.state.data, getSorting(order, orderBy))
+    })
   }
 
   handleChangePage = (event, page) => {
@@ -202,6 +196,16 @@ export default class EnhancedTable extends React.Component {
       this.setState({selected: [...this.state.data.map(n => n.stb_mac)]})
   }
 
+  stableSort = (array, cmp) => {
+    const stabilizedThis = array.map((el, index) => [el, index])
+    stabilizedThis.sort((a, b) => {
+      const order = cmp(a[0], b[0])
+      if (order !== 0) return order
+      return a[1] - b[1]
+    })
+    this.setState({data: stabilizedThis.map(el => el[0])})
+  }
+
   fuzzySearchFilter = (event) => {
     let filteredData = [...this.state.data]
     const filterValue = event.target.value
@@ -226,7 +230,6 @@ export default class EnhancedTable extends React.Component {
       canAdd, 
       incrementClientCredit, 
       authCreditsAvailable, 
-      authcreditsOwed,
       gotoLink,
       sendEvent
     } = this.props
@@ -260,7 +263,7 @@ export default class EnhancedTable extends React.Component {
               selectAll={this.handleSelectAll}
             />
             <TableBody>
-              {stableSort(data, getSorting(order, orderBy))
+              {data
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((n, idx) => 
                   <TableRow 
@@ -291,11 +294,11 @@ export default class EnhancedTable extends React.Component {
                           </IconButton>
                         </Tooltip>
                         {incrementClientCredit && 
-                          <Tooltip title={(authCreditsAvailable < 1) ? "No credits available to transfer" : "Add 1 Credit"}>
+                          <Tooltip title={(authCreditsAvailable<=0 && n.accountBalance===0) ? "No credits available to transfer" : "Add 1 Credit"}>
                             <IconButton 
                               aria-label="Add 1 Credit" 
                               style={{padding: 9}} 
-                              onClick={()=>(authCreditsAvailable < 1) ? {} : incrementClientCredit(n)}
+                              onClick={()=>(authCreditsAvailable<=0 && n.accountBalance===0) ? {} : incrementClientCredit(n)}
                             >
                               <PlusOneIcon fontSize="small" color="primary"/>
                             </IconButton>
