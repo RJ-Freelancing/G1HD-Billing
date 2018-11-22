@@ -15,7 +15,7 @@ export const clearNotification = () => ({
 
 
 export const getTariffPlans = () => ({
-  types: ['LOADING', 'GET_TARIFF_PLANS_SUCCESS', 'GET_TARIFF_PLANS_FAILED'],
+  types: ['NO_LOADING', 'GET_TARIFF_PLANS_SUCCESS', 'GET_TARIFF_PLANS_FAILED'],
   payload: {
     request:{
       url: '/ministra/tariffs',

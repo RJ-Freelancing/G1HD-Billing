@@ -14,7 +14,7 @@ export const updateCredits = (transaction, transactionToClientAccountBalance=nul
 
 
 export const getTransactions = username => ({
-  types: ['LOADING', 'GET_TRANSACTIONS_SUCCESS', 'GET_TRANSACTIONS_FAILED'],
+  types: ['NO_LOADING', 'GET_TRANSACTIONS_SUCCESS', 'GET_TRANSACTIONS_FAILED'],
   payload: {
     request:{
       url: `/transactions/${username}`,
