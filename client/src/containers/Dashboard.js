@@ -10,6 +10,7 @@ import { format } from 'date-fns'
 import ThumbUpIcon from '@material-ui/icons/ThumbUp'
 import ThumbDownIcon from '@material-ui/icons/ThumbDown'
 import Table from 'components/Table'
+import Icon from '@material-ui/core/Icon';
 
 
 import { checkMAC } from 'actions/clients'
@@ -53,6 +54,7 @@ const CheckMAC = styled(Paper)`
 `
 
 const ChildrenSummary = styled(Paper)`
+  padding-bottom: 10px;
   background-image: linear-gradient(#F2994A, #F2C94C);
 `
 
@@ -231,29 +233,29 @@ class Dashboard extends Component {
           </CheckMAC>
 
           <ChildrenSummary elevation={10}>
-            <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="h4"> Users Stats </Typography>
+            <Typography  style={{textAlign: 'left', padding: 15, color: 'black'}} variant="h4"> Users Stats </Typography>
             {authUserType==='superAdmin' &&
             <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr', alignItems: 'center'}}>
-              <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="h6"> No. of Admins </Typography>
-              <Typography  style={{textAlign: 'right', padding: 10, color: 'black'}} variant="h4"> {admins.length} </Typography>
+              <Typography  style={{textAlign: 'left', paddingLeft: 50, color: 'black'}} variant="h6"><Icon>local_library</Icon> Admins</Typography>
+              <Typography  style={{textAlign: 'right', paddingRight: 50, color: 'black'}} variant="h4"> {admins.length} </Typography>
             </div>
             }
             {['superAdmin', 'admin'].includes(authUserType) &&
             <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr', alignItems: 'center'}}>
-              <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="h6"> No. of Super Resellers </Typography>
-              <Typography  style={{textAlign: 'right', padding: 10, color: 'black'}} variant="h4"> {superResellers.length} </Typography>
+              <Typography  style={{textAlign: 'left', paddingLeft: 50, color: 'black'}} variant="h6"><Icon>group</Icon> Super Resellers </Typography>
+              <Typography  style={{textAlign: 'right', paddingRight: 50, color: 'black'}} variant="h4"> {superResellers.length} </Typography>
             </div>
             }
             {['superAdmin', 'admin', 'superReseller'].includes(authUserType) &&
             <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr', alignItems: 'center'}}>
-              <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="h6"> No. of Resellers </Typography>
-              <Typography  style={{textAlign: 'right', padding: 10, color: 'black'}} variant="h4"> {resellers.length} </Typography>
+              <Typography  style={{textAlign: 'left', paddingLeft: 50, color: 'black'}} variant="h6"><Icon>person</Icon> Resellers </Typography>
+              <Typography  style={{textAlign: 'right', paddingRight: 50, color: 'black'}} variant="h4"> {resellers.length} </Typography>
             </div>
             }
             {['superAdmin', 'admin', 'superReseller', 'reseller'].includes(authUserType) &&
             <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr', alignItems: 'center'}}>
-              <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="h6"> No. of Clients </Typography>
-              <Typography  style={{textAlign: 'right', padding: 10, color: 'black'}} variant="h4"> {clients.length} </Typography>
+              <Typography  style={{textAlign: 'left', paddingLeft: 50, color: 'black'}} variant="h6"><Icon>airplay</Icon> Clients </Typography>
+              <Typography  style={{textAlign: 'right', paddingRight: 50, color: 'black'}} variant="h4"> {clients.length} </Typography>
             </div>
             }
           </ChildrenSummary>
