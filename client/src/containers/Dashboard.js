@@ -73,6 +73,7 @@ const transactionRows = [
 ]
 
 const clientRows = [
+  { field: 'stb_mac', label: 'MAC Address', type: 'string'  },
   { field: 'full_name', label: 'Full Name', type: 'string'  },
   { field: 'phone', label: 'Telephone', type: 'string'  },
   { field: 'accountBalance', label: 'Credits Available', type: 'integer'  },
@@ -151,7 +152,7 @@ class Dashboard extends Component {
     return displayData
   } 
 
-  incrementClientCredit = (client) => {
+  incrementClientCredit = (client) => {   
     this.props.updateCredits({
       credits: 1,
       description: 'Added 1 credit',
