@@ -31,11 +31,13 @@ const Wrapper = styled.div`
 const Left = styled.div`
   display: grid;
   grid-gap: 20px;
+  height: fit-content;
 `
 
 const Right = styled.div`
   display: grid;
   grid-gap: 20px;
+  height: fit-content;
 `
 
 const CreditsSummary = styled(Paper)`
