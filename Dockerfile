@@ -54,4 +54,9 @@ RUN OUTPUT=$(json-merge server-package.json --parse="dependencies" client-packag
 # Install production and client app dependencies
 RUN yarn cache clean && yarn install --production
 
+# Set corect timezone
+RUN apk add tzdata
+ENV TZ=America/Toronto
+
+
 CMD [ "pm2-runtime", "index.js" ]
