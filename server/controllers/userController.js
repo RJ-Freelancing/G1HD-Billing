@@ -129,7 +129,7 @@ async function getChildren(list, isMinistra) {
     return mergeArrayObjectsByKey(ministraClients, mongoClients, 'stb_mac', 'clientMac')
   }
   else if (isMinistra == 2) {
-    const ministraClients = await getAllClients()
+    const ministraClients = (await getAllClients()).sort((a, b) => new Date(a.tariff_expired_date) - new Date(b.tariff_expired_date))
     const mongoClients = await clientRepo.find({})
     return mergeArrayObjectsByKey(ministraClients, mongoClients, 'stb_mac', 'clientMac')
   }

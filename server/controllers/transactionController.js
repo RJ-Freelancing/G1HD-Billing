@@ -35,7 +35,7 @@ export async function checkPermission(req, res, next) {
 }
 
 export async function getTransactionsForUser(req, res, next) {
-  const transactions = await transactionRepo.find({ $or: [{ transactionTo: { $in: req.params.id } }, { transactionFrom: { $in: req.params.id } }] }, null, { sort: { credits: 1 } })
+  const transactions = await transactionRepo.find({ $or: [{ transactionTo: { $in: req.params.id } }, { transactionFrom: { $in: req.params.id } }] }, null, { sort: { createdAt: -1 } })
   return res.status(200).json(transactions)
 }
 

@@ -231,7 +231,9 @@ export default class EnhancedTable extends React.Component {
       incrementClientCredit, 
       authCreditsAvailable, 
       gotoLink,
-      sendEvent
+      sendEvent,
+      limit,
+      noPagination
     } = this.props
 
     const { data, order, orderBy, rowsPerPage, page, selected } = this.state
@@ -263,7 +265,7 @@ export default class EnhancedTable extends React.Component {
               selectAll={this.handleSelectAll}
             />
             <TableBody>
-              {data
+              {data.slice(0, limit)
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((n, idx) => 
                   <TableRow 
@@ -319,7 +321,7 @@ export default class EnhancedTable extends React.Component {
                         case 'integer':
                           return <TableCell key={field} style={{textAlign: 'center', paddingLeft: 0}}> {value} </TableCell>
                         case 'date':
-                          return <TableCell key={field}> {format(Date.parse(value), 'dd MMM YYYY @ HH:mm:ss')} </TableCell>
+                          return <TableCell key={field}> {format(Date.parse(value), 'D MMM YYYY @ HH:mm:ss')} </TableCell>
                         default:
                           return <TableCell key={field}> {value} </TableCell>
                       }
@@ -329,17 +331,19 @@ export default class EnhancedTable extends React.Component {
             </TableBody>
           </Table>
         </div>
-        <TablePagination
-          component="div"
-          count={data.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          backIconButtonProps={{'aria-label': 'Previous Page'}}
-          nextIconButtonProps={{'aria-label': 'Next Page'}}
-          onChangePage={this.handleChangePage}
-          onChangeRowsPerPage={this.handleChangeRowsPerPage}
-          rowsPerPageOptions={[20, 50, 100]}
-        />
+        {!noPagination &&
+          <TablePagination
+            component="div"
+            count={data.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            backIconButtonProps={{'aria-label': 'Previous Page'}}
+            nextIconButtonProps={{'aria-label': 'Next Page'}}
+            onChangePage={this.handleChangePage}
+            onChangeRowsPerPage={this.handleChangeRowsPerPage}
+            rowsPerPageOptions={[20, 50, 100]}
+          />
+        }
       </Paper>
     )
   }
