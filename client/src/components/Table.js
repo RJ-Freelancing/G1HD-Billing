@@ -207,14 +207,27 @@ export default class EnhancedTable extends React.Component {
   }
 
   fuzzySearchFilter = (event) => {
-    let filteredData = [...this.state.data]
+    const initialData = [...this.props.data]
     const filterValue = event.target.value
-    console.log(filterValue)
-    console.log(filteredData)
-    filteredData.pop()
-    
-    // search and filter filteredData for value filterValue
-
+    let filteredData = []
+    initialData.forEach( (element) => {
+      let elementContains = false
+      for (var key in element){
+        if((element[key]+'').includes('T') && element[key].includes('Z')) {
+          if (format(Date.parse(element[key]), 'D MMM YYYY @ HH:mm:ss').toLowerCase().includes(filterValue.toLowerCase())) {
+            elementContains = true
+            break
+          }
+        }
+        else{
+          if((element[key]+'').toLowerCase().includes(filterValue.toLowerCase())) {
+            elementContains = true
+            break
+          }
+        }
+      }
+      if (elementContains) filteredData.push(element)
+    })
     this.setState({data: filteredData})
   }
 
