@@ -600,7 +600,7 @@ const mapStateToProps = state => ({
   clients: state.users.clients,
   authCreditsAvailable: state.auth.creditsAvailable,
   authcreditsOwed: state.auth.creditsOwed,
-  tariffPlans: state.general.tariffPlans,
+  tariffPlans: state.config.tariffPlans,
   authUsername: state.auth.username, 
   mobileView: state.general.mobileView
 })

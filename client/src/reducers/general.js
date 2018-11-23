@@ -4,8 +4,7 @@ const initialState = {
   notificationType: 'info',
   notificationMessage: '',
   mobileView: false,
-  mobileMenu: false,
-  tariffPlans: []
+  mobileMenu: false
 };
 
 const general = (state = initialState, action) => {
@@ -49,12 +48,6 @@ const general = (state = initialState, action) => {
       return {
         ...state,
         lastActiveTime: null
-      }
-    case 'GET_TARIFF_PLANS_SUCCESS':
-      return {
-        ...state,
-        loading: false,
-        tariffPlans: action.payload.data
       }
     case (action.type.match(/_SUCCESS$/) || {}).input:
       if (Boolean(action.meta.previousAction.success))

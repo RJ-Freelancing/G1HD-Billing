@@ -1,6 +1,7 @@
 const initialState = {
   minimumTransferrableCredits: 25,
-  UserAnnouncements: ''
+  UserAnnouncements: '',
+  tariffPlans: []
 };
 
 const general = (state = initialState, action) => {
@@ -15,6 +16,12 @@ const general = (state = initialState, action) => {
       return {
         ...state,
         [action.payload.data.configName]: action.payload.data.configValue
+      }
+    case 'GET_TARIFF_PLANS_SUCCESS':
+      return {
+        ...state,
+        loading: false,
+        tariffPlans: action.payload.data
       }
     default:
       return state

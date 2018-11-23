@@ -239,7 +239,7 @@ const mapStateToProps = state => ({
   token: state.auth.token,
   authUsername: state.auth.username, 
   clients: state.users.clients,
-  tariffPlans: state.general.tariffPlans,
+  tariffPlans: state.config.tariffPlans,
   authCreditsAvailable: state.auth.creditsAvailable,
   mobileView: state.general.mobileView
 })

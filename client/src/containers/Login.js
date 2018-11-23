@@ -64,9 +64,9 @@ class Login extends Component {
     .then(loginResponse => {
       if (loginResponse.type === 'LOGIN_SUCCESS') {
         this.props.getUsers()
+        .then(()=>this.props.getTariffPlans())
         .then(()=>this.props.getTransactions(loginResponse.payload.data.user.username))
         .then(()=>this.props.getConfig())
-        .then(()=>this.props.getTariffPlans())
       }
     })
   }
