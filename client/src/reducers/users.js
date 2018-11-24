@@ -36,7 +36,7 @@ const users = (state = initialState, action) => {
     case 'ADD_CLIENT_SUCCESS':
       return {
         ...state, 
-        clients: [...state.clients, action.payload.data.client]
+        clients: [...state.clients, action.payload.data]
       }
     case 'ADD_USER_SUCCESS':
       const userType = action.meta.previousAction.payload.request.data.userType
