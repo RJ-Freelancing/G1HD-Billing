@@ -18,8 +18,6 @@ const findInternalUserFromUsername = (state, username) => {
     user = state.superResellers.find(superReseller=>superReseller.username===username)
   if (!user)
     user = state.resellers.find(reseller=>reseller.username===username)
-  if (!user)	
-    user = state.clients.find(client=>client.stb_mac===username)
   return user
 }
 
@@ -91,7 +89,7 @@ const users = (state = initialState, action) => {
       }
     case 'UPDATE_CREDIT_SUCCESS':          
       const {transactionTo, credits} = action.payload.data.transaction
-      const transactionToUser = findInternalUserFromUsername(state, transactionTo)  
+      let transactionToUser = findInternalUserFromUsername(state, transactionTo)  
       if (transactionToUser.userType) { // Internal User
         return {
           ...state, 
@@ -104,6 +102,7 @@ const users = (state = initialState, action) => {
           })
         }
       } else { // Client
+        transactionToUser = state.clients.find(client=>client.stb_mac===username)
         const currentAccountBalance = action.meta.previousAction.transactionToClientAccountBalance
         let tariff_expired_date = transactionToUser.tariff_expired_date
         if (!tariff_expired_date) tariff_expired_date=Date.now()

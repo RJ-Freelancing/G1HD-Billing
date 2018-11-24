@@ -476,7 +476,7 @@ class ClientEdit extends Component {
                 }
               </Select>
               <Typography variant="body2" style={{alignSelf: 'center', justifySelf: 'center'}}>
-                Tariff Expires on : <strong>{format(Date.parse(this.state.client.tariff_expired_date), 'd MMMM YYYY')}</strong>
+                Tariff Expires on : <strong>{format(Date.parse(this.state.client.tariff_expired_date), 'D MMMM YYYY')}</strong>
               </Typography>
             </TariffHeader>
             <TariffPackagesHeader>
