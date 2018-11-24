@@ -210,7 +210,7 @@ export default class EnhancedTable extends React.Component {
     const filterValue = event.target.value
     const filteredData = this.props.data.filter( row => {
       for (const val of Object.values(row)){
-        if((val+'').includes('T') && val.includes('Z')) {
+        if((val+'').includes('T') && val.includes('Z') && !isNaN(Date.parse(val))) {
           if (format(Date.parse(val), 'D MMM YYYY @ HH:mm:ss').toLowerCase().includes(filterValue.toLowerCase()))
             return true
         }
