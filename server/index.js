@@ -11,6 +11,13 @@ import configRoutes from './routes/configRoutes'
 
 
 const app = express()
+const Sentry = require('@sentry/node');
+Sentry.init({ dsn: process.env.SENTRY_DSN });
+
+
+// Sentry: The request handler must be the first middleware on the app
+app.use(Sentry.Handlers.requestHandler());
+
 
 // MongoDB
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true })
@@ -59,6 +66,9 @@ app.use((req, res, next) => {
   next(err)
 })
 
+// Sentry: The error handler must be before any other error middleware
+app.use(Sentry.Handlers.errorHandler());
+
 // Error handler function
 app.use((err, req, res, next) => {
   const status = err.status || 500
@@ -72,3 +82,4 @@ app.listen(port, () => console.log(`Server is listening on port ${port}`))
 
 // Export the app for use in tests
 export default app
+export {Sentry}

@@ -4,6 +4,7 @@ import JWT from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import { getAllClients, getClients } from '../_helpers/ministraHelper'
 import { checkPermissionRights, validParent } from '../_helpers/checkPermission'
+import { Sentry } from '../index'
 
 const tokenExpiryHours = process.env.TOKEN_EXPIRY_HOURS
 
@@ -32,6 +33,8 @@ export async function validateUsername(req, res, next) {
 }
 
 export async function getAllUsers(req, res, next) {
+  Sentry.captureMessage('Going to call getAllUsers');
+
   let admins = []
   let superResellers = []
   let resellers = []
