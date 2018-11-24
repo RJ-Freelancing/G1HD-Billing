@@ -36,6 +36,9 @@ export async function validateMAC(req, res, next) {
 }
 
 export async function checkMac(req, res, next) {
+  const existingClient = await clientRepo.findOne({ clientMac: req.params.id })
+  if (!existingClient)
+    await checkAndDeleteUnwantedClient(req.params.id)
   await axios.get(ministraAPI + 'accounts/' + req.params.id, config)
     .then(response => {
       if (response.data.status !== 'OK') return res.status(200).json({ mac: req.params.id, status: "Available." })
@@ -47,10 +50,25 @@ export async function checkMac(req, res, next) {
     })
 }
 
+async function checkAndDeleteUnwantedClient(stb_mac){
+  await axios.delete(ministraAPI + 'accounts/' + stb_mac, config)
+    .then(response => {
+      if(response.data.status == 'OK')
+        console.log("Fake Client From Ministra Deleted.")
+    })
+    .catch(error => {
+      console.log("Ministra API Error : " + error)
+    })
+}
+
 export async function addClient(req, res, next) {
-  if (req.user.userType !== 'reseller') return res.status(403).json({ error: `You have no rights to add this client.` })
+  if (req.user.userType !== 'reseller') return res.status(403).json({ error: `Only reseller can add a client.` })
   const { stb_mac } = req.value.body
   const ministraPayLoad = querystring.stringify(req.value.body)
+  const existingClient = await clientRepo.findOne({ clientMac: stb_mac })
+  if (existingClient)
+    return res.status(422).json({ error: `Client already exists with macAddress: ${stb_mac}` })
+  await checkAndDeleteUnwantedClient(stb_mac)
   await axios.post(ministraAPI + 'accounts/',
     ministraPayLoad, config)
     .then(response => {
@@ -75,7 +93,7 @@ export async function addClient(req, res, next) {
     const parentUsername = req.user.username
     const client = await clientRepo.create([{ clientMac, parentUsername }], { lean: true })
     await userRepo.findOneAndUpdate({ username: parentUsername }, { $push: { childUsernames: clientMac } })
-    await res.status(201).json(mergeArrayObjectsByKey(newMinistraClient, client, 'stb_mac', 'clientMac')[0])
+    await res.status(201).json(mergeArrayObjectsByKey(client, newMinistraClient, 'clientMac', 'stb_mac')[0])
   }
 }
 
@@ -83,6 +101,9 @@ export async function updateClient(req, res, next) {
   var returnMac = req.params.id
   if (req.value.body.stb_mac !== undefined) {
     returnMac = req.value.body.stb_mac
+    const existingClient = await clientRepo.findOne({ clientMac: returnMac })
+    if (!existingClient)
+      await checkAndDeleteUnwantedClient(returnMac)
     if (returnMac == req.params.id) return res.status(400).json("No change in Mac Address.")
     await axios.get(ministraAPI + 'accounts/' + returnMac, config)
       .then(response => {

@@ -129,27 +129,21 @@ async function getChildren(list, isMinistra) {
     console.log('macAdresses: ', macAdresses);
     const ministraClients = await getClients(macAdresses)
     const mongoClients = await clientRepo.find({ clientMac: { $in: macAdresses } })
-    return mergeArrayObjectsByKey(ministraClients, mongoClients, 'stb_mac', 'clientMac')
+    return mergeArrayObjectsByKey(mongoClients, ministraClients, 'clientMac', 'stb_mac')
   }
   else if (isMinistra == 2) {
     const ministraClients = (await getAllClients()).sort((a, b) => new Date(a.tariff_expired_date) - new Date(b.tariff_expired_date))
     const mongoClients = await clientRepo.find({})
-    return mergeArrayObjectsByKey(ministraClients, mongoClients, 'stb_mac', 'clientMac')
+    return mergeArrayObjectsByKey(mongoClients, ministraClients, 'clientMac', 'stb_mac')
   }
   else {
     const macAdresses = await (list.length == 0 ? "1" : list)
     const ministraClients = await getClients(macAdresses)
     const mongoClients = await clientRepo.find({ clientMac: { $in: macAdresses } })
-    return mergeArrayObjectsByKey(ministraClients, mongoClients, 'stb_mac', 'clientMac')
+    return mergeArrayObjectsByKey(mongoClients, ministraClients, 'clientMac', 'stb_mac')
   }
 }
 
 export function mergeArrayObjectsByKey(obj1Array, obj2Array, key1, key2) {
-  return obj1Array.map(obj1 => {
-    const mongoClient = obj2Array.find(obj2 => obj2._doc[key2] == obj1[key1])
-    if (mongoClient)
-      return { ...obj1, ...mongoClient._doc }
-    else
-      return obj1
-  })
+  return obj1Array.map(obj1=>({...obj1._doc, ...(obj2Array.find(obj2=>obj2[key2]==obj1[key1]))}))
 }
