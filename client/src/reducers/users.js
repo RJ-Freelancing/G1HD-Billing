@@ -18,6 +18,8 @@ const findInternalUserFromUsername = (state, username) => {
     user = state.superResellers.find(superReseller=>superReseller.username===username)
   if (!user)
     user = state.resellers.find(reseller=>reseller.username===username)
+  if (!user)	
+    user = state.clients.find(client=>client.stb_mac===username)
   return user
 }
 
