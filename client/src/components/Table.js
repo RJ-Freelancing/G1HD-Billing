@@ -23,6 +23,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Icon from '@material-ui/core/Icon';
 import Checkbox from '@material-ui/core/Checkbox';
 import SendIcon from '@material-ui/icons/Send'
+import downloadCsv from 'download-csv';
+import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
 
 
 
@@ -45,7 +47,7 @@ class EnhancedTableHead extends React.Component {
   }
 
   render() {
-    const { order, orderBy, viewOnly, rows, selected, dataLength, selectAll, isEvent } = this.props
+    const { order, orderBy, viewOnly, data, rows, selected, dataLength, selectAll, isEvent } = this.props
     
     return (
       <TableHead>
@@ -68,8 +70,15 @@ class EnhancedTableHead extends React.Component {
                 backgroundColor: "#fff", 
                 zIndex: 10, 
                 paddingRight: 0, 
-                paddingLeft: 5
-            }}/>}
+                paddingLeft: 20
+            }}>
+              <Tooltip title="Download as CSV">
+                <Button aria-label="Download as CSV" variant= 'fab' color="primary" mini={true} onClick={()=>downloadCsv(data, rows)}>
+                  <CloudDownloadIcon/>
+                </Button>
+              </Tooltip>
+            </TableCell>
+            }
 
             {rows.map(row => {
               return (
@@ -263,6 +272,7 @@ export default class EnhancedTable extends React.Component {
               orderBy={orderBy}
               onRequestSort={this.handleRequestSort}
               rows={rows}
+              data={data}
               viewOnly={viewOnly}
               mobileView={mobileView}
               isEvent={sendEvent}
