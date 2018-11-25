@@ -22,40 +22,39 @@ const validMAC = /^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/
 
 const Wrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1fr;
+  grid-gap: 20px;
+`
+
+const Top = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-gap: 20px;
   @media only screen and (max-width: 768px) {
     grid-template-columns: 1fr;
   }
 `
-
-const Left = styled.div`
+const Bottom = styled.div`
   display: grid;
+  grid-template-columns: 1fr;
   grid-gap: 20px;
-  height: fit-content;
-`
-
-const Right = styled.div`
-  display: grid;
-  grid-gap: 20px;
-  height: fit-content;
 `
 
 const CreditsSummary = styled(Paper)`
-  background-image: linear-gradient(60deg,#295d2b,#43a047);
+  background-image: linear-gradient(60deg, #ffa726, #fb8c00);
 `
 
 const Announcments = styled(Paper)`
-  background-image: linear-gradient(60deg,#264ddaf7,#00acc1);
+  background-image: linear-gradient(60deg, #66bb6a, #43a047);
 `
 
 const CheckMAC = styled(Paper)`
-  background-image: linear-gradient(60deg,#ab47bc,#8e24aa);
+  background-image: linear-gradient(60deg, #26c6da, #00acc1);
 `
 
 const ChildrenSummary = styled(Paper)`
+  background-image: linear-gradient(60deg, #ab47bc, #8e24aa);
   padding-bottom: 10px;
-  background-image: linear-gradient(60deg,#ffa726,#fb8c00);
 `
 
 const ClientsAboutToExpire = styled.div`
@@ -179,7 +178,7 @@ class Dashboard extends Component {
 
     return (
       <Wrapper>
-        <Left>
+        <Top>
           <CreditsSummary elevation={10}>
             <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="h4"> Credits Summary </Typography>
             <div style={{display: 'grid', gridTemplateColumns: authUserType==='reseller' ? '2fr 1fr' : '1fr', alignItems: 'center', justifyItems: 'center'}}>
@@ -233,7 +232,7 @@ class Dashboard extends Component {
           </CheckMAC>
 
           <ChildrenSummary elevation={10}>
-            <Typography  style={{textAlign: 'left', padding: 15, color: 'black'}} variant="h4"> Users Stats </Typography>
+            <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="h4"> Users Stats </Typography>
             {authUserType==='superAdmin' &&
             <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr', alignItems: 'center'}}>
               <Typography  style={{textAlign: 'left', paddingLeft: 50, color: 'black'}} variant="h6"><Icon>local_library</Icon> Admins</Typography>
@@ -259,10 +258,9 @@ class Dashboard extends Component {
             </div>
             }
           </ChildrenSummary>
-        </Left>
-
-        <Right>
-
+        </Top>
+        
+        <Bottom>
           <ClientsAboutToExpire elevation={10}>
             <Table
               title={'Clients About To Expire'}
@@ -297,6 +295,7 @@ class Dashboard extends Component {
               />
             </UsersAccountBalance>
           }
+
           <TransactionsSummary elevation={10}>
             <Table
               title='Recent Transactions'
@@ -311,8 +310,7 @@ class Dashboard extends Component {
               noPagination
             />
           </TransactionsSummary>
-
-        </Right>
+        </Bottom>
 
       </Wrapper>
     )
