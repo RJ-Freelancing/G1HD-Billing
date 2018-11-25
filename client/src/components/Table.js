@@ -47,13 +47,13 @@ class EnhancedTableHead extends React.Component {
   }
 
   render() {
-    const { order, orderBy, viewOnly, data, rows, selected, dataLength, selectAll, isEvent } = this.props
+    const { order, orderBy, viewOnly, data, rows, selected, dataLength, selectAll, isEvent, backgroundColor } = this.props
     
     return (
       <TableHead>
           <TableRow>
             {isEvent &&
-              <TableCell style={{textAlign: 'center', padding: 0, position: 'sticky', top: 0, backgroundColor: "#fff", zIndex: 10}}>
+              <TableCell style={{textAlign: 'center', padding: 0, position: 'sticky', top: 0, backgroundColor, zIndex: 10}}>
                 <Tooltip title="Select All">
                   <Checkbox
                     style={{padding: 9}}
@@ -67,7 +67,7 @@ class EnhancedTableHead extends React.Component {
               <TableCell style={{
                 position: 'sticky', 
                 top: 0, 
-                backgroundColor: "#fff", 
+                backgroundColor, 
                 zIndex: 10, 
                 paddingRight: 0, 
                 paddingLeft: 20
@@ -86,7 +86,7 @@ class EnhancedTableHead extends React.Component {
                   key={row.field}
                   padding='default'
                   sortDirection={orderBy === row.field ? order : false}
-                  style={{position: 'sticky', top: 0, backgroundColor: "#fff", textAlign: row.type==='integer' ? 'center' : 'inherit'}}
+                  style={{position: 'sticky', top: 0, backgroundColor, textAlign: row.type==='integer' ? 'center' : 'inherit'}}
                 >
                   <Tooltip
                     title="Sort"
@@ -247,13 +247,14 @@ export default class EnhancedTable extends React.Component {
       gotoLink,
       sendEvent,
       limit,
-      noPagination
+      noPagination,
+      backgroundColor
     } = this.props
 
     const { data, order, orderBy, rowsPerPage, page, selected } = this.state
 
     return (
-      <Paper style={{overflowX: "auto", width: mobileView ? '93vw' : '100%'}} elevation={5}>
+      <Paper style={{overflowX: "auto", width: mobileView ? '93vw' : '100%', background: backgroundColor}} elevation={5}>
         <EnhancedTableToolbar 
           title={title} 
           mobileView={mobileView} 
@@ -278,6 +279,7 @@ export default class EnhancedTable extends React.Component {
               selected={selected}
               dataLength={data.length}
               selectAll={this.handleSelectAll}
+              backgroundColor={backgroundColor}
             />
             <TableBody>
               {data.slice(0, limit)

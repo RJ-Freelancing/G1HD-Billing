@@ -276,6 +276,7 @@ class Dashboard extends Component {
               tableHeight='100%'
               limit={5}
               noPagination
+              backgroundColor='coral'
           />
           </ClientsAboutToExpire>
           
@@ -292,6 +293,7 @@ class Dashboard extends Component {
                 tableHeight='100%'
                 limit={5}
                 noPagination
+                backgroundColor='lightpink'
               />
             </UsersAccountBalance>
           }
@@ -308,6 +310,7 @@ class Dashboard extends Component {
               tableHeight='100%'
               limit={5}
               noPagination
+              backgroundColor='darkseagreen'
             />
           </TransactionsSummary>
         </Bottom>
