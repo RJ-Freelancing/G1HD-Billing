@@ -168,6 +168,10 @@ export default class EnhancedTable extends React.Component {
     selected: []
   }
 
+  componentDidMount = () => {
+    this.handleRequestSort(null, this.props.orderBy)
+  }
+
   handleRequestSort = (event, property) => {   
     const orderBy = property
     const order = (this.state.orderBy === property && this.state.order === 'desc') ? 'asc' : 'desc'
