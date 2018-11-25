@@ -179,9 +179,9 @@ class Profile extends Component {
               </>
             }
             <Typography variant="subtitle2">Date Joined</Typography>
-            <Typography variant="body2">{format(Date.parse(this.state.auth.createdAt), 'd MMM YYYY @ HH:mm:ss')}</Typography>
+            <Typography variant="body2">{format(Date.parse(this.state.auth.createdAt), 'D MMM YYYY @ HH:mm:ss')}</Typography>
             <Typography variant="subtitle2">Last Updated</Typography>
-            <Typography variant="body2">{format(Date.parse(this.state.auth.updatedAt), 'd MMM YYYY @ HH:mm:ss')}</Typography>
+            <Typography variant="body2">{format(Date.parse(this.state.auth.updatedAt), 'D MMM YYYY @ HH:mm:ss')}</Typography>
           </ProfileDetails>
         </ProfileDetailsWrapper>
 

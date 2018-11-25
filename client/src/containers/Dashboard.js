@@ -223,7 +223,7 @@ class Dashboard extends Component {
                     </Typography>
                     <Typography  style={{textAlign: 'left', color: 'white'}} variant="h5"> {checkMACResults.status} </Typography>
                     {checkMACResults.expiryDate && 
-                      <Typography  style={{textAlign: 'left', padding: 10, color: 'white'}} variant="h5"> Expires on {format(Date.parse(checkMACResults.expiryDate), 'd MMMM YYYY')} </Typography>
+                      <Typography  style={{textAlign: 'left', padding: 10, color: 'white'}} variant="h5"> Expires on {format(Date.parse(checkMACResults.expiryDate), 'D MMMM YYYY')} </Typography>
                     }
                   </div>
                 </>

@@ -271,7 +271,7 @@ class ClientEdit extends Component {
           this.props.updateClient(this.state.editingClient.stb_mac, {stb_mac: this.state.newMAC})
           .then(()=>this.props.history.push(`/clients/${this.state.newMAC}`))
         } else {
-          this.setState({checkMACStatus: `Given MAC Address is already in use and will expire on ${format(Date.parse(response.payload.data.expiryDate), 'd MMMM YYYY')}`})
+          this.setState({checkMACStatus: `Given MAC Address is already in use and will expire on ${format(Date.parse(response.payload.data.expiryDate), 'D MMMM YYYY')}`})
         }
       })
     })
@@ -530,7 +530,7 @@ class ClientEdit extends Component {
             <Typography variant="subtitle2">STB Serial</Typography>
             <Typography variant="body2">{this.state.client.serial_number}</Typography>
             <Typography variant="subtitle2">Last Active</Typography>
-            <Typography variant="body2">{format(Date.parse(this.state.client.last_active), 'd MMMM YYYY @ HH:mm:ss')}</Typography>
+            <Typography variant="body2">{format(Date.parse(this.state.client.last_active), 'D MMMM YYYY @ HH:mm:ss')}</Typography>
           </STBDetails>
         </STBDetailsWrapper>
 
