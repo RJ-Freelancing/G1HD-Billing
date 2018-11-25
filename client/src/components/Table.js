@@ -139,7 +139,6 @@ const EnhancedTableToolbar = props => {
         style={{margin: '0px 20px'}}
         id="input-with-icon-textfield"
         placeholder="Type to filter..."
-        autoFocus
         InputProps={{ startAdornment: ( <InputAdornment position="start"> <SearchIcon /> </InputAdornment> ) }}
         fullWidth
         onChange={fuzzySearchFilter}
