@@ -18,6 +18,8 @@ const findInternalUserFromUsername = (state, username) => {
     user = state.superResellers.find(superReseller=>superReseller.username===username)
   if (!user)
     user = state.resellers.find(reseller=>reseller.username===username)
+  if (!user)	
+    user = state.clients.find(client=>client.stb_mac===username)
   return user
 }
 
@@ -47,11 +49,11 @@ const users = (state = initialState, action) => {
     case 'UPDATE_USER_SUCCESS':
       // Find the updated user and merge with payload
       let username = action.meta.previousAction.payload.request.url.split('/').pop()     
-      let user = this.findInternalUserFromUsername(state, username)
+      let user = findInternalUserFromUsername(state, username)
       if (user) {
         return {
           ...state, 
-          [user.userType]: state[user.userType].map(user => {
+          [`${user.userType}s`]: state[`${user.userType}s`].map(user => {
             if (user.username===username)
               return {...user, ...action.payload.data}
             else
@@ -75,10 +77,10 @@ const users = (state = initialState, action) => {
     case 'DELETE_USER_SUCCESS':
       // Find the deleted user and remove from appropiate list
       username = action.meta.previousAction.payload.request.url.split('/').pop()     
-      user = this.findInternalUserFromUsername(state, username)
+      user = findInternalUserFromUsername(state, username)
       return {
         ...state, 
-        [user.userType]: state[user.userType].filter(user.username===username)
+        [`${user.userType}s`]: state[`${user.userType}s`].filter(user.username===username)
       }
     case 'DELETE_CLIENT_SUCCESS':
       // Find the deleted client and remove from clients list
@@ -102,7 +104,7 @@ const users = (state = initialState, action) => {
           })
         }
       } else { // Client
-        transactionToUser = state.clients.find(client=>client.stb_mac===username)
+        transactionToUser = state.clients.find(client=>client.stb_mac===transactionTo)
         const currentAccountBalance = action.meta.previousAction.transactionToClientAccountBalance
         let tariff_expired_date = transactionToUser.tariff_expired_date
         if (!tariff_expired_date) tariff_expired_date=Date.now()

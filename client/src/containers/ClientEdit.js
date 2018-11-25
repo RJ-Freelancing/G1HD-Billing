@@ -174,7 +174,13 @@ class ClientEdit extends Component {
     if (client) {
       this.props.getUserTransactions(stb_mac)
       .then(resnponseTransactions => { 
-        this.setState({client, editingClient: {...client}, transactions: resnponseTransactions.payload.data})
+        this.props.getSubscriptions(stb_mac)
+        .then((subscriptionsResponse)=>{         
+          this.setState({client, 
+            editingClient: {...client}, 
+            transactions: resnponseTransactions.payload.data, 
+            subscriptions: subscriptionsResponse.payload.data[0].subscribed})
+        })
       })
     } else {
       this.setState({client: false})
@@ -230,6 +236,8 @@ class ClientEdit extends Component {
       transactionTo: this.state.editingClient.stb_mac
     }, this.state.client.accountBalance)
     .then((transactionResponse)=>{
+      console.log(transactionResponse);
+      
       this.setState({transactions: [transactionResponse.payload.data.transaction], ...this.state.transactions})
     })
   }
@@ -484,8 +492,7 @@ class ClientEdit extends Component {
             </TariffPackagesHeader>
             <TariffPackages>
               {
-                this.props.tariffPlans.find(plan=>parseInt(plan.id)===this.state.client.tariff_plan) &&
-                this.props.tariffPlans.find(plan=>parseInt(plan.id)===this.state.client.tariff_plan).packages.map(tariffPackage=>(
+                this.props.tariffPlans.find(plan => parseInt(plan.id)===parseInt(this.state.client.tariff_plan)).packages.map(tariffPackage=>(
                   <TariffPackageRow key={tariffPackage.name}>
                     <div>{tariffPackage.name}</div>
                     <div style={{justifySelf: 'center'}}>{tariffPackage.optional==="1" ? "Yes": "No"}</div>
