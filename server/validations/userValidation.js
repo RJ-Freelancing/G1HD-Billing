@@ -8,7 +8,7 @@ export const schemas = {
   }),
 
   addSchema: Joi.object({
-    username: Joi.string().required(),
+    username: Joi.string().regex(/^\s*\S+\s*$/).error(new Error('Cannot contain whitespace.')).required(),
     email: Joi.string().required().email().error(new Error('Email Address should be a valid Email Address.')),
     password: Joi.string().required(),
     firstName: Joi.string().required(),

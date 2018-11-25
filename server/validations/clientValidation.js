@@ -8,7 +8,7 @@ export const schemas = {
   }),
 
   addSchema: Joi.object({
-    login: Joi.string().required(),
+    login: Joi.string().regex(/^\s*\S+\s*$/).error(new Error('Cannot contain whitespace.')).required(),
     stb_mac: Joi.string().regex(/^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/).required().error(new Error('ID should be a valid mac Address.')),
     full_name: Joi.string().required(),
     phone: Joi.string().regex(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/),
