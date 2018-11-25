@@ -42,20 +42,20 @@ const Right = styled.div`
 `
 
 const CreditsSummary = styled(Paper)`
-  background-image: linear-gradient(#41295a, #2F0743);
+  background-image: linear-gradient(60deg,#295d2b,#43a047);
 `
 
 const Announcments = styled(Paper)`
-  background-image: linear-gradient(#485563, #29323c);
+  background-image: linear-gradient(60deg,#264ddaf7,#00acc1);
 `
 
 const CheckMAC = styled(Paper)`
-  background-image: linear-gradient(#556270, #FF6B6B);
+  background-image: linear-gradient(60deg,#ab47bc,#8e24aa);
 `
 
 const ChildrenSummary = styled(Paper)`
   padding-bottom: 10px;
-  background-image: linear-gradient(#F2994A, #F2C94C);
+  background-image: linear-gradient(60deg,#ffa726,#fb8c00);
 `
 
 const ClientsAboutToExpire = styled.div`
@@ -181,22 +181,22 @@ class Dashboard extends Component {
       <Wrapper>
         <Left>
           <CreditsSummary elevation={10}>
-            <Typography  style={{textAlign: 'left', padding: 10, color: 'white'}} variant="h4"> Credits Summary </Typography>
+            <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="h4"> Credits Summary </Typography>
             <div style={{display: 'grid', gridTemplateColumns: authUserType==='reseller' ? '2fr 1fr' : '1fr', alignItems: 'center', justifyItems: 'center'}}>
-              <Typography  style={{textAlign: 'left', padding: 10, color: 'white'}} variant="h6"> Credits Available </Typography>
-              <Typography  style={{textAlign: 'left', padding: 10, color: 'white'}} variant="h2"> {authCreditsAvailable} </Typography>
+              <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="h6"> Credits Available </Typography>
+              <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="h2"> {authCreditsAvailable} </Typography>
             </div>
             {authUserType==='reseller' && 
               <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr', alignItems: 'center', justifyItems: 'center'}}>
-                <Typography  style={{textAlign: 'left', padding: 10, color: 'white'}} variant="h6"> Credits Owed </Typography>
-                <Typography  style={{textAlign: 'left', padding: 10, color: 'white'}} variant="h2"> {authcreditsOwed} </Typography>
+                <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="h6"> Credits Owed </Typography>
+                <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="h2"> {authcreditsOwed} </Typography>
               </div>
             }
           </CreditsSummary>
 
           <Announcments elevation={10}>
-            <Typography  style={{textAlign: 'left', padding: 10, color: 'white'}} variant="h4"> Announcments </Typography>
-            <div style={{color: 'white', padding: 10}}>
+            <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="h4"> Announcments </Typography>
+            <div style={{color: 'black', padding: 10}}>
               {ReactHtmlParser(UserAnnouncements)}
             </div>
           </Announcments>

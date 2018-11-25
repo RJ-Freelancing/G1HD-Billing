@@ -57,6 +57,8 @@ class Wrapper extends Component {
   render() {
 
     const {token, username, mobileView, location} = this.props
+    console.log(this.props);
+    
   
     const RootDiv = styled.div`
       flex-grow: 1;
@@ -64,6 +66,7 @@ class Wrapper extends Component {
       overflow: hidden;
       position: relative;
       display: flex;
+      // background: ${this.props.location.pathname==='/' ? '#33363e' : ''};
     `
     const ContentDiv = styled.div`
       flex-grow: 1;
