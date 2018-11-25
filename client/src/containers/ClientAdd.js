@@ -128,12 +128,12 @@ class ClientAdd extends Component {
                 type="username"
                 required
                 value={this.state.newClient.login}
-                onChange={(e)=>this.handleTextChange('login', e.target.value)}
+                onChange={(e)=>this.handleTextChange('login', e.target.value.toLowerCase().trim())}
                 fullWidth
                 disabled={this.props.loading}
                 autoFocus
-                error={Boolean(this.state.newClient.login) && this.state.newClient.login===""}
-                helperText={this.state.newClient.login && this.state.newClient.login==="" ? "Required" : null}
+                error={this.state.newClient.login===""}
+                helperText={this.state.newClient.login==="" ? "Required" : null}
               />
               <TextField
                 label="Full Name"

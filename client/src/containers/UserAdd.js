@@ -136,12 +136,12 @@ class UserAdd extends Component {
                 type="username"
                 required
                 value={this.state.newUser.username}
-                onChange={(e)=>this.handleTextChange('username', e.target.value.toLowerCase())}
+                onChange={(e)=>this.handleTextChange('username', e.target.value.toLowerCase().trim())}
                 fullWidth
                 disabled={this.props.loading}
                 autoFocus
-                error={Boolean(this.state.newUser.username) && this.state.newUser.username===""}
-                helperText={this.state.newUser.username && this.state.newUser.username==="" ? "Required" : null}
+                error={this.state.newUser.username===""}
+                helperText={this.state.newUser.username==="" ? "Required" : null}
               />
               <TextField
                 label="Email"

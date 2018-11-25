@@ -56,9 +56,7 @@ class Wrapper extends Component {
 
   render() {
 
-    const {token, username, mobileView, location} = this.props
-    console.log(this.props);
-    
+    const {token, username, mobileView, location} = this.props  
   
     const RootDiv = styled.div`
       flex-grow: 1;
