@@ -10,8 +10,19 @@ import ministraRoutes from './routes/ministraRoutes'
 import configRoutes from './routes/configRoutes'
 
 
+// Use bluebird promise to persist stack trace while using async/await
+global.Promise=require('bluebird');
+
 const app = express()
 
+// Sentry: The request handler must be the first middleware on the app
+const Sentry = require('@sentry/node');
+Sentry.init({ 
+  dsn: process.env.SENTRY_DSN,  
+  attachStacktrace: true,
+  captureUnhandledRejections: true
+});
+app.use(Sentry.Handlers.requestHandler());
 
 // MongoDB
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true })
@@ -59,6 +70,9 @@ app.use((req, res, next) => {
   err.status = 404
   next(err)
 })
+
+// The error handler must be before any other error middleware
+app.use(Sentry.Handlers.errorHandler());
 
 // Error handler function
 app.use((err, req, res, next) => {

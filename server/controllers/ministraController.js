@@ -85,10 +85,6 @@ async function ministraGetCalls(attribute, res) {
       if (response.data.status !== 'OK') return res.status(404).json(response.data.error)
       return res.status(201).json(response.data.results)
     })
-    .catch(error => {
-      console.log("Ministra API Error : " + error)
-      return res.status(404).json(error)
-    })
 }
 
 async function ministraPostCalls(attribute, ministraPayLoad, id, res) {

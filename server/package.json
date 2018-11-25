@@ -34,6 +34,7 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-plugin-istanbul": "^5.1.0",
+    "babel-plugin-transform-async-to-bluebird": "^1.1.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
@@ -49,7 +50,8 @@
     ],
     "plugins": [
       "transform-object-rest-spread",
-      "transform-runtime"
+      "transform-runtime",
+      "transform-async-to-bluebird"
     ],
     "env": {
       "test": {
