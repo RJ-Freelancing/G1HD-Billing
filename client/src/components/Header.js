@@ -13,7 +13,7 @@ const Header = (props) => {
   const { username, toggleMobileSideBar } = props
   
   return (
-    <AppBar position="fixed" style={{background: 'linear-gradient(to right top, #051937, #00205b, #00267f, #0027a3, #1121c4)' }}>
+    <AppBar position="fixed" style={{background: '#2D3446'}}>
       <Toolbar>
         <IconButton style={{margin: '0px 20px 0px -12px'}} color="inherit" aria-label="Open drawer" onClick={()=>toggleMobileSideBar(true)}>
           <MenuIcon />

@@ -7,6 +7,18 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import Loading from 'components/Loading';
 import { BrowserRouter } from 'react-router-dom'
 import App from 'App'
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+
+
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#9c27b0',
+    },
+  },
+});
+
 
 
 window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true
@@ -16,7 +28,9 @@ ReactDOM.render(
     <PersistGate loading={<Loading />} persistor={persistor}>
         <CssBaseline />
         <BrowserRouter>
-          <App />
+          <MuiThemeProvider theme={theme}>
+            <App />
+          </MuiThemeProvider>
         </BrowserRouter>
     </PersistGate>
   </Provider>,

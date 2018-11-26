@@ -106,7 +106,7 @@ const Sidebar = (props) => {
       <ListItemIcon style={{color: activePage===link ? 'white' : '#6d768a'}}>
         <Icon>{icon}</Icon>
       </ListItemIcon>
-      <ListItemText primary={label} primaryTypographyProps={{className: classes.menuItem}} />
+      <ListItemText primary={label} disableTypography style={{color: activePage===link ? 'white' : '#6d768a'}} />
     </ListItem>
   )
 
