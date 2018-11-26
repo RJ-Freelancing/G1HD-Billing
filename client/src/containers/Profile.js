@@ -98,7 +98,7 @@ class Profile extends Component {
     return (
       <Wrapper>
         <ProfileEditWrapper elevation={24}>
-          <Typography variant="h4" noWrap>
+          <Typography variant="overline" style={{fontSize: '20px'}} noWrap>
               Edit Profile
           </Typography>
           <br/>
@@ -165,23 +165,23 @@ class Profile extends Component {
         </ProfileEditWrapper>
         
         <ProfileDetailsWrapper elevation={24}>
-          <Typography variant="h4"> Account Details </Typography>
+          <Typography variant="overline" style={{fontSize: '20px'}}> Account Details </Typography>
           <br/><br/>
           <ProfileDetails>
-            <Typography variant="subtitle2">Account Type</Typography>
-            <Typography variant="body2">{this.state.auth.userType}</Typography>
-            <Typography variant="subtitle2">Credits Available</Typography>
-            <Typography variant="body2">{this.state.auth.creditsAvailable}</Typography>
+            <Typography variant="overline" style={{fontSize: '12px'}}>Account Type</Typography>
+            <Typography variant="overline" style={{fontSize: '12px'}}>{this.state.auth.userType}</Typography>
+            <Typography variant="overline" style={{fontSize: '12px'}}>Credits Available</Typography>
+            <Typography variant="overline" style={{fontSize: '12px'}}>{this.state.auth.creditsAvailable}</Typography>
             {this.props.auth.userType==='reseller' && 
               <>
-                <Typography variant="subtitle2">Credits on Hold</Typography>
-                <Typography variant="body2">{this.state.auth.creditsOwed}</Typography>
+                <Typography variant="overline" style={{fontSize: '12px'}}>Credits on Hold</Typography>
+                <Typography variant="overline" style={{fontSize: '12px'}}>{this.state.auth.creditsOwed}</Typography>
               </>
             }
-            <Typography variant="subtitle2">Date Joined</Typography>
-            <Typography variant="body2">{format(Date.parse(this.state.auth.createdAt), 'D MMM YYYY @ HH:mm:ss')}</Typography>
-            <Typography variant="subtitle2">Last Updated</Typography>
-            <Typography variant="body2">{format(Date.parse(this.state.auth.updatedAt), 'D MMM YYYY @ HH:mm:ss')}</Typography>
+            <Typography variant="overline" style={{fontSize: '12px'}}>Date Joined</Typography>
+            <Typography variant="overline" style={{fontSize: '12px'}}>{format(Date.parse(this.state.auth.createdAt), 'D MMM YYYY @ HH:mm:ss')}</Typography>
+            <Typography variant="overline" style={{fontSize: '12px'}}>Last Updated</Typography>
+            <Typography variant="overline" style={{fontSize: '12px'}}>{format(Date.parse(this.state.auth.updatedAt), 'D MMM YYYY @ HH:mm:ss')}</Typography>
           </ProfileDetails>
         </ProfileDetailsWrapper>
 

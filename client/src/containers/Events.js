@@ -26,7 +26,7 @@ const rows = [
   { field: 'phone', label: 'Telephone', type: 'string'  },
   { field: 'accountBalance', label: 'Credits Available', type: 'integer'  },
   { field: 'tariff_expired_date', label: 'Tariff Expiry', type: 'date'  },
-  { field: 'comment', label: 'Reseller', type: 'string'  },
+  { field: 'parentUsername', label: 'Reseller', type: 'string'  },
   { field: 'now_playing_content', label: 'Box Status', type: 'boolean'  },
 ]
 
@@ -77,7 +77,7 @@ class Events extends Component {
       <div>
         <Paper style={{marginBottom: 10}}>
           <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr'}}>
-            <Typography variant="h6" style={{marginLeft: 20}}>Select MAC IDs to send Event</Typography>
+            <Typography variant="overline" style={{fontSize: '18px', marginLeft: 20}}>Select MAC IDs to send Event</Typography>
             {this.props.authUserType === 'superAdmin' && 
               <Button variant="contained" color="primary" disabled={this.props.loading} onClick={()=>this.setState({ids: [], open: true})}>
                 Click Here To Send All

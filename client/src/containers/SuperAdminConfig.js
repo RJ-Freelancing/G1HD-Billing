@@ -56,7 +56,7 @@ class SuperAdminConfig extends Component {
     return (
       <Wrapper>
         <CreditsWrapper elevation={5}>
-          <Typography variant="h4">
+          <Typography variant="overline" style={{fontSize: '18px'}}>
             Minimum Transferrable Credits
           </Typography>
           <form 
@@ -95,7 +95,7 @@ class SuperAdminConfig extends Component {
         </CreditsWrapper>
 
         <AnnouncementsWrapper elevation={5}>
-          <Typography variant="h4">
+          <Typography variant="overline"  style={{fontSize: '18px'}}>
             Announcements
           </Typography>
           <RichTextEditor

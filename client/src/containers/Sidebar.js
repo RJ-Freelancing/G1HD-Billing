@@ -22,6 +22,9 @@ const styles = theme => ({
   menu: {
     minHeight: 60, 
     cursor: 'pointer',
+    '&:hover': {
+      backgroundColor: '#F1F3F6'
+    },
   },
   menuItem: {
     color: '#6d768a',
@@ -74,7 +77,7 @@ const Sidebar = (props) => {
 
   const authInfo = (
     <div style={{textAlign: 'center', marginBottom: 20}}>
-      <Typography variant="subtitle2" color="inherit" noWrap style={{color: 'white'}}>
+      <Typography variant="button" color="inherit" noWrap style={{color: 'white'}}>
         Welcome {props.auth.username} <br/>
       </Typography>
       <Typography variant="subtitle2" color="inherit" noWrap style={{color: 'white'}}>
@@ -106,7 +109,7 @@ const Sidebar = (props) => {
       <ListItemIcon style={{color: activePage===link ? 'white' : '#6d768a'}}>
         <Icon>{icon}</Icon>
       </ListItemIcon>
-      <ListItemText primary={label} disableTypography style={{color: activePage===link ? 'white' : '#6d768a'}} />
+      <ListItemText disableTypography primary={<Typography type="subheading" style={{ color: activePage===link ? 'white' : '#6d768a' }}>{label}</Typography>} />
     </ListItem>
   )
 
@@ -118,7 +121,7 @@ const Sidebar = (props) => {
       style={{marginTop: 10}}
     >
       <ListItemIcon style={{color: '#6d768a'}} classes={{root: classes.menuItem}}><Icon>logout</Icon></ListItemIcon>
-      <ListItemText primary="Logout" primaryTypographyProps={{className: classes.menuItem}} />
+      <ListItemText disableTypography primary={<Typography type="subheading" style={{ color: '#6d768a' }}>Logout</Typography>} />
     </ListItem>
   )
 

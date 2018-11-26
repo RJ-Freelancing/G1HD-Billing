@@ -179,28 +179,28 @@ class Dashboard extends Component {
       <Wrapper>
         <Top>
           <CreditsSummary elevation={10}>
-            <Typography  style={{textAlign: 'left', padding: 10, color: 'white', letterSpacing: 2, backgroundImage: 'linear-gradient(60deg, #66bb6a, #43a047)'}} variant="headline"> Credits Summary </Typography>
+            <Typography  style={{textAlign: 'left', padding: 10, fontSize: '18px', color: 'white', letterSpacing: 1, backgroundImage: 'linear-gradient(60deg, #66bb6a, #43a047)'}} variant="overline"> Credits Summary </Typography>
             <div style={{display: 'grid', gridTemplateColumns: authUserType==='reseller' ? '2fr 1fr' : '1fr', alignItems: 'center', justifyItems: 'center'}}>
-              <Typography  style={{textAlign: 'left', padding: 10, color: 'black', letterSpacing: 2}} variant="headline"> Credits Available </Typography>
-              <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="h4"> {authCreditsAvailable} </Typography>
+              <Typography  style={{textAlign: 'left', fontSize: '14px', padding: 10, color: 'black', letterSpacing: 1}} variant="overline"> Credits Available </Typography>
+              <Typography  style={{textAlign: 'left', fontSize: '14px', padding: 10, color: 'black'}} variant="overline"> {authCreditsAvailable} </Typography>
             </div>
             {authUserType==='reseller' && 
               <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr', alignItems: 'center', justifyItems: 'center'}}>
-                <Typography  style={{textAlign: 'left', padding: 10, color: 'black', letterSpacing: 2}} variant="headline"> Credits Owed </Typography>
-                <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="h4"> {authcreditsOwed} </Typography>
+                <Typography  style={{textAlign: 'left', fontSize: '14px', padding: 10, color: 'black', letterSpacing: 1}} variant="overline"> Credits Owed </Typography>
+                <Typography  style={{textAlign: 'left', fontSize: '14px', padding: 10, color: 'black'}} variant="overline"> {authcreditsOwed} </Typography>
               </div>
             }
           </CreditsSummary>
 
           <Announcements elevation={10}>
-            <Typography  style={{textAlign: 'left', padding: 10, color: 'white', letterSpacing: 2, backgroundImage: 'linear-gradient(60deg, #ffa726, #fb8c00)'}} variant="headline"> Announcements </Typography>
+            <Typography  style={{textAlign: 'left', padding: 10, color: 'white', fontSize: '18px', letterSpacing: 1, backgroundImage: 'linear-gradient(60deg, #ffa726, #fb8c00)'}} variant="overline"> Announcements </Typography>
             <div style={{color: 'black', padding: 10}}>
               {ReactHtmlParser(UserAnnouncements)}
             </div>
           </Announcements>
 
           <CheckMAC elevation={10}>
-            <Typography  style={{textAlign: 'left', padding: 10, color: 'white', letterSpacing: 2, backgroundImage: 'linear-gradient(60deg, rgb(93, 151, 185), rgb(53, 142, 169))'}} variant="headline"> Check MAC </Typography>
+            <Typography  style={{textAlign: 'left', padding: 10, color: 'white', fontSize: '18px', letterSpacing: 1, backgroundImage: 'linear-gradient(60deg, #26c6da, #00acc1)'}} variant="overline"> Check MAC </Typography>
             <div style={{display: 'grid', gridGap: 20, padding: 10}}>
               <InputMask mask="**:**:**:**:**:**" 
                 value={this.state.checkMAC}  
@@ -217,12 +217,12 @@ class Dashboard extends Component {
               {this.state.checkMACResults && 
                 <>
                   <div style={{display: 'grid', gridTemplateColumns: '1fr', alignItems: 'center', justifyItems: 'center'}}>
-                    <Typography  style={{textAlign: 'left', color: 'black'}} variant="body1"> 
+                    <Typography  style={{textAlign: 'left', color: 'black'}} variant="overline"> 
                       {checkMACResults.status==='Available.' ? <ThumbUpIcon fontSize="large"/> : <ThumbDownIcon fontSize="large"/>} 
                     </Typography>
-                    <Typography  style={{textAlign: 'left', color: 'black'}} variant="body1"> {checkMACResults.status} </Typography>
+                    <Typography  style={{textAlign: 'left', color: 'black'}} variant="overline"> {checkMACResults.status} </Typography>
                     {checkMACResults.expiryDate && 
-                      <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="body1"> Expires on {format(Date.parse(checkMACResults.expiryDate), 'D MMMM YYYY')} </Typography>
+                      <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="overline"> Expires on {format(Date.parse(checkMACResults.expiryDate), 'D MMMM YYYY')} </Typography>
                     }
                   </div>
                 </>
@@ -231,29 +231,29 @@ class Dashboard extends Component {
           </CheckMAC>
 
           <ChildrenSummary elevation={10}>
-            <Typography  style={{textAlign: 'left', padding: 10, color: 'white', letterSpacing: 2, backgroundImage: 'linear-gradient(60deg, #ef5350, #e53935)'}} variant="headline"> Users Stats </Typography>
+            <Typography  style={{textAlign: 'left', padding: 10, fontSize: '18px', color: 'white', letterSpacing: 1, backgroundImage: 'linear-gradient(60deg, #ef5350, #e53935)'}} variant="overline"> Users Stats </Typography>
             {authUserType==='superAdmin' &&
             <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr', alignItems: 'center'}}>
-              <Typography  style={{textAlign: 'left', paddingLeft: 50, color: 'black', letterSpacing: 2}} variant="body1"><Icon>local_library</Icon> Admins</Typography>
-              <Typography  style={{textAlign: 'right', paddingRight: 50, color: 'black', letterSpacing: 2}} variant="h5"> {admins.length} </Typography>
+              <Typography  style={{textAlign: 'left', fontSize: '14px', paddingLeft: 20, color: 'black', letterSpacing: 1}} variant="overline"><Icon style={{fontSize: '15px'}}>local_library</Icon> Admins</Typography>
+              <Typography  style={{textAlign: 'right', fontSize: '14px', paddingRight: 30, color: 'black', letterSpacing: 1}} variant="overline"> {admins.length} </Typography>
             </div>
             }
             {['superAdmin', 'admin'].includes(authUserType) &&
             <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr', alignItems: 'center'}}>
-              <Typography  style={{textAlign: 'left', paddingLeft: 50, color: 'black', letterSpacing: 2}} variant="body1"><Icon>group</Icon> Super Resellers </Typography>
-              <Typography  style={{textAlign: 'right', paddingRight: 50, color: 'black', letterSpacing: 2}} variant="h5"> {superResellers.length} </Typography>
+              <Typography  style={{textAlign: 'left', fontSize: '14px', paddingLeft: 20, color: 'black', letterSpacing: 1}} variant="overline"><Icon style={{fontSize: '15px'}}>group</Icon> Super Resellers </Typography>
+              <Typography  style={{textAlign: 'right', fontSize: '14px', paddingRight: 30, color: 'black', letterSpacing: 1}} variant="overline"> {superResellers.length} </Typography>
             </div>
             }
             {['superAdmin', 'admin', 'superReseller'].includes(authUserType) &&
             <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr', alignItems: 'center'}}>
-              <Typography  style={{textAlign: 'left', paddingLeft: 50, color: 'black', letterSpacing: 2}} variant="body1"><Icon>person</Icon> Resellers </Typography>
-              <Typography  style={{textAlign: 'right', paddingRight: 50, color: 'black', letterSpacing: 2}} variant="h5"> {resellers.length} </Typography>
+              <Typography  style={{textAlign: 'left', fontSize: '14px', paddingLeft: 20, color: 'black', letterSpacing: 1}} variant="overline"><Icon style={{fontSize: '15px'}}>person</Icon> Resellers </Typography>
+              <Typography  style={{textAlign: 'right', paddingRight: 30, color: 'black', letterSpacing: 1}} variant="overline"> {resellers.length} </Typography>
             </div>
             }
             {['superAdmin', 'admin', 'superReseller', 'reseller'].includes(authUserType) &&
             <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr', alignItems: 'center'}}>
-              <Typography  style={{textAlign: 'left', paddingLeft: 50, color: 'black', letterSpacing: 2}} variant="body1"><Icon>airplay</Icon> Clients </Typography>
-              <Typography  style={{textAlign: 'right', paddingRight: 50, color: 'black', letterSpacing: 2}} variant="h5"> {clients.length} </Typography>
+              <Typography  style={{textAlign: 'left', fontSize: '14px', paddingLeft: 20, color: 'black', letterSpacing: 1}} variant="overline"><Icon style={{fontSize: '15px'}}>airplay</Icon> Clients </Typography>
+              <Typography  style={{textAlign: 'right', fontSize: '14px', paddingRight: 30, color: 'black', letterSpacing: 1}} variant="overline"> {clients.length} </Typography>
             </div>
             }
           </ChildrenSummary>
@@ -275,7 +275,8 @@ class Dashboard extends Component {
               tableHeight='100%'
               limit={5}
               noPagination
-              backgroundColor='linear-gradient(60deg, rgb(202, 117, 216), rgb(142, 36, 170))'
+              backgroundColor='linear-gradient(60deg, #2D3446, #566384)'
+              headingColor='white'
           />
           </ClientsAboutToExpire>
           
@@ -292,7 +293,8 @@ class Dashboard extends Component {
                 tableHeight='100%'
                 limit={5}
                 noPagination
-                backgroundColor='linear-gradient(60deg, rgb(202, 117, 216), rgb(142, 36, 170))'
+                backgroundColor='linear-gradient(60deg, #2D3446, #566384)'
+                headingColor='white'
               />
             </UsersAccountBalance>
           }
@@ -309,7 +311,8 @@ class Dashboard extends Component {
               tableHeight='100%'
               limit={5}
               noPagination
-              backgroundColor='linear-gradient(60deg, rgb(202, 117, 216), rgb(142, 36, 170))'
+              backgroundColor='linear-gradient(60deg, #2D3446, #566384)'
+              headingColor='white'
             />
           </TransactionsSummary>
         </Bottom>

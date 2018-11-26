@@ -10,7 +10,6 @@ import TableRow from '@material-ui/core/TableRow'
 import TableSortLabel from '@material-ui/core/TableSortLabel'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
-import Paper from '@material-ui/core/Paper'
 import Tooltip from '@material-ui/core/Tooltip'
 import AddIcon from '@material-ui/icons/Add'
 import EditIcon from '@material-ui/icons/Edit'
@@ -111,13 +110,13 @@ class EnhancedTableHead extends React.Component {
 
 
 const EnhancedTableToolbar = props => {
-  const { title, mobileView, viewOnly, addNew, canAdd, fuzzySearchFilter, selected, sendEvent, backgroundColor } = props
+  const { title, mobileView, viewOnly, addNew, canAdd, fuzzySearchFilter, selected, sendEvent, backgroundColor, headingColor } = props
 
   return (
     <Toolbar style={{backgroundImage: backgroundColor}}>
       {title && 
         <div style={{flex: '0 0 auto'}}>
-          <Typography variant="h6" id="tableTitle" color='inherit'> {title} </Typography>
+          <Typography style={{color: headingColor,  fontSize: '18px'}} variant="overline" id="tableTitle" color='white'> {title} </Typography>
         </div>
       }
       {selected.length > 0 &&
@@ -138,7 +137,7 @@ const EnhancedTableToolbar = props => {
         style={{margin: '0px 20px', color: 'white'}}
         id="input-with-icon-textfield"
         placeholder="Type to filter..."
-        InputProps={{ startAdornment: ( <InputAdornment position="start"> <SearchIcon /> </InputAdornment> ) }}
+        InputProps={{ startAdornment: ( <InputAdornment position="start"> <SearchIcon style={{color: headingColor}}/> </InputAdornment> ) }}
         fullWidth
         onChange={fuzzySearchFilter}
       />
@@ -251,7 +250,8 @@ export default class EnhancedTable extends React.Component {
       sendEvent,
       limit,
       noPagination,
-      backgroundColor
+      backgroundColor,
+      headingColor
     } = this.props
 
     const { data, order, orderBy, rowsPerPage, page, selected } = this.state
@@ -268,6 +268,7 @@ export default class EnhancedTable extends React.Component {
           sendEvent={sendEvent}
           fuzzySearchFilter={this.fuzzySearchFilter}
           backgroundColor={backgroundColor}
+          headingColor={headingColor}
         />
         <div style={{height: tableHeight, overflowX: 'auto'}} >
           <Table aria-labelledby="tableTitle">
