@@ -17,14 +17,14 @@ const styles = theme => ({
   drawerPaper: {
     width: 240,
     border: 'none',
-    background: 'linear-gradient(to left, #1d239b, #0e2388, #032175, #021e61, #061b4e)',
+    background: '#2D3446',
   },
   menu: {
     minHeight: 60, 
     cursor: 'pointer',
   },
   menuItem: {
-    color: '#fff',
+    color: '#6d768a',
   }
 })
 
@@ -99,11 +99,11 @@ const Sidebar = (props) => {
       key={idx} 
       button 
       classes={{root: classes.menu}} 
-      style={{background: activePage===link ? 'radial-gradient(circle, #9553eb, #714ad0, #5040b5, #2f3598, #082a7c)' : ''}}
+      style={{background: activePage===link ? '#1B1F2A' : ''}}
       onClick={()=>onLinkClick(link)}
       disabled={props.loading}
     >
-      <ListItemIcon style={{color: 'white'}}>
+      <ListItemIcon style={{color: activePage===link ? 'white' : '#6d768a'}}>
         <Icon>{icon}</Icon>
       </ListItemIcon>
       <ListItemText primary={label} primaryTypographyProps={{className: classes.menuItem}} />
@@ -117,7 +117,7 @@ const Sidebar = (props) => {
       classes={{root: classes.menu}}  
       style={{marginTop: 10}}
     >
-      <ListItemIcon classes={{root: classes.menuItem}}><Icon>logout</Icon></ListItemIcon>
+      <ListItemIcon style={{color: '#6d768a'}} classes={{root: classes.menuItem}}><Icon>logout</Icon></ListItemIcon>
       <ListItemText primary="Logout" primaryTypographyProps={{className: classes.menuItem}} />
     </ListItem>
   )

@@ -41,19 +41,19 @@ const Bottom = styled.div`
 `
 
 const CreditsSummary = styled(Paper)`
-  background-image: linear-gradient(60deg, #ffa726, #fb8c00);
+  background-image: linear-gradient(60deg, #7266BA, #7266BA);
 `
 
-const Announcments = styled(Paper)`
-  background-image: linear-gradient(60deg, #66bb6a, #43a047);
+const Announcements = styled(Paper)`
+  background-image: linear-gradient(60deg, #42BBF6, #42BBF6);
 `
 
 const CheckMAC = styled(Paper)`
-  background-image: linear-gradient(60deg, #26c6da, #00acc1);
+  background-image: linear-gradient(60deg, #7ED336, #7ED336);
 `
 
 const ChildrenSummary = styled(Paper)`
-  background-image: linear-gradient(60deg, #ab47bc, #8e24aa);
+  background-image: linear-gradient(60deg, #F75D81, #F75D81);
   padding-bottom: 10px;
 `
 
@@ -180,28 +180,28 @@ class Dashboard extends Component {
       <Wrapper>
         <Top>
           <CreditsSummary elevation={10}>
-            <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="h4"> Credits Summary </Typography>
+            <Typography  style={{textAlign: 'left', padding: 10, color: 'white'}} variant="h4"> Credits Summary </Typography>
             <div style={{display: 'grid', gridTemplateColumns: authUserType==='reseller' ? '2fr 1fr' : '1fr', alignItems: 'center', justifyItems: 'center'}}>
-              <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="h6"> Credits Available </Typography>
-              <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="h2"> {authCreditsAvailable} </Typography>
+              <Typography  style={{textAlign: 'left', padding: 10, color: 'white'}} variant="h6"> Credits Available </Typography>
+              <Typography  style={{textAlign: 'left', padding: 10, color: 'white'}} variant="h2"> {authCreditsAvailable} </Typography>
             </div>
             {authUserType==='reseller' && 
               <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr', alignItems: 'center', justifyItems: 'center'}}>
-                <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="h6"> Credits Owed </Typography>
-                <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="h2"> {authcreditsOwed} </Typography>
+                <Typography  style={{textAlign: 'left', padding: 10, color: 'white'}} variant="h6"> Credits Owed </Typography>
+                <Typography  style={{textAlign: 'left', padding: 10, color: 'white'}} variant="h2"> {authcreditsOwed} </Typography>
               </div>
             }
           </CreditsSummary>
 
-          <Announcments elevation={10}>
-            <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="h4"> Announcments </Typography>
-            <div style={{color: 'black', padding: 10}}>
+          <Announcements elevation={10}>
+            <Typography  style={{textAlign: 'left', padding: 10, color: 'white'}} variant="h4"> Announcements </Typography>
+            <div style={{color: 'white', padding: 10}}>
               {ReactHtmlParser(UserAnnouncements)}
             </div>
-          </Announcments>
+          </Announcements>
 
           <CheckMAC elevation={10}>
-            <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="h4"> Check MAC </Typography>
+            <Typography  style={{textAlign: 'left', padding: 10, color: 'white'}} variant="h4"> Check MAC </Typography>
             <div style={{display: 'grid', gridGap: 20, padding: 10}}>
               <InputMask mask="**:**:**:**:**:**" 
                 value={this.state.checkMAC}  
@@ -232,29 +232,29 @@ class Dashboard extends Component {
           </CheckMAC>
 
           <ChildrenSummary elevation={10}>
-            <Typography  style={{textAlign: 'left', padding: 10, color: 'black'}} variant="h4"> Users Stats </Typography>
+            <Typography  style={{textAlign: 'left', padding: 10, color: 'white'}} variant="h4"> Users Stats </Typography>
             {authUserType==='superAdmin' &&
             <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr', alignItems: 'center'}}>
-              <Typography  style={{textAlign: 'left', paddingLeft: 50, color: 'black'}} variant="h6"><Icon>local_library</Icon> Admins</Typography>
-              <Typography  style={{textAlign: 'right', paddingRight: 50, color: 'black'}} variant="h4"> {admins.length} </Typography>
+              <Typography  style={{textAlign: 'left', paddingLeft: 50, color: 'white'}} variant="h6"><Icon>local_library</Icon> Admins</Typography>
+              <Typography  style={{textAlign: 'right', paddingRight: 50, color: 'white'}} variant="h4"> {admins.length} </Typography>
             </div>
             }
             {['superAdmin', 'admin'].includes(authUserType) &&
             <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr', alignItems: 'center'}}>
-              <Typography  style={{textAlign: 'left', paddingLeft: 50, color: 'black'}} variant="h6"><Icon>group</Icon> Super Resellers </Typography>
-              <Typography  style={{textAlign: 'right', paddingRight: 50, color: 'black'}} variant="h4"> {superResellers.length} </Typography>
+              <Typography  style={{textAlign: 'left', paddingLeft: 50, color: 'white'}} variant="h6"><Icon>group</Icon> Super Resellers </Typography>
+              <Typography  style={{textAlign: 'right', paddingRight: 50, color: 'white'}} variant="h4"> {superResellers.length} </Typography>
             </div>
             }
             {['superAdmin', 'admin', 'superReseller'].includes(authUserType) &&
             <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr', alignItems: 'center'}}>
-              <Typography  style={{textAlign: 'left', paddingLeft: 50, color: 'black'}} variant="h6"><Icon>person</Icon> Resellers </Typography>
-              <Typography  style={{textAlign: 'right', paddingRight: 50, color: 'black'}} variant="h4"> {resellers.length} </Typography>
+              <Typography  style={{textAlign: 'left', paddingLeft: 50, color: 'white'}} variant="h6"><Icon>person</Icon> Resellers </Typography>
+              <Typography  style={{textAlign: 'right', paddingRight: 50, color: 'white'}} variant="h4"> {resellers.length} </Typography>
             </div>
             }
             {['superAdmin', 'admin', 'superReseller', 'reseller'].includes(authUserType) &&
             <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr', alignItems: 'center'}}>
-              <Typography  style={{textAlign: 'left', paddingLeft: 50, color: 'black'}} variant="h6"><Icon>airplay</Icon> Clients </Typography>
-              <Typography  style={{textAlign: 'right', paddingRight: 50, color: 'black'}} variant="h4"> {clients.length} </Typography>
+              <Typography  style={{textAlign: 'left', paddingLeft: 50, color: 'white'}} variant="h6"><Icon>airplay</Icon> Clients </Typography>
+              <Typography  style={{textAlign: 'right', paddingRight: 50, color: 'white'}} variant="h4"> {clients.length} </Typography>
             </div>
             }
           </ChildrenSummary>
@@ -276,7 +276,7 @@ class Dashboard extends Component {
               tableHeight='100%'
               limit={5}
               noPagination
-              backgroundColor='coral'
+              backgroundColor='linear-gradient(60deg, #66bb6a, #43a047)'
           />
           </ClientsAboutToExpire>
           
@@ -293,7 +293,7 @@ class Dashboard extends Component {
                 tableHeight='100%'
                 limit={5}
                 noPagination
-                backgroundColor='lightpink'
+                backgroundColor='linear-gradient(60deg, #ffa726, #fb8c00)'
               />
             </UsersAccountBalance>
           }
@@ -310,7 +310,7 @@ class Dashboard extends Component {
               tableHeight='100%'
               limit={5}
               noPagination
-              backgroundColor='darkseagreen'
+              backgroundColor='linear-gradient(60deg, #ef5350, #e53935)'
             />
           </TransactionsSummary>
         </Bottom>
