@@ -116,7 +116,7 @@ const EnhancedTableToolbar = props => {
     <Toolbar style={{backgroundImage: backgroundColor}}>
       {title && 
         <div style={{flex: '0 0 auto'}}>
-          <Typography style={{color: headingColor,  fontSize: '18px'}} variant="overline" id="tableTitle" color='white'> {title} </Typography>
+          <Typography style={{color: headingColor,  fontSize: '18px'}} variant="overline" id="tableTitle" color='inherit'> {title} </Typography>
         </div>
       }
       {selected.length > 0 &&
@@ -134,12 +134,12 @@ const EnhancedTableToolbar = props => {
         </div>
       }
       <TextField
-        style={{margin: '0px 20px', color: 'white'}}
         id="input-with-icon-textfield"
         placeholder="Type to filter..."
-        InputProps={{ startAdornment: ( <InputAdornment position="start"> <SearchIcon style={{color: headingColor}}/> </InputAdornment> ) }}
+        InputProps={{ startAdornment: ( <InputAdornment position="start"> <SearchIcon style={{color: headingColor}}/> </InputAdornment> ), style: { color: headingColor ? 'inherit' : 'primary'}} }
         fullWidth
         onChange={fuzzySearchFilter}
+        style={{margin: '0px 20px', color: 'white'}}
       />
       <div style={{flex: '1 1 1 100%'}} />
       {!viewOnly && canAdd &&
