@@ -94,10 +94,6 @@ async function ministraPostCalls(attribute, ministraPayLoad, id, res) {
     .then(response => {
       res.locals.postResults = response.data
     })
-    .catch(error => {
-      console.log("Ministra API Error : " + error)
-      resultMap["error"] = error
-    })
     if (res.locals.postResults.status !== 'OK') resultMap["error"] = res.locals.postResults.error
     resultMap["success"] = res.locals.postResults.results
     return resultMap
@@ -134,10 +130,6 @@ async function ministraPutCalls(attribute, ministraPayLoad, mac, res) {
       if (response.data.status !== 'OK') return res.status(404).json(response.data.error)
       return res.status(201).json(response.data.results)
     })
-    .catch(error => {
-      console.log("Ministra API Error : " + error)
-      return res.status(404).json(error)
-    })
 }
 
 async function ministraDeleteCalls(attribute, mac, res) {
@@ -145,10 +137,6 @@ async function ministraDeleteCalls(attribute, mac, res) {
     .then(response => {
       if (response.data.status !== 'OK') return res.status(404).json(response.data.error)
       return res.status(201).json(response.data.results)
-    })
-    .catch(error => {
-      console.log("Ministra API Error : " + error)
-      return res.status(404).json(error)
     })
 }
 

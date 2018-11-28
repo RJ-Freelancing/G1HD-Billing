@@ -124,7 +124,6 @@ async function getChildren(list, isMinistra) {
   }
   else if (isMinistra == 1) {
     const macAdresses = await (childUsernames.length == 0 ? [''] : childUsernames)
-    console.log('macAdresses: ', macAdresses);
     const ministraClients = await getClients(macAdresses)
     const mongoClients = await clientRepo.find({ clientMac: { $in: macAdresses } })
     return mergeArrayObjectsByKey(mongoClients, ministraClients, 'clientMac', 'stb_mac')

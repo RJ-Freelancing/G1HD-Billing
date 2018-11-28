@@ -24,9 +24,6 @@ export async function validateMAC(req, res, next) {
     .then(response => {
       res.locals.client = response.data
     })
-    .catch(error => {
-      console.log("Ministra API Error : " + error)
-    })
   if (res.locals.client.status !== 'OK') return res.status(422).json({ error: `client with mac Address ${req.params.id} was not found in the ministra system` })
   const client = await clientRepo.findOne({ clientMac: req.params.id })
   if (!client) return res.status(422).json({ error: `Client with mac Address ${req.params.id} was not found in mongo DB` })
@@ -44,10 +41,6 @@ export async function checkMac(req, res, next) {
       if (response.data.status !== 'OK') return res.status(200).json({ mac: req.params.id, status: "Available." })
       return res.status(200).json({ mac: response.data.results[0].stb_mac, expiryDate: response.data.results[0].tariff_expired_date, status: "Unavailable." })
     })
-    .catch(error => {
-      console.log("Ministra API Error : " + error)
-      return res.status(404).json(error)
-    })
 }
 
 async function checkAndDeleteUnwantedClient(stb_mac){
@@ -55,9 +48,6 @@ async function checkAndDeleteUnwantedClient(stb_mac){
     .then(response => {
       if(response.data.status == 'OK')
         console.log("Fake Client From Ministra Deleted.")
-    })
-    .catch(error => {
-      console.log("Ministra API Error : " + error)
     })
 }
 
@@ -74,9 +64,6 @@ export async function addClient(req, res, next) {
     .then(response => {
       res.locals.addedUser = response.data
     })
-    .catch(error => {
-      console.log("Ministra API Error : " + error)
-    })
   if (res.locals.addedUser.status !== 'OK') {
     return res.status(422).json({ error: `Failed to add a client to the system : ${res.locals.addedUser.error}` })
   }
@@ -85,9 +72,6 @@ export async function addClient(req, res, next) {
     await axios.get(ministraAPI + 'accounts/' + clientMac, config)
     .then(response => {
       res.locals.newClient = response.data
-    })
-    .catch(error => {
-      console.log("Ministra API Error : " + error)
     })
     const newMinistraClient = res.locals.newClient.results
     const parentUsername = req.user.username
@@ -109,9 +93,6 @@ export async function updateClient(req, res, next) {
       .then(response => {
         if (response.data.status == 'OK') return res.status(422).json("Mac Already Exists on the System. Please delete that mac before proceeding")
       })
-      .catch(error => {
-        console.log("Ministra API Error : " + error)
-      })
     await res.locals.mongoClient.update({ clientMac: returnMac })
     await userRepo.findOneAndUpdate({ username: res.locals.mongoClient.parentUsername }, { $push: { childUsernames: returnMac } })
     await userRepo.findOneAndUpdate({ username: res.locals.mongoClient.parentUsername }, { $pull: { childUsernames: req.params.id } })
@@ -121,9 +102,6 @@ export async function updateClient(req, res, next) {
     querystring.stringify(req.value.body), config)
     .then(response => {
       res.locals.updatedUser = response.data
-    })
-    .catch(error => {
-      console.log("Ministra API Error : " + error)
     })
   if (res.locals.updatedUser.status !== 'OK') {
     return res.status(404).json({ error: `Failed to update the client ${req.params.id} to the system : ${res.locals.updatedUser.error}` })
@@ -139,9 +117,6 @@ export async function deleteClient(req, res, next) {
   await axios.delete(ministraAPI + 'accounts/' + req.params.id, config)
     .then(response => {
       res.locals.deletingClient = response.data
-    })
-    .catch(error => {
-      console.log("Ministra API Error : " + error)
     })
   if (res.locals.deletingClient.status !== 'OK') {
     return res.status(422).json({ error: `failed to delete client ${req.params.id} : ${res.locals.deletingClient.error}` })

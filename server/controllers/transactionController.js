@@ -49,7 +49,6 @@ export async function addTransaction(req, res, next) {
     if (credits > 0 && req.user.creditsAvailable == 0  && client.accountBalance == 0) return res.status(400).json(`You have no enough credits to transfer.`)
     if (credits < 0 && client.accountBalance < (-1 * credits)) return res.status(400).json("Not enough balance to recover the credits. Try again with lesser credits.")
     if (client.accountBalance == 0 && credits > 0){
-      console.log("req.user.creditsOwed + (credits-1) : " + req.user.creditsOwed + (credits-1));
       await req.user.update({ creditsAvailable: (req.user.creditsAvailable - 1), creditsOwed: (req.user.creditsOwed + (credits-1))  })
     }
     if (client.accountBalance > 0 && credits > 0){
@@ -68,9 +67,6 @@ export async function addTransaction(req, res, next) {
       .then(response => {
         res.locals.clientExpiryDate = response.data.results[0].tariff_expired_date
       })
-      .catch(error => {
-        console.log("Ministra API Error : " + error)
-      })
     let expiredDate = []
     if (res.locals.clientExpiryDate == null || res.locals.clientExpiryDate == "0000-00-00 00:00:00") {
       expiredDate = await `tariff_expired_date=${expiryDateAfterTransaction(0, credits)}`
@@ -82,9 +78,6 @@ export async function addTransaction(req, res, next) {
       expiredDate, config)
       .then(response => {
         res.locals.updatedUser = response.data
-      })
-      .catch(error => {
-        console.log("Ministra API Error : " + error)
       })
   }
   else {

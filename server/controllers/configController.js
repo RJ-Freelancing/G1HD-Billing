@@ -28,7 +28,6 @@ export async function getConfig(req, res, next) {
 export async function readLog(req, res, next) {
   if (req.user.userType !== 'superAdmin') return res.status(403).json({ error: `You Have No Rights To Perform This Action.` })
   const logFileName = req.params.filename
-  console.log('logDirectory: ', logDirectory+logFileName);
   await fs.readFile(logDirectory+logFileName, 'utf8', (err, data) => {
     if (err) return res.status(404).json({ error: err})
     return res.status(200).json(data)
