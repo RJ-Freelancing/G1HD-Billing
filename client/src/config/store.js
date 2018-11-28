@@ -11,7 +11,7 @@ if (process.env.NODE_ENV === 'development') {
     applyMiddleware(
       axiosMiddleware(client, middlewareConfig),
     ),
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   )
 } else {
   storeEnhancers = compose(
