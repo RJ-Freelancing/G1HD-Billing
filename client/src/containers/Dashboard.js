@@ -266,7 +266,7 @@ class Dashboard extends Component {
               rows={clientRows}
               data={this.getClientsData()}
               orderBy='tariff_expired_date'
-              orderByDirection='asc'
+              orderByDirection='desc'
               mobileView={this.props.mobileView}
               gotoLink={(client)=>this.props.history.push(`/clients/${client.stb_mac}`)}
               incrementClientCredit={authUserType==='reseller' ? (client)=>this.incrementClientCredit(client) : false}
@@ -287,7 +287,7 @@ class Dashboard extends Component {
                 rows={userRows}
                 data={this.getUsersData()}
                 orderBy='creditsAvailable'
-                orderByDirection='asc'
+                orderByDirection='desc'
                 mobileView={this.props.mobileView}
                 gotoLink={(user)=>this.props.history.push(`/users/${user.username}`)} 
                 tableHeight='100%'
@@ -305,7 +305,7 @@ class Dashboard extends Component {
               rows={transactionRows}
               data={this.getTransactionsData()}
               orderBy='createdAt'
-              orderByDirection='desc'
+              orderByDirection='asc'
               mobileView={this.props.mobileView}
               viewOnly={true}
               tableHeight='100%'
