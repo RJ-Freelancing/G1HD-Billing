@@ -23,11 +23,8 @@ const styles = theme => ({
     minHeight: 60, 
     cursor: 'pointer',
     '&:hover': {
-      backgroundColor: '#F1F3F6'
+      backgroundColor: '#0f2027',
     },
-  },
-  menuItem: {
-    color: '#6d768a',
   }
 })
 
@@ -120,7 +117,7 @@ const Sidebar = (props) => {
       classes={{root: classes.menu}}  
       style={{marginTop: 10}}
     >
-      <ListItemIcon style={{color: '#6d768a'}} classes={{root: classes.menuItem}}><Icon>logout</Icon></ListItemIcon>
+      <ListItemIcon style={{color: '#6d768a'}}><Icon>logout</Icon></ListItemIcon>
       <ListItemText disableTypography primary={<Typography type="subheading" style={{ color: '#6d768a' }}>Logout</Typography>} />
     </ListItem>
   )
