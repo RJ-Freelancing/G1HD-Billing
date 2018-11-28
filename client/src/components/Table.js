@@ -52,7 +52,7 @@ class EnhancedTableHead extends React.Component {
       <TableHead>
           <TableRow>
             {isEvent &&
-              <TableCell style={{textAlign: 'center', padding: 0, position: 'sticky', top: 0, zIndex: 200, backgroundColor: '#fff'}}>
+              <TableCell style={{textAlign: 'center', padding: 0, position: 'sticky', top: 0, zIndex: 200, backgroundColor: '#F1F3F6'}}>
                 <Tooltip title="Select All">
                   <Checkbox
                     style={{padding: 9}}
@@ -66,9 +66,10 @@ class EnhancedTableHead extends React.Component {
               <TableCell style={{
                 position: 'sticky', 
                 top: 0, 
-                zIndex: 10, 
+                zIndex: 200, 
                 paddingRight: 0, 
-                paddingLeft: 20
+                paddingLeft: 20,
+                backgroundColor: '#F1F3F6'
             }}>
               <Tooltip title="Download as CSV">
                 <Button aria-label="Download as CSV" variant= 'fab' color="primary" mini={true} onClick={()=>downloadCsv(data, rows)}>
@@ -84,7 +85,7 @@ class EnhancedTableHead extends React.Component {
                   key={row.field}
                   padding='default'
                   sortDirection={orderBy === row.field ? order : false}
-                  style={{position: 'sticky', top: 0, textAlign: row.type==='integer' ? 'center' : 'inherit'}}
+                  style={{position: 'sticky', top: 0, textAlign: row.type==='integer' ? 'center' : 'inherit', backgroundColor: '#F1F3F6'}}
                 >
                   <Tooltip
                     title="Sort"

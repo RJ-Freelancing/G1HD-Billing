@@ -77,7 +77,7 @@ class Events extends Component {
       <div>
         <Paper style={{marginBottom: 10}}>
           <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr'}}>
-            <Typography variant="overline" style={{fontSize: '18px', marginLeft: 20}}>Select MAC IDs to send Event</Typography>
+            <Typography variant="overline" style={{fontSize: '16px', marginLeft: 20}} noWrap>Select MAC IDs to send Event</Typography>
             {this.props.authUserType === 'superAdmin' && 
               <Button variant="contained" color="primary" disabled={this.props.loading} onClick={()=>this.setState({ids: [], open: true})}>
                 Click Here To Send All
@@ -92,7 +92,7 @@ class Events extends Component {
           orderByDirection='desc'
           mobileView={this.props.mobileView}
           sendEvent={(ids)=>this.setState({ids, open: true})}
-          tableHeight={this.props.mobileView ? '68vh' : '80vh'}
+          tableHeight={this.props.mobileView ? '60vh' : '75vh'}
         />
         <Dialog
           open={this.state.open}
