@@ -41,19 +41,19 @@ export async function getAllUsers(req, res, next) {
     admins = await userRepo.find({ username: { $in: req.user.childUsernames } }, null, { sort: { creditsAvailable: 1 } })
     superResellers = await getChildren(admins, 0)
     resellers = await getChildren(superResellers, 0)
-    clients = await getChildren(resellers, 2)
+    clients = (await getChildren(resellers, 2)).sort((a, b) => new Date(a.tariff_expired_date) - new Date(b.tariff_expired_date))
   }
   if (req.user.userType == "admin") {
     superResellers = await userRepo.find({ username: { $in: req.user.childUsernames } }, null, { sort: { creditsAvailable: 1 } })
     resellers = await getChildren(superResellers, 0)
-    clients = await getChildren(resellers, 1)
+    clients = (await getChildren(resellers, 1)).sort((a, b) => new Date(a.tariff_expired_date) - new Date(b.tariff_expired_date))
   }
   if (req.user.userType == "superReseller") {
     resellers = await userRepo.find({ username: { $in: req.user.childUsernames } }, null, { sort: { creditsAvailable: 1 } })
-    clients = await getChildren(resellers, 1)
+    clients = (await getChildren(resellers, 1)).sort((a, b) => new Date(a.tariff_expired_date) - new Date(b.tariff_expired_date))
   }
   if (req.user.userType == "reseller") {
-    clients = await getChildren(req.user.childUsernames, 3)
+    clients = (await getChildren(req.user.childUsernames, 3)).sort((a, b) => new Date(a.tariff_expired_date) - new Date(b.tariff_expired_date))
   }
   return res.status(200).json({ admins, superResellers, resellers, clients })
 }
@@ -130,7 +130,7 @@ async function getChildren(list, isMinistra) {
     return mergeArrayObjectsByKey(mongoClients, ministraClients, 'clientMac', 'stb_mac')
   }
   else if (isMinistra == 2) {
-    const ministraClients = (await getAllClients()).sort((a, b) => new Date(a.tariff_expired_date) - new Date(b.tariff_expired_date))
+    const ministraClients = (await getAllClients())
     const mongoClients = await clientRepo.find({})
     return mergeArrayObjectsByKey(mongoClients, ministraClients, 'clientMac', 'stb_mac')
   }

@@ -13,7 +13,7 @@ const SQL_SELECT_FIELDS = '\
   fname AS full_name, \
   phone, \
   tariff_plan_id AS tariff_plan, \
-  tariff_expired_date, \
+  IFNULL(tariff_expired_date, "2000-01-01 00:00:00") AS tariff_expired_date, \
   tariff_id_instead_expired AS tariff_instead_expired, \
   serial_number AS stb_sn, \
   mac AS stb_mac, \
