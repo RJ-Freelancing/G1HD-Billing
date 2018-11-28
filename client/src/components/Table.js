@@ -52,7 +52,7 @@ class EnhancedTableHead extends React.Component {
       <TableHead>
           <TableRow>
             {isEvent &&
-              <TableCell style={{textAlign: 'center', padding: 0, position: 'sticky', top: 0, zIndex: 10}}>
+              <TableCell style={{textAlign: 'center', padding: 0, position: 'sticky', top: 0, zIndex: 200, backgroundColor: '#fff'}}>
                 <Tooltip title="Select All">
                   <Checkbox
                     style={{padding: 9}}

@@ -232,6 +232,10 @@ class UserAdd extends Component {
               Submit&nbsp;
               <SaveIcon />
             </Button>
+            <Button variant="contained" color="secondary" onClick={()=>this.props.history.push('/')} style={{float: 'right'}}>
+              Cancel&nbsp;
+              <SaveIcon />
+            </Button>
           </form>
         </ClientEditWrapper>
 
