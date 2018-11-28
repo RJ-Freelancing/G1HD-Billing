@@ -51,7 +51,7 @@ const Wrapper = styled.div`
 `
 
 const ClientEditWrapper = styled(Paper)`
-  padding: 20px 20px;
+  // padding: 20px 20px;
 `
 
 const ClientProfile = styled.div`
@@ -65,18 +65,19 @@ const ClientProfile = styled.div`
 `
 
 const CreditsWrapper = styled(Paper)`
-  padding: 20px 20px;
+  // padding: 20px 20px;
 `
 
 
 const TariffWrapper = styled(Paper)`
-  padding: 20px 20px;
+  // padding: 20px 20px;
 `
 
 const TariffDetails = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   grid-gap: 20px;
+  padding: 20px 20px;
 `
 
 const TariffHeader = styled.div`
@@ -116,7 +117,7 @@ const TariffPackageRow = styled.div`
 
 
 const STBDetailsWrapper = styled(Paper)`
-  padding: 20px 20px;
+  // padding: 20px 20px;
   height: fit-content;
 `
 
@@ -307,7 +308,7 @@ class ClientEdit extends Component {
     return (
       <Wrapper>
         <ClientEditWrapper elevation={24}>
-          <Typography variant="h4" noWrap>
+          <Typography variant="h4" noWrap style={{background: 'linear-gradient(60deg, rgb(102, 187, 106), rgb(67, 160, 71))', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}>
             Edit Client: {this.state.client.login}
           </Typography>
           <br/>
@@ -381,7 +382,7 @@ class ClientEdit extends Component {
         </ClientEditWrapper>
         <div>
           <CreditsWrapper elevation={24}>
-            <Typography variant="h4"> Credits </Typography>
+            <Typography variant="h4" style={{background: 'linear-gradient(60deg, #26c6da, #00acc1)', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}> Credits </Typography>
             {this.props.authUsername===this.state.client.parentUsername  &&
               <div>
                 <br/><br/>
@@ -446,28 +447,29 @@ class ClientEdit extends Component {
             }
           </CreditsWrapper>
 
-          <Paper style={{padding: 20, textAlign: 'center', marginTop: 10}}>
-            <Typography variant="h4" style={{textAlign: 'left', paddingBottom: 10}}> Send Message </Typography>
-            <TextField
-              // label="Send Message"
-              type="text"
-              value={this.state.msg ? this.state.msg : ''}
-              onChange={(e)=>this.setState({msg: e.target.value})}
-              fullWidth
-              multiline
-              rows={5}
-              rowsMax="5"
-              disabled={this.props.loading}
-              placeholder="Send a message to this client to display in portal"
-            /><br/><br/>
-            <Button variant="contained" color="primary" disabled={this.props.loading || this.state.msg===""} onClick={this.sendMessage}>
-              Send
-              <SendIcon style={{marginLeft: 5}}/>
-            </Button>
+          <Paper style={{textAlign: 'center', marginTop: 10}}>
+            <Typography variant="h4" style={{textAlign: 'left', background: 'linear-gradient(60deg, #ef5350, #e53935)', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}> Send Message </Typography>
+            <div style={{padding: 20}}>
+              <TextField
+                type="text"
+                value={this.state.msg ? this.state.msg : ''}
+                onChange={(e)=>this.setState({msg: e.target.value})}
+                fullWidth
+                multiline
+                rows={5}
+                rowsMax="5"
+                disabled={this.props.loading}
+                placeholder="Send a message to this client to display in portal"
+              /><br/><br/>
+              <Button variant="contained" color="primary" disabled={this.props.loading || this.state.msg===""} onClick={this.sendMessage}>
+                Send
+                <SendIcon style={{marginLeft: 5}}/>
+              </Button>
+            </div>
           </Paper>
         </div>
         <TariffWrapper elevation={24}>
-          <Typography variant="h4"> Edit Tariff Plan</Typography>
+          <Typography variant="h4" style={{textAlign: 'left', background: 'linear-gradient(60deg, #ffa726, #fb8c00)', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}> Edit Tariff Plan</Typography>
           <br/><br/>
           <TariffDetails>
             <TariffHeader>
@@ -509,8 +511,7 @@ class ClientEdit extends Component {
           </TariffDetails>
         </TariffWrapper>
         <STBDetailsWrapper elevation={24}>
-          <Typography variant="h4"> STB Details </Typography>
-          <br/><br/>
+          <Typography variant="h4" style={{background: 'linear-gradient(60deg, rgb(102, 187, 106), rgb(67, 160, 71))', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}> STB Details </Typography>
           <STBDetails>           
             <Typography variant="subtitle2" style={{alignSelf: 'center'}}>MAC Address</Typography>
             <Typography variant="body2">
@@ -535,8 +536,9 @@ class ClientEdit extends Component {
         </STBDetailsWrapper>
 
         <TransactionWrapper elevation={24}>
-          <Typography variant="h4" style={{padding: 20, paddingBottom: 5}}> Transactions </Typography>
+          {/* <Typography variant="h4" style={{padding: 20, paddingBottom: 5}}> Transactions </Typography> */}
           <Table
+            title='Transactions'
             rows={rows}
             data={this.getTableData(this.state.transactions)}
             orderBy='createdAt'
@@ -544,6 +546,8 @@ class ClientEdit extends Component {
             mobileView={this.props.mobileView}
             tableHeight='450px'
             viewOnly={true}
+            backgroundColor='linear-gradient(60deg, #2D3446, #566384)'
+            headingColor='white'
           />
         </TransactionWrapper>
         <Confirmation
