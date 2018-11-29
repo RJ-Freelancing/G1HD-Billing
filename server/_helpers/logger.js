@@ -19,7 +19,7 @@ let logStream = process.stdout
 let format = 'dev'
 
 // Create a rotating write stream in production
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'production') {
   fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory)
   logStream = rfs(filenameGenerator, {
     interval: '7d', // rotate weekly

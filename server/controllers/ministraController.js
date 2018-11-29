@@ -2,10 +2,10 @@ import axios from 'axios'
 import querystring from 'querystring'
 import { checkPermissionMinistra } from '../_helpers/checkPermission'
 
-const ministraAPI = process.env.MINISTRA_HOST + 'stalker_portal/api/'
+export const ministraAPI = process.env.MINISTRA_HOST + 'stalker_portal/api/'
 const ministaUser = process.env.MINISTRA_USER
 const ministraPW = process.env.MINISTRA_PW
-const config = {
+export const config = {
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded'
   },

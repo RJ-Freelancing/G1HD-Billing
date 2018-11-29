@@ -2,18 +2,63 @@ import express from 'express'
 import helmet from 'helmet'
 import logger from './_helpers/logger'
 import mongoose from 'mongoose'
+import cron from 'node-cron'
+import axios from 'axios'
 import userRoutes from './routes/userRoutes'
 import transactionRoutes from './routes/transactionRoutes'
 import authRoutes from './routes/authRoutes'
 import clientRoutes from './routes/clientRoutes'
 import ministraRoutes from './routes/ministraRoutes'
 import configRoutes from './routes/configRoutes'
+import { getClientsCron } from './_helpers/ministraHelper'
+import { ministraAPI, config } from './controllers/ministraController'
+import clientRepo from './models/clientModel'
 
+let isMaintenance = false
 
 // Use bluebird promise to persist stack trace while using async/await
 global.Promise=require('bluebird');
 
 const app = express()
+
+//Maintenance Cron Job Runs everyday Night at 3.
+cron.schedule("5 * * * * *", function() {
+  cronJob()
+});
+
+async function cronJob(){
+  console.log("Started Daily Maintenance Cron Job...")
+  isMaintenance = true
+  const ministraClients = await getClientsCron()
+  const mongoClients = await clientRepo.find({})
+  let ministraMacMap = ministraClients.map(x => x.stb_mac)
+  let mongoMacMap = mongoClients.map(x => x.clientMac)
+  let extrasOnMinistra = ministraMacMap.filter(x => !mongoMacMap.includes(x))
+  let extrasOnMongo = mongoMacMap.filter(x => !ministraMacMap.includes(x))
+
+  console.log('Starting Deletion of Extra Clients on Mongo : ', extrasOnMongo)
+  await asyncForEach(extrasOnMongo, async (element) => {
+    const delClient = await clientRepo.findOneAndRemove({ clientMac : element })
+    if(delClient) console.log("Deleted : " + element)
+  })
+
+  console.log('Starting Deletion of Extra Clients on Ministra: ', extrasOnMinistra)
+  await asyncForEach(extrasOnMinistra, async (element) => {
+    await axios.delete(ministraAPI + 'accounts/' + element, config)
+    .then(response => {
+      if (response.data.status == 'OK') console.log("Deleted : " + element)
+    })
+  })
+
+  isMaintenance = false
+  console.log("Daily Maintenance Cron Job is Completed Successfully...")
+}
+
+async function asyncForEach(array, callback) {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array);
+  }
+}
 
 // Sentry: The request handler must be the first middleware on the app
 const Sentry = require('@sentry/node');
@@ -79,7 +124,6 @@ app.use((err, req, res, next) => {
   const status = err.status || 500
   res.status(status).json({ error: err.message })
 })
-
 
 // Start the server
 const port = process.env.API_PORT

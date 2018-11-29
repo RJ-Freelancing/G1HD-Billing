@@ -7,6 +7,11 @@ var connection = mysql.createConnection({
   database: process.env.MINISTRA_DB_NAME
 });
 
+const SQL_CRON_SELECT_FIELDS = '\
+  mac AS stb_mac, \
+  IFNULL(tariff_expired_date, "2000-01-01 00:00:00") AS tariff_expired_date \
+  '
+
 
 const SQL_SELECT_FIELDS = '\
   login, \
@@ -51,6 +56,21 @@ export function getClients(macAdresses) {
         return reject(err);
       }
       console.log('Data successfully received from Ministra DB:\n')
+      connection.pause();
+      resolve(rows);
+      connection.resume();
+    })
+  })
+}
+
+export function getClientsCron(){
+  return new Promise(function (resolve, reject) {
+    connection.query(`SELECT ${SQL_CRON_SELECT_FIELDS} FROM users`, (err, rows) => {
+      if (err) {
+        console.log("Error querying Ministra DB : " + err)
+        return reject(err);
+      }
+      console.log('Data successfully received from Ministra Db:\n')
       connection.pause();
       resolve(rows);
       connection.resume();
