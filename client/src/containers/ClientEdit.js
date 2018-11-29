@@ -172,6 +172,7 @@ class ClientEdit extends Component {
   componentDidMount = () => {   
     const stb_mac = this.props.match.params.id
     const client = this.findClientFromMAC(stb_mac)
+   
     if (client) {
       this.props.getUserTransactions(stb_mac)
       .then(resnponseTransactions => { 
@@ -191,8 +192,10 @@ class ClientEdit extends Component {
   componentDidUpdate = (prevProps, prevState, snapshot) => {
     const stb_mac = this.props.match.params.id
     const client = this.findClientFromMAC(stb_mac)
-    if (!isEqual(prevState.client, client)) {
-      this.setState({client, editingClient: {...client}})
+    if (client) {
+      if (!isEqual(prevState.client, client)) {
+        this.setState({client, editingClient: {...client}})
+      }
     }
   }
 
@@ -291,19 +294,25 @@ class ClientEdit extends Component {
   } 
 
   render() {   
-    if (!this.state.client)
+    if (!this.state.client) {     
       if (this.state.client === false)
         return (
-          <Typography variant="h4">
-              Client with MAC {this.props.match.params.id} was not found
-          </Typography>
+          <div style={{height: '100vh'}}>
+            <Typography variant="h4">
+                Client with MAC {this.props.match.params.id} was not found
+            </Typography>
+          </div>
         )
       else 
         return (
-          <Typography variant="h4">
-              Client is loading
-          </Typography>
+          <div style={{height: '100vh'}}>
+            <Typography variant="h4">
+                Client is loading
+            </Typography>
+          </div>
         )
+    }
+
 
     return (
       <Wrapper>
@@ -382,7 +391,7 @@ class ClientEdit extends Component {
         </ClientEditWrapper>
         <div>
           <CreditsWrapper elevation={24}>
-            <Typography variant="h4" style={{background: 'linear-gradient(60deg, #26c6da, #00acc1)', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}> Credits </Typography>
+            <Typography variant="h4" style={{background: '#4875b4', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}> Credits </Typography>
             {this.props.authUsername===this.state.client.parentUsername  &&
               <div>
                 <br/><br/>
@@ -448,7 +457,7 @@ class ClientEdit extends Component {
           </CreditsWrapper>
 
           <Paper style={{textAlign: 'center', marginTop: 10}}>
-            <Typography variant="h4" style={{textAlign: 'left', background: 'linear-gradient(60deg, #ef5350, #e53935)', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}> Send Message </Typography>
+            <Typography variant="h4" style={{textAlign: 'left', background: '#805bbe', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}> Send Message </Typography>
             <div style={{padding: 20}}>
               <TextField
                 type="text"
@@ -469,7 +478,7 @@ class ClientEdit extends Component {
           </Paper>
         </div>
         <TariffWrapper elevation={24}>
-          <Typography variant="h4" style={{textAlign: 'left', background: 'linear-gradient(60deg, #ffa726, #fb8c00)', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}> Edit Tariff Plan</Typography>
+          <Typography variant="h4" style={{textAlign: 'left', background: 'linear-gradient(60deg, rgb(239, 83, 80), rgb(229, 57, 53))', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}> Edit Tariff Plan</Typography>
           <br/><br/>
           <TariffDetails>
             <TariffHeader>
@@ -511,7 +520,7 @@ class ClientEdit extends Component {
           </TariffDetails>
         </TariffWrapper>
         <STBDetailsWrapper elevation={24}>
-          <Typography variant="h4" style={{background: 'linear-gradient(60deg, rgb(102, 187, 106), rgb(67, 160, 71))', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}> STB Details </Typography>
+          <Typography variant="h4" style={{background: 'linear-gradient(60deg, rgb(255, 167, 38), rgb(251, 140, 0))', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}> STB Details </Typography>
           <STBDetails>           
             <Typography variant="subtitle2" style={{alignSelf: 'center'}}>MAC Address</Typography>
             <Typography variant="body2">
@@ -536,7 +545,6 @@ class ClientEdit extends Component {
         </STBDetailsWrapper>
 
         <TransactionWrapper elevation={24}>
-          {/* <Typography variant="h4" style={{padding: 20, paddingBottom: 5}}> Transactions </Typography> */}
           <Table
             title='Transactions'
             rows={rows}

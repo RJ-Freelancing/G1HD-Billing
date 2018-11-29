@@ -41,7 +41,7 @@ const Wrapper = styled.div`
 `
 
 const UserEditWrapper = styled(Paper)`
-  padding: 20px 20px;
+  // padding: 20px 20px;
 `
 
 const UserProfile = styled.div`
@@ -54,7 +54,7 @@ const UserProfile = styled.div`
 `
 
 const CreditsWrapper = styled(Paper)`
-  padding: 20px 20px;
+  // padding: 20px 20px;
 `
 
 const TransactionWrapper = styled(Paper)`
@@ -229,7 +229,7 @@ class UserEdit extends Component {
     return (
       <Wrapper>
         <UserEditWrapper elevation={24}>
-          <Typography variant="h4">
+          <Typography variant="h4" style={{textAlign: 'left', background: 'linear-gradient(60deg, rgb(102, 187, 106), rgb(67, 160, 71))', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}>
             Edit User:  {this.state.user.username}
           </Typography>
           <br/>
@@ -327,7 +327,7 @@ class UserEdit extends Component {
           }
         </UserEditWrapper>
           <CreditsWrapper elevation={24}>
-            <Typography variant="h4"> Credits </Typography>
+            <Typography variant="h4" style={{textAlign: 'left', background: 'linear-gradient(60deg, rgb(255, 167, 38), rgb(251, 140, 0))', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}> Credits </Typography>
             <br/><br/>
             {this.state.user && this.props.authUsername===this.state.user.parentUsername  &&
               <div>
@@ -402,8 +402,8 @@ class UserEdit extends Component {
             </div>
           </CreditsWrapper>
         <TransactionWrapper elevation={24}>
-          <Typography variant="h4" style={{padding: 20, paddingBottom: 5}}> Transactions </Typography>
           <Table
+            title='Transactions'
             rows={rows}
             data={this.getTableData(this.state.transactions)}
             orderBy='createdAt'
@@ -411,6 +411,8 @@ class UserEdit extends Component {
             mobileView={this.props.mobileView}
             tableHeight='100%'
             viewOnly={true}
+            backgroundColor='linear-gradient(60deg, #2D3446, #566384)'
+            headingColor='white'
           />
         </TransactionWrapper>
         <Confirmation

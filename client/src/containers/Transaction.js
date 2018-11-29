@@ -34,7 +34,7 @@ class Transaction extends Component {
         rows={rows}
         data={this.getTableData()}
         orderBy='createdAt'
-        orderByDirection='desc'
+        orderByDirection='asc'
         mobileView={this.props.mobileView}
         viewOnly={true}
         tableHeight={this.props.mobileView ? '75vh' : '85vh'}

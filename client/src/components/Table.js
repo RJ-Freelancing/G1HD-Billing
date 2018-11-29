@@ -337,7 +337,7 @@ export default class EnhancedTable extends React.Component {
                         case 'boolean':
                           return (
                             <TableCell key={field} style={{textAlign: 'center', paddingLeft: 0}}> 
-                              <Icon style={{color: value ? 'green' : 'red'}}>{value ? 'thumb_up' : 'thumb_down'}</Icon> 
+                              <Icon style={{color: value ? 'green' : 'red'}}>{Boolean(value) ? 'thumb_up' : 'thumb_down'}</Icon> 
                             </TableCell>
                           )
                         case 'integer':

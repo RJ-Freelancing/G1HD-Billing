@@ -14,7 +14,7 @@ const rows = [
   { field: 'tariff_expired_date', label: 'Tariff Expiry', type: 'date'  },
   { field: 'parentUsername', label: 'Reseller', type: 'string'  },
   // { field: 'comment', label: 'Comments', type: 'string'  },
-  // { field: 'now_playing_content', label: 'Box Status', type: 'string'  },
+  { field: 'now_playing_content', label: 'Now Playing', type: 'string'  },
   { field: 'status', label: 'Account Status', type: 'boolean'  }
 ]
 
@@ -26,7 +26,10 @@ class ClientList extends Component {
     for (let client of this.props.clients) {
       let clientData = {}
       for (let row of rows) {
-        clientData[row.field] = client[row.field]
+        if (row.field==='status')
+          clientData[row.field] = client[row.field] === 0 ? true : false
+        else
+          clientData[row.field] = client[row.field]
       }
       displayData.push({...clientData})
     }

@@ -200,7 +200,7 @@ class Dashboard extends Component {
           </Announcements>
 
           <CheckMAC elevation={10}>
-            <Typography  style={{textAlign: 'left', padding: 10, color: 'white', fontSize: '18px', letterSpacing: 1, backgroundImage: 'linear-gradient(60deg, #26c6da, #00acc1)'}} variant="overline"> Check MAC </Typography>
+            <Typography  style={{textAlign: 'left', padding: 10, color: 'white', fontSize: '18px', letterSpacing: 1, background: '#4875b4'}} variant="overline"> Check MAC </Typography>
             <div style={{display: 'grid', gridGap: 20, padding: 10}}>
               <InputMask mask="**:**:**:**:**:**" 
                 value={this.state.checkMAC}  

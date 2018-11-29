@@ -26,14 +26,14 @@ const CreditsWrapper = styled(Paper)`
   display: grid;
   grid-template-columns: 1fr;
   grid-gap: 20px;
-  padding: 20px;
+  // padding: 20px;
 `
 
 const AnnouncementsWrapper = styled(Paper)`
   display: grid;
   grid-template-columns: 1fr;
   grid-gap: 20px;
-  padding: 20px;
+  // padding: 20px;
 `
 
 
@@ -56,7 +56,7 @@ class SuperAdminConfig extends Component {
     return (
       <Wrapper>
         <CreditsWrapper elevation={5}>
-          <Typography variant="overline" style={{fontSize: '18px'}}>
+          <Typography variant="body1" style={{height: '100px', textAlign: 'left', background: 'rgb(72, 117, 180)', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}>
             Minimum Transferrable Credits
           </Typography>
           <form 
@@ -95,7 +95,7 @@ class SuperAdminConfig extends Component {
         </CreditsWrapper>
 
         <AnnouncementsWrapper elevation={5}>
-          <Typography variant="overline"  style={{fontSize: '18px'}}>
+          <Typography variant="body1"  style={{height: '100px', textAlign: 'left', background: 'linear-gradient(60deg, rgb(255, 167, 38), rgb(251, 140, 0))', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}>
             Announcements
           </Typography>
           <RichTextEditor

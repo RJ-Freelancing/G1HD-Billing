@@ -25,7 +25,7 @@ margin: 20px 20px;
 `
 
 const ProfileEditWrapper = styled(Paper)`
-padding: 20px 20px;
+// padding: 20px 20px;
 `
 
 const ProfileEdit = styled.div`
@@ -38,7 +38,7 @@ grid-gap: 30px;
 `
 
 const ProfileDetailsWrapper = styled(Paper)`
-padding: 20px 20px;
+// padding: 20px 20px;
 `
 
 const ProfileDetails = styled.div`
@@ -98,7 +98,7 @@ class Profile extends Component {
     return (
       <Wrapper>
         <ProfileEditWrapper elevation={24}>
-          <Typography variant="overline" style={{fontSize: '20px'}} noWrap>
+          <Typography variant="overline" style={{background: 'rgb(72, 117, 180)', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}} noWrap>
               Edit Profile
           </Typography>
           <br/>
@@ -165,7 +165,7 @@ class Profile extends Component {
         </ProfileEditWrapper>
         
         <ProfileDetailsWrapper elevation={24}>
-          <Typography variant="overline" style={{fontSize: '20px'}}> Account Details </Typography>
+          <Typography variant="overline" style={{background: 'linear-gradient(60deg, rgb(102, 187, 106), rgb(67, 160, 71))', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}> Account Details </Typography>
           <br/><br/>
           <ProfileDetails>
             <Typography variant="overline" style={{fontSize: '12px'}}>Account Type</Typography>
