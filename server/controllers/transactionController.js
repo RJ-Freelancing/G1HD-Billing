@@ -20,7 +20,7 @@ const config = {
 }
 
 export async function checkPermission(req, res, next) {
-  const macRegex = /^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/
+  const macRegex = /^[a-fA-F0-9:]{17}|[a-fA-F0-9]{12}$/
   if (macRegex.test(req.params.id)) {
     const client = await clientRepo.findOne({ clientMac: req.params.id })
     if (!client) return res.status(422).json({ error: `Client with mac Address ${req.params.id} was not found in mongo DB` })

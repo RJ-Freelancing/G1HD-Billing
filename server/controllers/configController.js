@@ -10,7 +10,8 @@ export async function updateConfig(req, res, next) {
   var query = { configName },
     update = { configName, configValue },
     options = { upsert: true, new: true, setDefaultsOnInsert: true }
-
+  const configExists = await configRepo.findOne({ configName })
+  if (!configExists) return res.status(422).json({ error: 'No such config exists' })
   const config = await configRepo.findOneAndUpdate(query, update, options, function (error, result) {
     if (error) return res.status(404).json(error)
   })

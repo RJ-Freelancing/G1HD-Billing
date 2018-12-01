@@ -4,11 +4,11 @@ import Joi from 'joi'
 export const schemas = {
 
   idSchema: Joi.object({
-    param: Joi.string().regex(/^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/).required().error(new Error('ID should be a valid mac Address.'))
+    param: Joi.string().regex(/^[a-fA-F0-9:]{17}|[a-fA-F0-9]{12}$/).required().error(new Error('ID should be a valid mac Address.'))
   }),
 
   eventSchema: Joi.object({
-    ids: Joi.array().items(Joi.string().regex(/^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/).error(new Error('ID should be a valid mac Address.'))),
+    ids: Joi.array().items(Joi.string().regex(/^[a-fA-F0-9:]{17}|[a-fA-F0-9]{12}$/).error(new Error('ID should be a valid mac Address.'))),
     event: Joi.string().required(),
     msg: Joi.string(),
     ttl: Joi.number(),
@@ -17,7 +17,7 @@ export const schemas = {
   }),
 
   msgSchema: Joi.object({
-    ids: Joi.array().items(Joi.string().regex(/^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/).error(new Error('ID should be a valid mac Address.'))),
+    ids: Joi.array().items(Joi.string().regex(/^[a-fA-F0-9:]{17}|[a-fA-F0-9]{12}$/).error(new Error('ID should be a valid mac Address.'))),
     msg: Joi.string().required()
   }),
 
