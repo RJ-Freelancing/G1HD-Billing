@@ -42,7 +42,7 @@ export async function getTransactionsForUser(req, res, next) {
 export async function addTransaction(req, res, next) {
   const transactionFrom = req.user.username
   const { credits, description, transactionTo } = req.value.body
-  if (!req.user.childUsernames.includes(transactionTo)) return res.status(403).json(`You cant add credits to the user ${transactionTo}`)
+  if (!req.user.childUsernames.includes(transactionTo) && req.user.userType !== "superAdmin" ) return res.status(403).json(`You cant add credits to the user ${transactionTo}`)
   if (req.user.userType == "reseller") {
     // Mongo transactions
     const client = await clientRepo.findOne({ clientMac: transactionTo })
@@ -82,13 +82,19 @@ export async function addTransaction(req, res, next) {
   }
   else {
     // Non reseller transactions
-    if (credits > 0 && req.user.creditsAvailable < credits) return res.status(400).json(`You have no enough credits to transfer.`)   
-    const config = await configRepo.findOne({ configName : "minimumTransferrableCredits" })
-    if (credits > 0 && credits < config.configValue) return res.status(400).json(`Minimum Transferrable Credits is ${config.configValue}.`)
-    const user = await userRepo.findOne({ username: transactionTo })
-    if (credits < 0 && user.creditsAvailable < (-1 * credits)) return res.status(400).json("Not enough balance to recover the credits. Try again with lesser credits.")
-    if (req.user.creditsAvailable > credits) await req.user.update({ creditsAvailable: (req.user.creditsAvailable - credits) })
-    await userRepo.findOneAndUpdate({ username: transactionTo }, { $inc: { creditsAvailable: credits } })
+    if(req.user.userType == "superAdmin" && (transactionTo !== req.user.username && !req.user.childUsernames.includes(transactionTo))) return res.status(403).json(`You cant add credits to the user ${transactionTo}`)
+    if(req.user.userType == "superAdmin" && transactionTo == req.user.username) {
+      await userRepo.findOneAndUpdate({ username: transactionTo }, { $inc: { creditsAvailable: credits } })
+    }
+    else {
+      if (credits > 0 && req.user.creditsAvailable < credits) return res.status(400).json(`You have no enough credits to transfer.`)   
+      const config = await configRepo.findOne({ configName : "minimumTransferrableCredits" })
+      if (credits > 0 && credits < config.configValue) return res.status(400).json(`Minimum Transferrable Credits is ${config.configValue}.`)
+      const user = await userRepo.findOne({ username: transactionTo })
+      if (credits < 0 && user.creditsAvailable < (-1 * credits)) return res.status(400).json("Not enough balance to recover the credits. Try again with lesser credits.")
+      if (req.user.creditsAvailable > credits) await req.user.update({ creditsAvailable: (req.user.creditsAvailable - credits) })
+      await userRepo.findOneAndUpdate({ username: transactionTo }, { $inc: { creditsAvailable: credits } })
+    }
   }
   // Add transaction history to transaction collection
   const createdTransaction = await transactionRepo.create([{ credits, description, transactionFrom, transactionTo }], { lean: true })
