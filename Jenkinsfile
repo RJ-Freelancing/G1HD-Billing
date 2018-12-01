@@ -130,7 +130,7 @@ pipeline {
     always {
       notifySlack message: errorMessage, channel: env.SLACK_CHANNEL
       cleanWs() // Recursively clean workspace
-      sh 'docker stop mongo-testing'
+      // sh 'docker stop mongo-testing'
       sh 'docker container prune -f'
       sh 'docker image prune -af'
       sh 'docker volume prune -f'
