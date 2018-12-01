@@ -6,8 +6,8 @@
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
-    "start": "nodemon --ignore tests --exec babel-node index.js",
-    "test": "NODE_ENV=test nodemon --exec nyc mocha --require babel-core/register --colors --slow 1000 tests/**/*.js",
+    "start": "babel-watch --exclude tests index.js",
+    "test": "NODE_ENV=test babel-watch nyc mocha --require babel-core/register --colors --slow 1000 tests/**/*.js",
     "test-report": "NODE_ENV=test nyc mocha --require babel-core/register --reporter mocha-junit-reporter --reporter-options mochaFile=./coverage/junit.xml --exit tests/**/*.js",
     "build": "NODE_ENV=production babel . -s -D -d build --presets env --ignore node_modules,tests,coverage,Dockerfile.test,yarn.lock"
   },
@@ -26,11 +26,11 @@
     "morgan": "^1.9.0",
     "mysql": "^2.16.0",
     "mysql2": "^1.6.1",
+    "node-cron": "^2.0.3",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
-    "rotating-file-stream": "^1.3.9",
-    "node-cron": "^2.0.3"
+    "rotating-file-stream": "^1.3.9"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -39,9 +39,9 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
+    "babel-watch": "^2.0.7",
     "mocha": "^5.2.0",
     "mocha-junit-reporter": "^1.18.0",
-    "nodemon": "^1.18.7",
     "nyc": "^13.1.0",
     "supertest": "^3.3.0"
   },
