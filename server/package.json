@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "start": "babel-watch --exclude tests index.js",
-    "test": "NODE_ENV=test babel-watch nyc mocha --require babel-core/register --colors --slow 1000 tests/**/*.js",
+    "test": "NODE_ENV=test nyc mocha --require babel-core/register --colors --slow 1000 tests/**/*.js",
     "test-report": "NODE_ENV=test nyc mocha --require babel-core/register --reporter mocha-junit-reporter --reporter-options mochaFile=./coverage/junit.xml --exit tests/**/*.js",
     "build": "NODE_ENV=production babel . -s -D -d build --presets env --ignore node_modules,tests,coverage,Dockerfile.test,yarn.lock"
   },
