@@ -34,69 +34,69 @@ pipeline {
       }
     }
 
-    stage('Sonarqube'){
-      steps {
-        script {
-          scannerHome = tool 'sonarScanner';
-          currentBranch = env.GIT_BRANCH.getAt((env.GIT_BRANCH.indexOf('/')+1..-1));
-        }
-        withSonarQubeEnv('sonarScanner'){
-          sh """\
-            ${scannerHome}/bin/sonar-scanner -e \
-            -Dsonar.projectName=${env.SITE_NAME} \
-            -Dsonar.projectKey=${env.SITE_NAME} \
-            -Dsonar.branch=${currentBranch} \
-            -Dsonar.sources=. \
-          """
-        }
-      }
-    }
+    // stage('Sonarqube'){
+    //   steps {
+    //     script {
+    //       scannerHome = tool 'sonarScanner';
+    //       currentBranch = env.GIT_BRANCH.getAt((env.GIT_BRANCH.indexOf('/')+1..-1));
+    //     }
+    //     withSonarQubeEnv('sonarScanner'){
+    //       sh """\
+    //         ${scannerHome}/bin/sonar-scanner -e \
+    //         -Dsonar.projectName=${env.SITE_NAME} \
+    //         -Dsonar.projectKey=${env.SITE_NAME} \
+    //         -Dsonar.branch=${currentBranch} \
+    //         -Dsonar.sources=. \
+    //       """
+    //     }
+    //   }
+    // }
 
-    stage ('Test API') {
-      // Skip stage if an error has occured in previous stages
-      when { expression { return !errorMessage; } }
-      steps {
-        // Test
-        script {
-          try {
-            sh 'docker run --name mongo-testing -d mongo'
-            sh 'cd server && docker build -t server-test -f Dockerfile.test . 2>commandResult'
-            sh 'cd server && docker run --name=server-test-container --link mongo-testing:mongo -e API_PORT=3001 -e JWT_SECRET=testing -e MONGO_URL=mongodb://mongo/g1hd server-test 2>commandResult'
-          } catch (e) {
-            if (!errorMessage) {
-              errorMessage = "Failed while running tests.\n\n${readFile('commandResult').trim()}\n\n${e.message}"
-            }
-            currentBuild.currentResult = 'UNSTABLE'
-          }
-        }
-      }
-      post {
-        always {
-          // Publish junit test results
-          sh 'docker cp server-test-container:/app/coverage ./server/coverage 2>commandResult'
-          junit testResults: 'server/coverage/junit.xml', allowEmptyResults: true
-          script {
-            if (!errorMessage && currentBuild.resultIsWorseOrEqualTo('UNSTABLE')) {
-              errorMessage = "Failing Tests."
-              // currentBuild.currentResult = 'UNSTABLE'
-            }
-          }
-          // Publish clover.xml and html(if generated) test coverge report
-          step([
-            $class: 'CloverPublisher',
-            cloverReportDir: './server/coverage',
-            cloverReportFileName: 'clover.xml',
-            failingTarget: [methodCoverage: 0.5, conditionalCoverage: 0.5, statementCoverage: 0.5]
-          ])
-          script {
-            if (!errorMessage && currentBuild.resultIsWorseOrEqualTo('UNSTABLE')) {
-              errorMessage = "Insufficent Test Coverage."
-              // currentBuild.currentResult = 'UNSTABLE'
-            }
-          }
-        }
-      }
-    }
+    // stage ('Test API') {
+    //   // Skip stage if an error has occured in previous stages
+    //   when { expression { return !errorMessage; } }
+    //   steps {
+    //     // Test
+    //     script {
+    //       try {
+    //         sh 'docker run --name mongo-testing -d mongo'
+    //         sh 'cd server && docker build -t server-test -f Dockerfile.test . 2>commandResult'
+    //         sh 'cd server && docker run --name=server-test-container --link mongo-testing:mongo -e API_PORT=3001 -e JWT_SECRET=testing -e MONGO_URL=mongodb://mongo/g1hd server-test 2>commandResult'
+    //       } catch (e) {
+    //         if (!errorMessage) {
+    //           errorMessage = "Failed while running tests.\n\n${readFile('commandResult').trim()}\n\n${e.message}"
+    //         }
+    //         currentBuild.currentResult = 'UNSTABLE'
+    //       }
+    //     }
+    //   }
+    //   post {
+    //     always {
+    //       // Publish junit test results
+    //       sh 'docker cp server-test-container:/app/coverage ./server/coverage 2>commandResult'
+    //       junit testResults: 'server/coverage/junit.xml', allowEmptyResults: true
+    //       script {
+    //         if (!errorMessage && currentBuild.resultIsWorseOrEqualTo('UNSTABLE')) {
+    //           errorMessage = "Failing Tests."
+    //           // currentBuild.currentResult = 'UNSTABLE'
+    //         }
+    //       }
+    //       // Publish clover.xml and html(if generated) test coverge report
+    //       step([
+    //         $class: 'CloverPublisher',
+    //         cloverReportDir: './server/coverage',
+    //         cloverReportFileName: 'clover.xml',
+    //         failingTarget: [methodCoverage: 0.5, conditionalCoverage: 0.5, statementCoverage: 0.5]
+    //       ])
+    //       script {
+    //         if (!errorMessage && currentBuild.resultIsWorseOrEqualTo('UNSTABLE')) {
+    //           errorMessage = "Insufficent Test Coverage."
+    //           // currentBuild.currentResult = 'UNSTABLE'
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
 
     stage ('Build') {
       // Skip stage if an error has occured in previous stages or if not isDeploymentBranch
