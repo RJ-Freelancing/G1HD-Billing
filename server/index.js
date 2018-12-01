@@ -22,9 +22,9 @@ global.Promise=require('bluebird');
 const app = express()
 
 //Maintenance Cron Job Runs everyday Night at 3.
-cron.schedule("5 * * * * *", function() {
-  cronJob()
-});
+cron.schedule("* * 14 * * *", function() {
+  // cronJob()
+}); 
 
 async function cronJob(){
   console.log("Started Daily Maintenance Cron Job...")
