@@ -1,6 +1,7 @@
 const initialState = {
   minimumTransferrableCredits: 25,
   UserAnnouncements: '',
+  enableSendEventsFor: {},
   tariffPlans: []
 };
 
@@ -10,7 +11,8 @@ const general = (state = initialState, action) => {
       return {
         ...state,
         minimumTransferrableCredits: action.payload.data.minimumTransferrableCredits,
-        UserAnnouncements: action.payload.data.UserAnnouncements
+        UserAnnouncements: action.payload.data.UserAnnouncements,
+        enableSendEventsFor: action.payload.data.enableSendEventsFor
       }
     case 'UPDATE_CONFIG_SUCCESS':
       return {

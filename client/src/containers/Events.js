@@ -78,11 +78,9 @@ class Events extends Component {
         <Paper style={{marginBottom: 10}}>
           <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr'}}>
             <Typography variant="overline" style={{fontSize: '16px', marginLeft: 20}} noWrap>Select MAC IDs to send Event</Typography>
-            {this.props.authUserType === 'superAdmin' && 
-              <Button variant="contained" color="primary" disabled={this.props.loading} onClick={()=>this.setState({ids: [], open: true})}>
-                Click Here To Send All
-              </Button>          
-            }
+            <Button variant="contained" color="primary" disabled={this.props.loading} onClick={()=>this.setState({ids: [], open: true})}>
+              Click Here To Send All
+            </Button>          
           </div>
         </Paper>
         <Table

@@ -18,7 +18,7 @@ export default class InactivityPopup extends Component {
     window.onclick = this.resetInactiveTimer
     window.onkeypress = this.resetInactiveTimer
     window.onscroll = this.resetInactiveTimer
-    this.idleTimer = setTimeout(this.onIdle, 120000)
+    this.idleTimer = setTimeout(this.onIdle, 200000)
     this.refreshTokenTimer = setInterval(this.props.refreshToken, 280000)
   }
 
@@ -38,7 +38,7 @@ export default class InactivityPopup extends Component {
     this.setState({ inactivity: 0 }, ()=>{
       clearTimeout(this.idleTimer)
       clearInterval(this.timer)
-      this.idleTimer = setTimeout(this.onIdle, 120000)
+      this.idleTimer = setTimeout(this.onIdle, 200000)
     }
   )}
 

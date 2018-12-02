@@ -90,7 +90,9 @@ class UserEdit extends Component {
       newPassword: "",
       transactions: [],
       upgradingUser: false,
-      upgradingNewUsername: ""
+      upgradingNewUsername: "",
+      upgradingNewPassword: "",
+      upgradingNewPasswordConfirmation: ""
     }
   }
 
@@ -192,9 +194,14 @@ class UserEdit extends Component {
   upgradeUser = (e) => {
     e.preventDefault()
     const username = this.state.user.username
-    const upgradingNewUsername = this.state.upgradingNewUsername
+    const { upgradingNewUsername, upgradingNewPassword } = this.state
     const upgradingUserType = this.getUpgradingUserType()
-    this.props.upgradeUser(username, upgradingNewUsername, this.getUpgradingUserType())
+    const upgradingUser = {
+      username: upgradingNewUsername, 
+      userType: upgradingUserType,
+      password: upgradingNewPassword
+    }
+    this.props.upgradeUser(username, upgradingUser)
     .then((upgradeResponse)=>{
       if (upgradeResponse.type==='UPGRADE_USER_SUCCESS')
         this.props.history.push(`/${upgradingUserType}s`)
@@ -449,12 +456,52 @@ class UserEdit extends Component {
                 error={this.state.upgradingNewUsername===''}
                 helperText={this.state.upgradingNewUsername===''? "Required" : null}
               />
+              <TextField
+                label="Password"
+                type="password"
+                required
+                value={this.state.upgradingNewPassword}
+                onChange={(e)=>this.setState({upgradingNewPassword: e.target.value})}
+                fullWidth
+                disabled={this.props.loading}
+                error={this.state.upgradingNewPassword===""}
+                helperText={this.state.upgradingNewPassword && this.state.upgradingNewPassword==="" ? "Required" : null}
+              />
+              <TextField
+                label="Password Confirmation"
+                type="password"
+                required
+                value={this.state.upgradingNewPasswordConfirmation}
+                onChange={(e)=>this.setState({upgradingNewPasswordConfirmation: e.target.value})}
+                fullWidth
+                disabled={this.props.loading}
+                error={
+                  (this.state.upgradingNewPasswordConfirmation==="") ||
+                  (this.state.upgradingNewPasswordConfirmation !== this.state.upgradingNewPassword)
+                }
+                helperText={
+                  this.state.upgradingNewPasswordConfirmation==="" ? "Required" 
+                  : (this.state.upgradingNewPasswordConfirmation !== this.state.upgradingNewPassword) ? "Password & Password Confirmation must match"
+                  : null
+                }
+              />
             </DialogContent>
             <DialogActions>
               <Button onClick={()=>this.setState({upgradingUser: false})} color="secondary">
                 Cancel
               </Button>
-              <Button variant="contained" type="submit" color="primary" disabled={this.props.loading || this.state.upgradingNewUsername===''} onClick={this.upgradeUser}>
+              <Button 
+                variant="contained" 
+                type="submit" 
+                color="primary" 
+                disabled={
+                  this.props.loading || 
+                  this.state.upgradingNewUsername==='' || 
+                  (this.state.upgradingNewPassword==="") || 
+                  (this.state.upgradingNewPasswordConfirmation !== this.state.upgradingNewPassword)
+                } 
+                onClick={this.upgradeUser}
+              >
                 Upgrade
               </Button>
             </DialogActions>
@@ -486,7 +533,7 @@ const mapDispatchToProps = dispatch => ({
   deleteUser: (username) => dispatch(deleteUser(username)),
   getConfig: () => dispatch(getConfig()),
   getUserTransactions: username => dispatch(getUserTransactions(username)),
-  upgradeUser: (username, upgradingNewUsername, upgradingUserType) => dispatch(upgradeUser(username, upgradingNewUsername, upgradingUserType))
+  upgradeUser: (username, upgradingUser) => dispatch(upgradeUser(username, upgradingUser))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserEdit)
