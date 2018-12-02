@@ -46,7 +46,7 @@ class EnhancedTableHead extends React.Component {
   }
 
   render() {
-    const { order, orderBy, data, rows, selected, dataLength, selectAll, isEvent, canDownload } = this.props
+    const { order, orderBy, data, viewOnly, rows, selected, dataLength, selectAll, isEvent, canDownload } = this.props
     
     return (
       <TableHead>
@@ -62,22 +62,23 @@ class EnhancedTableHead extends React.Component {
                 </Tooltip>
               </TableCell>
             }
-            {canDownload &&
-              <TableCell style={{
-                position: 'sticky', 
-                top: 0, 
-                zIndex: 200, 
-                paddingRight: 0, 
-                paddingLeft: 20,
-                backgroundColor: '#F1F3F6'
-            }}>
-              <Tooltip title="Download as CSV">
-                <Fab aria-label="Download as CSV" color="primary" size='small' onClick={()=>downloadCsv(data, rows)}>
-                  <CloudDownloadIcon/>
-                </Fab>
-              </Tooltip>
-            </TableCell>
+            {(canDownload || !viewOnly) && !isEvent &&
+                <TableCell style={{
+                  position: 'sticky', 
+                  top: 0, 
+                  zIndex: 200, 
+                  paddingRight: 0, 
+                  paddingLeft: 20,
+                  backgroundColor: '#F1F3F6'
+              }}>
+                <Tooltip title="Download as CSV">
+                  <Fab aria-label="Download as CSV" color="primary" size='small' onClick={()=>downloadCsv(data, rows)}>
+                    <CloudDownloadIcon/>
+                  </Fab>
+                </Tooltip>
+              </TableCell>            
             }
+
 
             {rows.map(row => {
               return (

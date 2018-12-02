@@ -618,7 +618,6 @@ class ClientEdit extends Component {
 }
 
 const mapStateToProps = state => ({
-  token: state.auth.token,
   clients: state.users.clients,
   authCreditsAvailable: state.auth.creditsAvailable,
   authcreditsOwed: state.auth.creditsOwed,
