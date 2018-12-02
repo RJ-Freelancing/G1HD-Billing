@@ -1,7 +1,7 @@
 const initialState = {
   minimumTransferrableCredits: 25,
   UserAnnouncements: '',
-  enableSendEventsFor: [],
+  enableSendEventsFor: {},
   tariffPlans: []
 };
 

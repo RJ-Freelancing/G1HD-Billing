@@ -29,7 +29,7 @@ const styles = theme => ({
 })
 
 
-const permissionsDenied = {
+let permissionsDenied = {
   'superAdmin': [],
   'admin': ['/admins', '/config'],
   'superReseller': ['/admins', '/superResellers', '/config'],
@@ -44,7 +44,7 @@ const menus = [
   {label: 'Resellers', link: '/resellers', icon: 'person'},
   {label: 'Clients', link: '/clients', icon: 'airplay'},
   {label: 'Transactions', link: '/transactions', icon: 'attach_money'},
-  {label: 'Events', link: '/events', icon: 'near_me'},
+  {label: 'Send Events', link: '/events', icon: 'near_me'},
   {label: 'Configuration', link: '/config', icon: 'info'},
   {label: 'My Account', link: '/profile', icon: 'settings'},
 ];
@@ -92,6 +92,10 @@ const Sidebar = (props) => {
       }
     </div>
   )
+
+  if (!props.enableSendEventsFor['admin']) permissionsDenied['admin'].push('/events')
+  if (!props.enableSendEventsFor['superReseller']) permissionsDenied['superReseller'].push('/events')
+  if (!props.enableSendEventsFor['reseller']) permissionsDenied['reseller'].push('/events') 
 
   const renderLinks = menus.map(({ label, link, icon }, idx) =>
     !permissionsDenied[authUserType].includes(link) &&
@@ -145,6 +149,7 @@ const mapStateToProps = state => ({
   mobileMenu: state.general.mobileMenu,
   mobileView: state.general.mobileView,
   notificationShow: state.general.notificationShow,
+  enableSendEventsFor: state.config.enableSendEventsFor,
   loading: state.general.loading
 })
 

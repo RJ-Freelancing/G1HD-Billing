@@ -8,7 +8,10 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography'
 import SaveIcon from '@material-ui/icons/Save'
 import Button from '@material-ui/core/Button';
-
+import FormLabel from '@material-ui/core/FormLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 import { updateConfig } from 'actions/users'
 import { increaseCredits } from 'actions/transactions'
@@ -38,6 +41,13 @@ const AnnouncementsWrapper = styled(Paper)`
 `
 
 const IncreaseCreditsWrapper = styled(Paper)`
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 20px;
+  // padding: 20px;
+`
+
+const SendEventsWrapper = styled(Paper)`
   display: grid;
   grid-template-columns: 1fr;
   grid-gap: 20px;
@@ -77,7 +87,7 @@ class SuperAdminConfig extends Component {
             Minimum Transferrable Credits
           </Typography>
           <form 
-            style={{textAlign: 'center'}}
+            style={{textAlign: 'center', paddingBottom: 10}}
             onSubmit={(e)=>{
               e.preventDefault()
               this.props.updateConfig({configName: 'minimumTransferrableCredits', configValue: this.state.minimumTransferrableCredits})
@@ -137,7 +147,7 @@ class SuperAdminConfig extends Component {
             Increase Self Credits
           </Typography>
           <form 
-            style={{textAlign: 'center'}}
+            style={{textAlign: 'center', paddingBottom: 10}}
             onSubmit={this.increaseCredits} 
           >
             <TextField
@@ -161,6 +171,57 @@ class SuperAdminConfig extends Component {
             </Button>
           </form>
         </IncreaseCreditsWrapper>
+
+        <SendEventsWrapper elevation={5}>
+          <Typography variant="body1"  style={{height: '100px', textAlign: 'left', background: 'linear-gradient(60deg, rgb(239, 83, 80), rgb(229, 57, 53))', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}>
+            Sending Events Capability
+          </Typography>
+          <FormControl component="fieldset" style={{padding: 20}}>
+            <FormLabel component="legend">Select Users who are allowed to Send Events to Clients</FormLabel>
+              <FormControlLabel
+                control={
+                  <Checkbox 
+                    checked={this.props.enableSendEventsFor['admin']} 
+                    onChange={()=>                    
+                      this.props.updateConfig({
+                        configName: 'enableSendEventsFor', 
+                        configValue: {...this.props.enableSendEventsFor, admin: !this.props.enableSendEventsFor['admin']}
+                      })
+                    } 
+                  />
+                }
+                label="Admin"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox 
+                    checked={this.props.enableSendEventsFor['superReseller']} 
+                    onChange={()=>
+                      this.props.updateConfig({
+                        configName: 'enableSendEventsFor', 
+                        configValue: {...this.props.enableSendEventsFor, superReseller: !this.props.enableSendEventsFor['superReseller']}
+                      })
+                    } 
+                  />
+                }
+                label="Super Reseller"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox 
+                    checked={this.props.enableSendEventsFor['reseller']} 
+                    onChange={()=>
+                      this.props.updateConfig({
+                        configName: 'enableSendEventsFor', 
+                        configValue: {...this.props.enableSendEventsFor, reseller: !this.props.enableSendEventsFor['reseller']}
+                      })
+                    } 
+                  />
+                }
+                label="Reseller"
+              />
+          </FormControl>
+        </SendEventsWrapper>
       </Wrapper>
     )
   }
@@ -175,7 +236,8 @@ const mapStateToProps = state => ({
   authUsername: state.auth.username,
   authCreditsBalance: state.auth.creditsAvailable,
   minimumTransferrableCredits: state.config.minimumTransferrableCredits,
-  UserAnnouncements: state.config.UserAnnouncements
+  UserAnnouncements: state.config.UserAnnouncements,
+  enableSendEventsFor: state.config.enableSendEventsFor
 })
 
 const mapDispatchToProps = dispatch => ({
