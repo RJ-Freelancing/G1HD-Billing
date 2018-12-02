@@ -44,9 +44,3 @@ export async function nightlyCronJob(isMaintenance){
       await callback(array[index], index, array);
     }
   }
-
-  const filenameGenerator = () => {
-    const dateiso = new Date().toISOString()
-    const datestr = dateiso.substr(0, 10)
-    return `Cron_${datestr}.log`
-  }

@@ -1,6 +1,7 @@
 import express from 'express'
 import helmet from 'helmet'
-import { morganLogger, winstonLogger } from './_helpers/logger'
+import path from 'path'
+import { morganLogger } from './_helpers/logger'
 import mongoose from 'mongoose'
 import cron from 'node-cron'
 import userRoutes from './routes/userRoutes'
@@ -49,6 +50,13 @@ app.use(helmet())
 // Parse incoming requests with JSON payloads
 app.use(express.json({ limit: '10mb' }))
 
+// Page to show under maintenance
+app.use(express.static(path.join(__dirname, 'maintenance')));
+if(isMaintenance){
+  app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname , 'maintenance', 'index.html'));
+  });
+}
 
 // Routes
 app.use('/api/auth', authRoutes)
@@ -60,12 +68,13 @@ app.use('/api/config', configRoutes)
 
 // Serve React Frontend at '/' url only in production
 if (process.env.NODE_ENV === 'production') {
-  const path = require('path');
   app.use(express.static(path.join(__dirname, 'client')));
   app.get('*', function (req, res) {
     res.sendFile(path.join(__dirname, 'client', 'index.html'));
   });
 }
+
+
 
 // Catch 404 Errors
 app.use((req, res, next) => {
@@ -84,8 +93,8 @@ app.use((err, req, res, next) => {
 })
 
 //Maintenance Cron Job Runs everyday Night at 3.
-cron.schedule("* * 1 * * *", function() {
-  // isMaintenance = nightlyCronJob(isMaintenance)
+cron.schedule("0,30 * * * * *", function() {
+  isMaintenance = nightlyCronJob(isMaintenance)
 }); 
 
 // Start the server
