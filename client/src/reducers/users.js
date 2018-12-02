@@ -84,10 +84,10 @@ const users = (state = initialState, action) => {
       }
     case 'DELETE_CLIENT_SUCCESS':
       // Find the deleted client and remove from clients list
-      stb_mac = action.meta.previousAction.payload.request.url.split('/').pop()     
+      stb_mac = action.meta.previousAction.payload.request.url.split('/').pop()    
       return {
         ...state, 
-        clients: state.clients.filter(client=>client.stb_mac===stb_mac)
+        clients: state.clients.filter(client=>client.stb_mac!==stb_mac)
       }
     case 'UPDATE_CREDIT_SUCCESS':          
       const {transactionTo, credits} = action.payload.data.transaction
