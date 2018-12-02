@@ -25,7 +25,7 @@ class UserList extends Component {
     if (urlPath==="superResellers")
       return this.props.authUserType==="admin"
     if (urlPath==="resellers")
-      return this.props.authUserType==="superResellers"
+      return this.props.authUserType==="superReseller"
     return true
   }
   
