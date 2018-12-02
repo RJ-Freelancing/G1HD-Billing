@@ -46,7 +46,7 @@ class EnhancedTableHead extends React.Component {
   }
 
   render() {
-    const { order, orderBy, viewOnly, data, rows, selected, dataLength, selectAll, isEvent, canDownload } = this.props
+    const { order, orderBy, data, rows, selected, dataLength, selectAll, isEvent, canDownload } = this.props
     
     return (
       <TableHead>

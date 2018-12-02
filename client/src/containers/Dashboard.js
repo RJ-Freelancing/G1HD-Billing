@@ -247,7 +247,7 @@ class Dashboard extends Component {
             {['superAdmin', 'admin', 'superReseller'].includes(authUserType) &&
             <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr', alignItems: 'center'}}>
               <Typography  style={{textAlign: 'left', fontSize: '14px', paddingLeft: 20, color: 'black', letterSpacing: 1}} variant="overline"><Icon style={{fontSize: '15px'}}>person</Icon> Resellers </Typography>
-              <Typography  style={{textAlign: 'right', paddingRight: 30, color: 'black', letterSpacing: 1}} variant="overline"> {resellers.length} </Typography>
+              <Typography  style={{textAlign: 'right', fontSize: '14px', paddingRight: 30, color: 'black', letterSpacing: 1}} variant="overline"> {resellers.length} </Typography>
             </div>
             }
             {['superAdmin', 'admin', 'superReseller', 'reseller'].includes(authUserType) &&
