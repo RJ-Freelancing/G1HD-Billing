@@ -98,12 +98,11 @@ class UserAdd extends Component {
 
   checkValidation = () => {
     const usernameEmpty = this.state.newUser.username==="";
-    const emailEmpty = this.state.newUser.email==="";
     const passwordEmpty = this.state.newUser.password==="";
     const firstNameEmpty = this.state.newUser.firstName==="";
     const lastNameEmpty = this.state.newUser.lastName==="";
     const phoneNoInvalid = this.state.newUser.phoneNo==="" || !this.state.newUser.phoneNo.match(validPhoneNo);
-    return usernameEmpty || emailEmpty || passwordEmpty || firstNameEmpty || lastNameEmpty || phoneNoInvalid
+    return usernameEmpty || passwordEmpty || firstNameEmpty || lastNameEmpty || phoneNoInvalid
   }
 
   getAddingUserType = () => {
@@ -146,13 +145,10 @@ class UserAdd extends Component {
               <TextField
                 label="Email"
                 type="email"
-                required
                 value={this.state.newUser.email}
                 onChange={(e)=>this.handleTextChange('email', e.target.value)}
                 fullWidth
                 disabled={this.props.loading}
-                error={Boolean(this.state.newUser.email) && this.state.newUser.email===""}
-                helperText={this.state.newUser.email && this.state.newUser.email==="" ? "Required" : null}
               />
               <TextField
                 label="Password"

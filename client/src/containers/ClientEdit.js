@@ -39,7 +39,7 @@ import { getTariffPlans } from 'actions/general'
 
 
 const validPhoneNo = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
-const validMAC = /^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/
+const validMAC = /^[a-fA-F0-9:]{17}|[a-fA-F0-9]{12}$/
 
 const Wrapper = styled.div`
   display: grid;
@@ -52,6 +52,7 @@ const Wrapper = styled.div`
 
 const ClientEditWrapper = styled(Paper)`
   // padding: 20px 20px;
+  // height: fit-content;
 `
 
 const ClientProfile = styled.div`
@@ -71,6 +72,7 @@ const CreditsWrapper = styled(Paper)`
 
 const TariffWrapper = styled(Paper)`
   // padding: 20px 20px;
+  height: fit-content;
 `
 
 const TariffDetails = styled.div`
@@ -163,7 +165,7 @@ class ClientEdit extends Component {
       subscriptions: [],
       msg: '',
       changeMAC: false,
-      newMAC: '',
+      newMAC: '00:1A:79',
       checkMACStatus: '',
       transactions: []
     }
@@ -389,11 +391,11 @@ class ClientEdit extends Component {
             </form>
           }
         </ClientEditWrapper>
-        <div>
+        {/* <div> */}
           <CreditsWrapper elevation={24}>
             <Typography variant="h4" style={{background: '#4875b4', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}> Credits </Typography>
             {this.props.authUsername===this.state.client.parentUsername  &&
-              <div>
+              <div style={{padding: 20}}>
                 <br/><br/>
                 <TextField
                   label="Select Credits"
@@ -456,27 +458,7 @@ class ClientEdit extends Component {
             }
           </CreditsWrapper>
 
-          <Paper style={{textAlign: 'center', marginTop: 10}}>
-            <Typography variant="h4" style={{textAlign: 'left', background: '#805bbe', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}> Send Message </Typography>
-            <div style={{padding: 20}}>
-              <TextField
-                type="text"
-                value={this.state.msg ? this.state.msg : ''}
-                onChange={(e)=>this.setState({msg: e.target.value})}
-                fullWidth
-                multiline
-                rows={5}
-                rowsMax="5"
-                disabled={this.props.loading}
-                placeholder="Send a message to this client to display in portal"
-              /><br/><br/>
-              <Button variant="contained" color="primary" disabled={this.props.loading || this.state.msg===""} onClick={this.sendMessage}>
-                Send
-                <SendIcon style={{marginLeft: 5}}/>
-              </Button>
-            </div>
-          </Paper>
-        </div>
+        {/* </div> */}
         <TariffWrapper elevation={24}>
           <Typography variant="h4" style={{textAlign: 'left', background: 'linear-gradient(60deg, rgb(239, 83, 80), rgb(229, 57, 53))', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}> Edit Tariff Plan</Typography>
           <br/><br/>
@@ -542,6 +524,27 @@ class ClientEdit extends Component {
             <Typography variant="subtitle2">Last Active</Typography>
             <Typography variant="body2">{format(Date.parse(this.state.client.last_active), 'D MMMM YYYY @ HH:mm:ss')}</Typography>
           </STBDetails>
+
+          <Paper style={{textAlign: 'center', marginTop: 10}}>
+            <Typography variant="h4" style={{textAlign: 'left', background: '#805bbe', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}> Send Message </Typography>
+            <div style={{padding: 20}}>
+              <TextField
+                type="text"
+                value={this.state.msg ? this.state.msg : ''}
+                onChange={(e)=>this.setState({msg: e.target.value})}
+                fullWidth
+                multiline
+                rows={5}
+                rowsMax="5"
+                disabled={this.props.loading}
+                placeholder="Send a message to this client to display in portal"
+              /><br/><br/>
+              <Button variant="contained" color="primary" disabled={this.props.loading || this.state.msg===""} onClick={this.sendMessage}>
+                Send
+                <SendIcon style={{marginLeft: 5}}/>
+              </Button>
+            </div>
+          </Paper>
         </STBDetailsWrapper>
 
         <TransactionWrapper elevation={24}>

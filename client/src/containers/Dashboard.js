@@ -17,7 +17,7 @@ import { checkMAC } from 'actions/clients'
 import { updateCredits } from 'actions/transactions'
 
 
-const validMAC = /^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/
+const validMAC = /^[a-fA-F0-9:]{17}|[a-fA-F0-9]{12}$/
 
 
 const Wrapper = styled.div`

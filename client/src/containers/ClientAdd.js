@@ -22,7 +22,7 @@ import { getTariffPlans } from 'actions/general'
 
 
 const validPhoneNo = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
-const validMAC = /^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/
+const validMAC = /^[a-fA-F0-9:]{17}|[a-fA-F0-9]{12}$/
 
 const Wrapper = styled.div`
   display: grid;

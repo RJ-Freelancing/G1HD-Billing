@@ -17,6 +17,9 @@ const theme = createMuiTheme({
       main: '#566384',
     },
   },
+  typography: {
+    useNextVariants: true,
+  },
 });
 
 
