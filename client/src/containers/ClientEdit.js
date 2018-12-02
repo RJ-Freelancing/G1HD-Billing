@@ -165,7 +165,7 @@ class ClientEdit extends Component {
       subscriptions: [],
       msg: '',
       changeMAC: false,
-      newMAC: '',
+      newMAC: '00:1A:79',
       checkMACStatus: '',
       transactions: []
     }
