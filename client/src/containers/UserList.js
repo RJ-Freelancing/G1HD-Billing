@@ -48,8 +48,8 @@ class UserList extends Component {
         title={startCase(this.props.location.pathname.substr(1))}
         rows={rows}
         data={this.getTableData(rows, this.props.location.pathname.substr(1))}
-        orderBy='creditsAvailable'
-        orderByDirection='asc'
+        orderBy='username'
+        orderByDirection='desc'
         mobileView={this.props.mobileView}
         gotoLink={(user)=>this.props.history.push(`/users/${user.username}`)} 
         canAdd={this.checkPermissionToAdd(this.props.location.pathname.substr(1))}

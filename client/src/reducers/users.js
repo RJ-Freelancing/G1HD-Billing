@@ -74,6 +74,12 @@ const users = (state = initialState, action) => {
             return client
         })
       }
+    case 'UPGRADE_USER_SUCCESS':
+      const upgradedUserType = action.meta.previousAction.payload.request.data.userType     
+      return {
+        ...state, 
+        [`${upgradedUserType}s`]: [...state[`${upgradedUserType}s`], action.payload.data[0]]
+      }
     case 'DELETE_USER_SUCCESS':
       // Find the deleted user and remove from appropiate list
       username = action.meta.previousAction.payload.request.url.split('/').pop()     

@@ -97,6 +97,6 @@ export const upgradeUser = (username, upgradingUser) => ({
       data: upgradingUser
     }
   },
-  success: `Successfully upgraded ${upgradingUser.upgradingNewUsername} to ${upgradingUser.upgradingUserType}`,
+  success: `Successfully upgraded ${upgradingUser.username} to ${upgradingUser.userType}`,
   failure: "Something went wrong while upgrading user !"
 })

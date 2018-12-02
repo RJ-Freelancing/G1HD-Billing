@@ -102,7 +102,7 @@ class UserEdit extends Component {
     if (user) {
       this.props.getUserTransactions(username)
       .then(resnponseTransactions => { 
-        this.setState({user, editingUser: {...user}, transactions: resnponseTransactions.payload.data}, ()=>{
+        this.setState({user, editingUser: {...user}, transactions: resnponseTransactions.payload ? resnponseTransactions.payload.data : []}, ()=>{
           this.props.getConfig()
         })
       })
@@ -221,6 +221,17 @@ class UserEdit extends Component {
         return false
     }
   }
+
+  userIsUpgradable = () => {
+    const alreadyUpgraded = this.state.user.upgradedAccount 
+    const isUpgradableUserType = ['superReseller', 'reseller'].includes(this.state.user.userType)
+    if ((this.state.user.userType === 'superReseller') && (this.props.authUserType !== 'superAdmin'))
+      return false
+    else if ((this.state.user.userType === 'reseller') && (this.props.authUserType !== 'admin'))
+      return false   
+    else
+      return !alreadyUpgraded && isUpgradableUserType
+  }
   
   render() {    
     if (!this.state.user)
@@ -232,8 +243,8 @@ class UserEdit extends Component {
         </Wrapper>
       )
 
-    const userIsUpgradable = !this.state.user.upgradedAccount && ['superReseller', 'reseller'].includes(this.state.user.userType)
-
+    const userIsUpgradable = this.userIsUpgradable()
+  
     return (
       <Wrapper>
         <UserEditWrapper elevation={24}>
@@ -247,13 +258,10 @@ class UserEdit extends Component {
                 <TextField
                   label="Email"
                   type="email"
-                  required
                   value={this.state.editingUser.email}
                   onChange={(e)=>this.handleTextChange('email', e.target.value)}
                   fullWidth
                   disabled={this.props.loading}
-                  error={Boolean(this.state.editingUser.email) && this.state.editingUser.email===""}
-                  helperText={this.state.editingUser.email && this.state.editingUser.email==="" ? "Required" : null}
                 />
                 <InputMask mask="999-999-9999" 
                   value={this.state.editingUser.phoneNo}  
@@ -338,7 +346,7 @@ class UserEdit extends Component {
             <Typography variant="h4" style={{textAlign: 'left', background: 'linear-gradient(60deg, rgb(255, 167, 38), rgb(251, 140, 0))', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}> Credits </Typography>
             <br/><br/>
             {this.state.user && this.props.authUsername===this.state.user.parentUsername  &&
-              <div>
+              <div style={{padding: 20}}>
                 <TextField
                   label="Select Credits"
                   type="number"
@@ -452,7 +460,7 @@ class UserEdit extends Component {
                 type="text"
                 required
                 value={this.state.upgradingNewUsername}
-                onChange={(e)=>this.setState({upgradingNewUsername: e.target.value})}
+                onChange={(e)=>this.setState({upgradingNewUsername: e.target.value.trim()})}
                 fullWidth
                 error={this.state.upgradingNewUsername===''}
                 helperText={this.state.upgradingNewUsername===''? "Required" : null}
