@@ -334,7 +334,7 @@ export default class EnhancedTable extends React.Component {
                       </TableCell>
                     }
                     {canDownload && viewOnly &&
-                      <TableCell style={{textAlign: 'center', padding: 0}}>
+                      <TableCell style={{textAlign: 'center', padding: 0, margin: 0}}>
                       </TableCell>
                     }
                     {Object.entries(n).map(([field, value]) => {

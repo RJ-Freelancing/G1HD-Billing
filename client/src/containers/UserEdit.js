@@ -109,6 +109,7 @@ class UserEdit extends Component {
     }
   }
 
+
   componentDidUpdate = (prevProps, prevState, snapshot) => {
     const username = this.props.match.params.id
     const user = this.findInternalUserFromUsername(username)
@@ -350,7 +351,7 @@ class UserEdit extends Component {
                 <TextField
                   label="Select Credits"
                   type="number"
-                  inputProps={{ min: this.state.credits.action==='recover' ? 1 : this.props.minimumTransferrableCredits }}
+                  inputProps={{ min: this.state.credits.action==='recover' ? (this.props.authUserType==='superReseller' ? this.props.nonRefundableCredits : 1) : this.props.minimumTransferrableCredits }}
                   value={this.state.credits.value}
                   onChange={(e)=>this.setState({credits: {...this.state.credits, value: parseInt(e.target.value)}})}
                   fullWidth
@@ -358,12 +359,14 @@ class UserEdit extends Component {
                   error={
                     (this.state.credits.action==='add' && (this.state.credits.value < this.props.minimumTransferrableCredits)) || 
                     (this.state.credits.action==='add' && (this.props.authCreditsAvailable < this.state.credits.value)) ||
-                    (this.state.credits.action==='recover' && (this.state.user.creditsAvailable-this.state.credits.value < 0))
+                    (this.state.credits.action==='recover' && (this.state.user.creditsAvailable-this.state.credits.value < 0)) ||
+                    (this.props.authUserType==='superReseller' && this.state.credits.action==='recover' && (this.state.user.creditsAvailable-this.state.credits.value < this.props.nonRefundableCredits))
                   }
                   helperText={
                     (this.state.credits.action==='add' && (this.state.credits.value < this.props.minimumTransferrableCredits)) ? `Minimum Transferrable credits is ${this.props.minimumTransferrableCredits}` 
                     : (this.state.credits.action==='add' && (this.props.authCreditsAvailable < this.state.credits.value)) ? "You don't have enough credits to transfer" 
                     : (this.state.credits.action==='recover' && (this.state.user.creditsAvailable-this.state.credits.value < 0)) ? 'User has not enough credits to recover'
+                    : (this.props.authUserType==='superReseller' && this.state.credits.action==='recover' && (this.state.user.creditsAvailable-this.state.credits.value < this.props.nonRefundableCredits)) ? `Cannot recover past non refundable credits ${this.props.nonRefundableCredits}`
                     : null
                   }
                 />
@@ -396,7 +399,8 @@ class UserEdit extends Component {
                     (this.props.loading) || 
                     (this.state.credits.action==='add' && (this.state.credits.value < this.props.minimumTransferrableCredits)) || 
                     (this.state.credits.action==='add' && (this.props.authCreditsAvailable < this.state.credits.value)) ||
-                    (this.state.credits.action==='recover' && (this.state.user.creditsAvailable-this.state.credits.value < 0))
+                    (this.state.credits.action==='recover' && (this.state.user.creditsAvailable-this.state.credits.value < 0)) ||
+                    (this.props.authUserType==='superReseller' && this.state.credits.action==='recover' && (this.state.user.creditsAvailable-this.state.credits.value < this.props.nonRefundableCredits))
                   } 
                   style={{float: 'right'}} 
                   onClick={()=>this.updateCredits()}
@@ -406,14 +410,15 @@ class UserEdit extends Component {
                 </Button>
               </div>
            }
-            <br/><br/><br/>
-            <div style={{textAlign: 'center'}}>
-              Credits Available<br/> <div style={{fontSize: 50}}> {this.state.user.creditsAvailable} </div>
+            <br/>
+            <div style={{textAlign: 'center', alignItems: 'center', display: 'grid', gridGap: 10, gridTemplateColumns: this.state.user.userType==='reseller' ? '1fr 1fr' : '1fr'}}>
+              <>
+                Credits Available <div style={{fontSize: 50}}> {this.state.user.creditsAvailable} </div>
+              </>
               {this.state.user.userType==='reseller' &&
-                <>
-                <br/><br/>
-                Credits Owed<br/> <div style={{fontSize: 50}}> {this.state.user.creditsOwed} </div>
-                </>
+              <>
+              Credits Owed<div style={{fontSize: 50}}> {this.state.user.creditsOwed} </div>
+              </>
               }
             </div>
           </CreditsWrapper>
@@ -523,7 +528,6 @@ class UserEdit extends Component {
 }
 
 const mapStateToProps = state => ({
-  token: state.auth.token,
   authUserType: state.auth.userType,
   authCreditsAvailable: state.auth.creditsAvailable,
   admins: state.users.admins,
@@ -532,6 +536,7 @@ const mapStateToProps = state => ({
   authUsername: state.auth.username, 
   mobileView: state.general.mobileView,
   minimumTransferrableCredits: state.config.minimumTransferrableCredits,
+  nonRefundableCredits: state.config.nonRefundableCredits,
   loading: state.general.loading
 })
 
