@@ -17,7 +17,7 @@ const rows = [
   { field: 'parentUsername', label: 'Reseller', type: 'string'  },
   // { field: 'comment', label: 'Comments', type: 'string'  },
   { field: 'now_playing_content', label: 'Now Playing', type: 'string'  },
-  // { field: 'status', label: 'Account Status', type: 'boolean'  }
+  { field: 'status', label: 'Box Status', type: 'boolean'  }
 ]
 
 

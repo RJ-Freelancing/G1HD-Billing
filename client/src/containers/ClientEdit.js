@@ -364,7 +364,7 @@ class ClientEdit extends Component {
                   label={`Account Status (${this.state.editingClient.status===1 ? 'Active' : 'Inactive'})`}
                   control={
                     <Switch
-                      checked={this.state.editingClient.status===1}
+                      checked={this.state.editingClient.status===0}
                       onChange={(e)=>this.handleTextChange('status', e.target.checked ? 1 : 0)}
                       value={this.state.editingClient.status}
                       color="primary"
