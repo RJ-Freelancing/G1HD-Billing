@@ -15,7 +15,9 @@ export default class InactivityPopup extends Component {
 
   componentDidMount = () => {
     window.onmousemove = this.resetInactiveTimer
-    window.addEventListener("scroll", this.resetInactiveTimer, true)
+    window.onclick = this.resetInactiveTimer
+    window.onkeypress = this.resetInactiveTimer
+    window.onscroll = this.resetInactiveTimer
     this.idleTimer = setTimeout(this.onIdle, 120000)
     this.refreshTokenTimer = setInterval(this.props.refreshToken, 280000)
   }
@@ -28,22 +30,23 @@ export default class InactivityPopup extends Component {
   componentWillUnmount = () => { 
     clearInterval(this.timer)
     clearTimeout(this.idleTimer)
-    window.removeEventListener("scroll", this.resetInactiveTimer)
     clearInterval(this.refreshTokenTimer)
   }
 
   resetInactiveTimer = () => {
-    if (this.state.inactivity && this.state.inactivity < 60)
-      this.setState({ inactivity: 0 }, ()=>{
-        clearInterval(this.timer)
-        clearTimeout(this.idleTimer)
-        this.idleTimer = setTimeout(this.onIdle, 120000)
-      })
-  }
+
+    this.setState({ inactivity: 0 }, ()=>{
+      clearTimeout(this.idleTimer)
+      clearInterval(this.timer)
+      this.idleTimer = setTimeout(this.onIdle, 120000)
+    }
+  )}
 
   progress = () => {
     const { inactivity } = this.state
-    if (inactivity >= 60) this.props.logout()
+    if (inactivity >= 60) {
+      this.props.logout()
+    }
     else this.setState({ inactivity: inactivity + 1 })
   }
 
