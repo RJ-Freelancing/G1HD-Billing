@@ -130,10 +130,10 @@ class ClientAdd extends Component {
                 value={this.state.newClient.login}
                 onChange={(e)=>this.handleTextChange('login', e.target.value.toLowerCase().trim())}
                 fullWidth
-                disabled={this.props.loading}
+                disabled={this.props.loading || this.props.authCreditsAvailable<=0}
                 autoFocus
-                error={this.state.newClient.login===""}
-                helperText={this.state.newClient.login==="" ? "Required" : null}
+                error={!this.props.authCreditsAvailable<=0 && this.state.newClient.login===""}
+                helperText={!this.props.authCreditsAvailable<=0 && this.state.newClient.login==="" ? "Required" : null}
               />
               <TextField
                 label="Full Name"
@@ -142,28 +142,30 @@ class ClientAdd extends Component {
                 value={this.state.newClient.full_name}
                 onChange={(e)=>this.handleTextChange('full_name', e.target.value)}
                 fullWidth
-                disabled={this.props.loading}
+                disabled={this.props.loading || this.props.authCreditsAvailable<=0}
                 error={Boolean(this.state.newClient.full_name) && this.state.newClient.full_name===""}
                 helperText={this.state.newClient.full_name && this.state.newClient.full_name==="" ? "Required" : null}
               />
               <InputMask mask="**:**:**:**:**:**" 
                 value={this.state.newClient.stb_mac}  
                 onChange={(e)=>this.handleTextChange('stb_mac', e.target.value.toUpperCase())}
+                disabled={this.props.loading || this.props.authCreditsAvailable<=0}
               >
                 {(inputProps) => (
                   <TextField 
                     {...inputProps} 
                     label="MAC Address"
                     fullWidth
-                    disabled={this.props.loading}
-                    error={Boolean(this.state.newClient.stb_mac) && !this.state.newClient.stb_mac.match(validMAC)}
-                    helperText={this.state.newClient.stb_mac && !this.state.newClient.stb_mac.match(validMAC) ? "Invalid MAC Given" : null}
+                    
+                    error={!this.props.authCreditsAvailable<=0 && Boolean(this.state.newClient.stb_mac) && !this.state.newClient.stb_mac.match(validMAC)}
+                    helperText={!this.props.authCreditsAvailable<=0 && this.state.newClient.stb_mac && !this.state.newClient.stb_mac.match(validMAC) ? "Invalid MAC Given" : null}
                   />
                 )}
               </InputMask>
               <InputMask mask="999-999-9999" 
                 value={this.state.newClient.phone}  
                 onChange={(e)=>this.handleTextChange('phone', e.target.value)}
+                disabled={this.props.loading || this.props.authCreditsAvailable<=0}
               >
                 {(inputProps) => (
                   <TextField 
@@ -171,7 +173,6 @@ class ClientAdd extends Component {
                     label="Phone"
                     fullWidth
                     required
-                    disabled={this.props.loading}
                     error={Boolean(this.state.newClient.phone) && !this.state.newClient.phone.match(validPhoneNo)}
                     helperText={this.state.newClient.phone && !this.state.newClient.phone.match(validPhoneNo) ? "Invalid Phone" : null}
                   />
@@ -184,6 +185,7 @@ class ClientAdd extends Component {
                   value={this.state.newClient ? this.state.newClient.tariff_plan : "1"}
                   onChange={(e)=>this.handleTextChange('tariff_plan', e.target.value)}
                   inputProps={{ id: 'tariff' }}
+                  disabled={this.props.loading || this.props.authCreditsAvailable<=0}
                 >
                   {
                     this.props.tariffPlans.map(plan=>(
@@ -199,7 +201,7 @@ class ClientAdd extends Component {
                   type="number"
                   fullWidth
                   inputProps={{ min: 0, max: 12 }}
-                  disabled={this.props.loading}
+                  disabled={this.props.loading || this.props.authCreditsAvailable<=0}
                   error={
                     (this.state.newClient.credits > 12 || this.state.newClient.credits < 0) ||
                     (this.props.authCreditsAvailable<=0 && this.state.newClient.credits > 0)
@@ -217,13 +219,19 @@ class ClientAdd extends Component {
                     onChange={(e)=>this.handleTextChange('status', e.target.checked ? 1 : 0)}
                     value={this.state.newClient.status}
                     color="primary"
-                    disabled={this.props.loading}
+                    disabled={this.props.loading || this.props.authCreditsAvailable<=0}
                   />
                 }
               />
+              {this.props.authCreditsAvailable<=0 && <Typography variant="h6" color='secondary'> You don't have enough credits to add a new client. </Typography>}
             </ClientEdit>
             <br/><br/>
-            <Button variant="contained" type="submit" color="primary" disabled={this.props.loading || this.checkValidation() || (this.props.authCreditsAvailable<=0 && this.state.newClient.credits > 0)}>
+            <Button 
+              variant="contained" 
+              type="submit" 
+              color="primary" 
+              disabled={this.props.loading || this.checkValidation() || (this.props.authCreditsAvailable<=0 && this.state.newClient.credits > 0) || this.props.authCreditsAvailable<=0}
+            >
               Submit&nbsp;
               <SaveIcon />
             </Button>
