@@ -36,7 +36,8 @@ export const schemas = {
 
   upgradeSchema: Joi.object({
     username: Joi.string().required(),
-    userType: Joi.string().required()
+    userType: Joi.string().required(),
+    password: Joi.string()
   })
 
 }

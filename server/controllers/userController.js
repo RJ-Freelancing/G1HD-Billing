@@ -97,8 +97,8 @@ export async function deleteUser(req, res, next) {
 }
 
 export async function upgradeUserRole(req, res, next) {
-  const { username, userType } = req.value.body
-  const { email, password, firstName, lastName, phoneNo, accountStatus, upgradedAccount } = res.locals.user
+  const { username, userType, password } = req.value.body
+  const { email, firstName, lastName, phoneNo, accountStatus, upgradedAccount } = res.locals.user
   const parentUsername = req.user.username
   if (await validParent(req.user.userType, userType, res.locals.user) == false) return res.status(403).json({ error: `You have no rights to add this user.` })
   if(upgradedAccount == true) return res.status(422).json({ error: `This user already has been upgraded to ${userType}.` })
