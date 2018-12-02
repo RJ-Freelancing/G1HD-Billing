@@ -277,6 +277,7 @@ class Dashboard extends Component {
               noPagination
               backgroundColor='linear-gradient(60deg, #2D3446, #566384)'
               headingColor='white'
+              canDownload={this.props.authUserType==='superAdmin'}
           />
           </ClientsAboutToExpire>
           
@@ -295,6 +296,7 @@ class Dashboard extends Component {
                 noPagination
                 backgroundColor='linear-gradient(60deg, #2D3446, #566384)'
                 headingColor='white'
+                canDownload={this.props.authUserType==='superAdmin'}
               />
             </UsersAccountBalance>
           }
@@ -313,6 +315,7 @@ class Dashboard extends Component {
               noPagination
               backgroundColor='linear-gradient(60deg, #2D3446, #566384)'
               headingColor='white'
+              canDownload={this.props.authUserType==='superAdmin'}
             />
           </TransactionsSummary>
         </Bottom>

@@ -55,6 +55,7 @@ class UserList extends Component {
         canAdd={this.checkPermissionToAdd(this.props.location.pathname.substr(1))}
         addNew={()=>this.props.history.push('/users/new')}
         tableHeight={this.props.mobileView ? '75vh' : '85vh'}
+        canDownload={this.props.authUserType==='superAdmin'}
       />
     )
   }

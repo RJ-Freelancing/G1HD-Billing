@@ -38,6 +38,7 @@ class Transaction extends Component {
         mobileView={this.props.mobileView}
         viewOnly={true}
         tableHeight={this.props.mobileView ? '75vh' : '85vh'}
+        canDownload={this.props.authUserType==='superAdmin'}
       />
     )
   }
@@ -47,6 +48,7 @@ class Transaction extends Component {
 const mapStateToProps = state => ({
   token: state.auth.token,
   authUsername: state.auth.username,
+  authUserType: state.auth.userType,
   transactions: state.users.transactions,
   mobileView: state.general.mobileView
 })

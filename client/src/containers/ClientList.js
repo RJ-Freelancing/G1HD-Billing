@@ -79,6 +79,7 @@ class ClientList extends Component {
           authcreditsOwed={this.props.authcreditsOwed}
           tableHeight={this.props.mobileView ? '75vh' : '85vh'}
           canAdd={this.props.authUserType==='reseller'}
+          canDownload={this.props.authUserType==='superAdmin'}
         />
         <Confirmation
           open={this.state.confirmation}

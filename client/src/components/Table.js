@@ -46,7 +46,7 @@ class EnhancedTableHead extends React.Component {
   }
 
   render() {
-    const { order, orderBy, viewOnly, data, rows, selected, dataLength, selectAll, isEvent } = this.props
+    const { order, orderBy, viewOnly, data, rows, selected, dataLength, selectAll, isEvent, canDownload } = this.props
     
     return (
       <TableHead>
@@ -62,7 +62,7 @@ class EnhancedTableHead extends React.Component {
                 </Tooltip>
               </TableCell>
             }
-            {!viewOnly && !isEvent && 
+            {canDownload &&
               <TableCell style={{
                 position: 'sticky', 
                 top: 0, 
@@ -252,7 +252,8 @@ export default class EnhancedTable extends React.Component {
       limit,
       noPagination,
       backgroundColor,
-      headingColor
+      headingColor,
+      canDownload
     } = this.props
 
     const { data, order, orderBy, rowsPerPage, page, selected } = this.state
@@ -285,6 +286,7 @@ export default class EnhancedTable extends React.Component {
               selected={selected}
               dataLength={data.length}
               selectAll={this.handleSelectAll}
+              canDownload={canDownload}
             />
             <TableBody>
               {data.slice(0, limit)
@@ -329,6 +331,10 @@ export default class EnhancedTable extends React.Component {
                           </Tooltip>
                         }
                         </div>
+                      </TableCell>
+                    }
+                    {canDownload && viewOnly &&
+                      <TableCell style={{textAlign: 'center', padding: 0}}>
                       </TableCell>
                     }
                     {Object.entries(n).map(([field, value]) => {
