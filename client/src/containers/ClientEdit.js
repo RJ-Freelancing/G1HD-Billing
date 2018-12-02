@@ -514,7 +514,7 @@ class ClientEdit extends Component {
               </Tooltip>
             </Typography>
             <Typography variant="subtitle2">Receiver Status</Typography>
-            <Typography variant="body2">{this.state.client.online==="1" ? 'Online' : 'Offline'}</Typography>
+            <Typography variant="body2">{this.state.client.now_playing_content || 'Offline'}</Typography>
             <Typography variant="subtitle2">IP</Typography>
             <Typography variant="body2">{this.state.client.ip}</Typography>
             <Typography variant="subtitle2">STB Type</Typography>

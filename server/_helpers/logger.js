@@ -14,7 +14,7 @@ const filenameGenerator = () => {
 }
 
 // Ensure /logs directory exists
-const rootLogDir = path.join(__dirname, '/../logs/info')
+const rootLogDir = path.join(__dirname, '/../logs')
 fs.existsSync(rootLogDir) || fs.mkdirSync(rootLogDir)
 const logDirectoryInfo = path.join(__dirname, '/../logs/info')
 fs.existsSync(logDirectoryInfo) || fs.mkdirSync(logDirectoryInfo)
