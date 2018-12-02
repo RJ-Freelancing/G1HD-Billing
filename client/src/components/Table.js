@@ -14,7 +14,6 @@ import Tooltip from '@material-ui/core/Tooltip'
 import AddIcon from '@material-ui/icons/Add'
 import EditIcon from '@material-ui/icons/Edit'
 import PlusOneIcon from '@material-ui/icons/PlusOne'
-import Button from '@material-ui/core/Button'
 import SearchIcon from '@material-ui/icons/Search'
 import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
@@ -24,6 +23,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import SendIcon from '@material-ui/icons/Send'
 import downloadCsv from 'download-csv';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
+import Fab from '@material-ui/core/Fab';
 
 
 
@@ -72,9 +72,9 @@ class EnhancedTableHead extends React.Component {
                 backgroundColor: '#F1F3F6'
             }}>
               <Tooltip title="Download as CSV">
-                <Button aria-label="Download as CSV" variant= 'fab' color="primary" mini={true} onClick={()=>downloadCsv(data, rows)}>
+                <Fab aria-label="Download as CSV" color="primary" size='small' onClick={()=>downloadCsv(data, rows)}>
                   <CloudDownloadIcon/>
-                </Button>
+                </Fab>
               </Tooltip>
             </TableCell>
             }
@@ -123,14 +123,14 @@ const EnhancedTableToolbar = props => {
       {selected.length > 0 &&
         <div>
           <Tooltip title="Send Event">
-            <Button aria-label="Send Event" variant={mobileView ? 'fab' : 'contained'} color="primary" mini={mobileView} onClick={()=>sendEvent(selected)}>
+            <Fab aria-label="Send Event" variant={mobileView ? 'round' : 'extended'} color="primary" size={mobileView ? 'small' : 'large'} onClick={()=>sendEvent(selected)}>
               <SendIcon/>
               {!mobileView &&
                 <Typography variant="subtitle1" noWrap color="inherit">
                   Send Event
                 </Typography>
               }
-            </Button>
+            </Fab>
           </Tooltip>
         </div>
       }
@@ -146,10 +146,10 @@ const EnhancedTableToolbar = props => {
       {!viewOnly && canAdd &&
         <div>
           <Tooltip title="Add New">
-            <Button aria-label="Add New" variant={mobileView ? 'fab' : 'contained'} color="primary" mini={mobileView} onClick={addNew}>
+            <Fab aria-label="Add New" variant={mobileView ? 'round' : 'extended'} color="primary" size={mobileView ? 'small' : 'large'} onClick={addNew}>
               <AddIcon/>
               { !mobileView && <Typography variant="subtitle1" noWrap color="inherit"> Add New </Typography> }
-            </Button>
+            </Fab>
           </Tooltip>
         </div>
       }
