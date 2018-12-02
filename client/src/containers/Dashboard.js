@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography'
 import ReactHtmlParser from 'react-html-parser';
 import InputMask from 'react-input-mask';
 import TextField from '@material-ui/core/TextField'
-import { format } from 'date-fns'
+import { format, isPast } from 'date-fns'
 import ThumbUpIcon from '@material-ui/icons/ThumbUp'
 import ThumbDownIcon from '@material-ui/icons/ThumbDown'
 import Table from 'components/Table'
@@ -252,8 +252,14 @@ class Dashboard extends Component {
             }
             {['superAdmin', 'admin', 'superReseller', 'reseller'].includes(authUserType) &&
             <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr', alignItems: 'center'}}>
-              <Typography  style={{textAlign: 'left', fontSize: '14px', paddingLeft: 20, color: 'black', letterSpacing: 1}} variant="overline"><Icon style={{fontSize: '15px'}}>airplay</Icon> Clients </Typography>
-              <Typography  style={{textAlign: 'right', fontSize: '14px', paddingRight: 30, color: 'black', letterSpacing: 1}} variant="overline"> {clients.length} </Typography>
+              <Typography  style={{textAlign: 'left', fontSize: '14px', paddingLeft: 20, color: 'black', letterSpacing: 1}} variant="overline"><Icon style={{fontSize: '15px'}}>live_tv</Icon> Active Clients </Typography>
+              <Typography  style={{textAlign: 'right', fontSize: '14px', paddingRight: 30, color: 'black', letterSpacing: 1}} variant="overline"> {clients.filter(client => !isPast(client.tariff_expired_date)).length} </Typography>
+            </div>
+            }
+            {['superAdmin', 'admin', 'superReseller', 'reseller'].includes(authUserType) &&
+            <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr', alignItems: 'center'}}>
+              <Typography  style={{textAlign: 'left', fontSize: '14px', paddingLeft: 20, color: 'black', letterSpacing: 1}} variant="overline"><Icon style={{fontSize: '15px'}}>tv_off</Icon> Expired Clients </Typography>
+              <Typography  style={{textAlign: 'right', fontSize: '14px', paddingRight: 30, color: 'black', letterSpacing: 1}} variant="overline"> {clients.filter(client => isPast(client.tariff_expired_date)).length} </Typography>
             </div>
             }
           </ChildrenSummary>

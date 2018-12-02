@@ -42,7 +42,7 @@ const menus = [
   {label: 'Admins', link: '/admins', icon: 'local_library'},
   {label: 'Super Resellers', link: '/superResellers', icon: 'group'},
   {label: 'Resellers', link: '/resellers', icon: 'person'},
-  {label: 'Clients', link: '/clients', icon: 'airplay'},
+  {label: 'Clients', link: '/clients', icon: 'live_tv'},
   {label: 'Transactions', link: '/transactions', icon: 'attach_money'},
   {label: 'Send Events', link: '/events', icon: 'near_me'},
   {label: 'Configuration', link: '/config', icon: 'info'},
