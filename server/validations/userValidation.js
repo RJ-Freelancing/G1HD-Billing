@@ -9,11 +9,11 @@ export const schemas = {
 
   addSchema: Joi.object({
     username: Joi.string().regex(/^\s*\S+\s*$/).error(new Error('Cannot contain whitespace.')).required(),
-    email: Joi.string().email().error(new Error('Email Address should be a valid Email Address.')),
+    email: Joi.string().error(new Error('Email Address should be a valid Email Address.')),
     password: Joi.string().required(),
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
-    phoneNo: Joi.string().regex(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/),
+    phoneNo: Joi.string().required().regex(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/),
     userType: Joi.string().required().valid(['superAdmin', 'admin', 'superReseller', 'reseller']),
     accountStatus: Joi.boolean().required(),
   }),

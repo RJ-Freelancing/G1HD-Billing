@@ -31,9 +31,11 @@ export async function nightlyCronJob(isMaintenance){
         }
       })
     })
-  
-    isMaintenance = false
+    //Actual Logic Starts Here
+
+    
     winstonLoggerCron.info('Daily Maintenance Cron Job is Completed Successfully...')
+    isMaintenance = false
     return isMaintenance
   }
   

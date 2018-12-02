@@ -84,8 +84,8 @@ app.use((err, req, res, next) => {
 })
 
 //Maintenance Cron Job Runs everyday Night at 3.
-cron.schedule("15 * * * * *", function() {
-  nightlyCronJob(isMaintenance)
+cron.schedule("* * 1 * * *", function() {
+  // isMaintenance = nightlyCronJob(isMaintenance)
 }); 
 
 // Start the server

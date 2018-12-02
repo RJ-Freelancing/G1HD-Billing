@@ -114,7 +114,7 @@ export async function upgradeUserRole(req, res, next) {
   const existingUser = await userRepo.findOne({ username })
   if (existingUser)
     return res.status(422).json({ error: `User already exists with username: ${username}` })
-  await userRepo.create([{ username, email, password, firstName, lastName, phoneNo, userType, accountStatus, parentUsername, childUsernames : req.params.username }], { lean: true })
+  const newlyUpgradedUser = await userRepo.create([{ username, email, password, firstName, lastName, phoneNo, userType, accountStatus, parentUsername, childUsernames : req.params.username }], { lean: true })
   if (!req.user.childUsernames.includes(username)) {
     await req.user.update({ $push: { childUsernames: username.toLowerCase() }})
   }
@@ -122,7 +122,7 @@ export async function upgradeUserRole(req, res, next) {
   await res.locals.user.update({parentUsername : req.value.body.username, upgradedAccount : true})
   var oldParent = await userRepo.findOne({ username: oldParentUsername })
   await oldParent.update({ $pull: { childUsernames: req.params.username } })
-  return res.status(200).json(`User  ${req.params.username } has been successfully upgraded to ${username}.`)
+  return res.status(200).json(newlyUpgradedUser)
 }
 
 async function getChildren(list, isMinistra) {

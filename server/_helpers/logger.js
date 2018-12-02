@@ -14,6 +14,8 @@ const filenameGenerator = () => {
 }
 
 // Ensure /logs directory exists
+const rootLogDir = path.join(__dirname, '/../logs/info')
+fs.existsSync(rootLogDir) || fs.mkdirSync(rootLogDir)
 const logDirectoryInfo = path.join(__dirname, '/../logs/info')
 fs.existsSync(logDirectoryInfo) || fs.mkdirSync(logDirectoryInfo)
 const logDirectoryCron = path.join(__dirname, '/../logs/cron')
@@ -35,6 +37,7 @@ export const winstonLogger = winston.createLogger({
 
 // Disable winston logging on console for production
 if (process.env.NODE_ENV !== 'production') {
+  winstonLogger.clear()
   winstonLogger.add(new winston.transports.Console({
     format : winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
   }))
@@ -56,6 +59,7 @@ export const winstonLoggerCron = winston.createLogger({
 
 // Disable winston logging on console for production
 if (process.env.NODE_ENV !== 'production') {
+  winstonLoggerCron.clear()
   winstonLoggerCron.add(new winston.transports.Console({
     format : winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
   }))
