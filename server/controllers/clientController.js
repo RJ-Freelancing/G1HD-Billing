@@ -3,6 +3,7 @@ import querystring from 'querystring'
 import { checkPermissionRights } from '../_helpers/checkPermission'
 import clientRepo from '../models/clientModel'
 import userRepo from '../models/userModel'
+import { winstonLogger } from '../_helpers/logger'
 import transactionRepo from '../models/transactionModel'
 import { mergeArrayObjectsByKey } from '../controllers/userController'
 
@@ -20,6 +21,7 @@ const config = {
 }
 
 export async function validateMAC(req, res, next) {
+  winstonLogger.info("Running validateMAC Operation.")
   await axios.get(ministraAPI + 'accounts/' + req.params.id, config)
     .then(response => {
       res.locals.client = response.data
@@ -33,6 +35,7 @@ export async function validateMAC(req, res, next) {
 }
 
 export async function checkMac(req, res, next) {
+  winstonLogger.info("Running checkMac Operation.")
   const existingClient = await clientRepo.findOne({ clientMac: req.params.id })
   if (!existingClient)
     await checkAndDeleteUnwantedClient(req.params.id)
@@ -45,6 +48,7 @@ export async function checkMac(req, res, next) {
 }
 
 async function checkAndDeleteUnwantedClient(stb_mac){
+  winstonLogger.info("Running checkAndDeleteUnwantedClient Operation.")
   await axios.delete(ministraAPI + 'accounts/' + stb_mac, config)
     .then(response => {
       if(response.data.status == 'OK')
@@ -53,6 +57,7 @@ async function checkAndDeleteUnwantedClient(stb_mac){
 }
 
 export async function addClient(req, res, next) {
+  winstonLogger.info("Running addClient Operation.")
   if (req.user.userType !== 'reseller') return res.status(403).json({ error: `Only reseller can add a client.` })
   const { stb_mac } = req.value.body
   const ministraPayLoad = querystring.stringify(req.value.body)
@@ -95,6 +100,7 @@ export async function addClient(req, res, next) {
 }
 
 export async function updateClient(req, res, next) {
+  winstonLogger.info("Running updateClient Operation.")
   var returnMac = req.params.id
   if (req.value.body.stb_mac !== undefined) {
     returnMac = req.value.body.stb_mac
@@ -105,8 +111,6 @@ export async function updateClient(req, res, next) {
       .then(response => {
         res.locals.existingDeletingUPClient = response.data
       })
-      console.log(new Date());
-      console.log(new Date(res.locals.existingDeletingUPClient.results[0].tariff_expired_date));
       if(new Date(res.locals.existingDeletingUPClient.results[0].tariff_expired_date) < new Date()){
         await checkAndDeleteUnwantedClient(returnMac)
         await existingClient.remove()
@@ -137,6 +141,7 @@ export async function updateClient(req, res, next) {
 }
 
 export async function deleteClient(req, res, next) {
+  winstonLogger.info("Running deleteClient Operation.")
   if (await checkPermissionRights(req.params.id, req.user, 0) == false) return res.status(403).json({ error: `You Have No Rights To Perform This Action.` })
   const client = await clientRepo.findOne({ clientMac: req.params.id })
   if (!client) return res.status(422).json({ error: `Client with mac Address ${req.params.id} was not found in mongo DB` })

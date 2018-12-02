@@ -1,6 +1,8 @@
 import userRepo from '../models/userModel'
+import { winstonLogger } from './logger'
 
 export async function checkPermissionRights(reqestedUser, currentUser, ifUsers) {
+  winstonLogger.info("Checking Permission for reqestedUser : " + reqestedUser + " and currentUser : " + currentUser)
   if (currentUser.userType == "reseller") {
     if (ifUsers == 1) {
       if (currentUser.username !== reqestedUser.username) return false
@@ -50,6 +52,7 @@ export async function checkPermissionRights(reqestedUser, currentUser, ifUsers) 
 }
 
 export async function checkPermissionMinistra(reqestedMacs, currentUser) {
+  winstonLogger.info("Running checkPermissionMinistra Function...")
   if (currentUser.userType == "reseller") {
     if (Array.isArray(reqestedMacs)) return reqestedMacs.every(e => currentUser.childUsernames.includes(e))
     return currentUser.childUsernames.includes(reqestedMacs)
@@ -72,6 +75,7 @@ export async function checkPermissionMinistra(reqestedMacs, currentUser) {
 }
 
 export async function validParent(currentUserType, addingUserType, upgradingUser) {
+  winstonLogger.info("Running validParent Function...")
   if(upgradingUser == undefined){
     if (currentUserType == 'superAdmin' && addingUserType == 'admin') return true
     if (currentUserType == 'admin' && addingUserType == 'superReseller') return true

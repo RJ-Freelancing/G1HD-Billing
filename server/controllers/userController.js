@@ -4,10 +4,12 @@ import JWT from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import { getAllClients, getClients } from '../_helpers/ministraHelper'
 import { checkPermissionRights, validParent } from '../_helpers/checkPermission'
+import { winstonLogger } from '../_helpers/logger'
  
 const tokenExpiryHours = process.env.TOKEN_EXPIRY_HOURS
 
 export async function login(req, res, next) {
+  winstonLogger.info("Running Operation login...")
   const user = req.user
   if (user.accountStatus == false) return res.status(403).json({ error: `Your account is locked. Please contact your Adminstrator for more information.` })
   const token = getToken(user)
@@ -15,6 +17,7 @@ export async function login(req, res, next) {
 }
 
 const getToken = user => {
+  winstonLogger.info("Running Operation getToken...")
   return JWT.sign({
     iss: 'G1HD',
     sub: user.id,
@@ -24,6 +27,7 @@ const getToken = user => {
 }
 
 export async function validateUsername(req, res, next) {
+  winstonLogger.info("Running Operation validateUsername...")
   const user = await userRepo.findOne({ username: req.params.username })
   if (!user) return res.status(404).json({ error: `User with username ${req.params.username} was not found in DB` })
   res.locals.user = user
@@ -32,7 +36,7 @@ export async function validateUsername(req, res, next) {
 }
 
 export async function getAllUsers(req, res, next) {
- 
+  winstonLogger.info("Running Operation getAllUsers...")
   let admins = []
   let superResellers = []
   let resellers = []
@@ -59,6 +63,7 @@ export async function getAllUsers(req, res, next) {
 }
 
 export async function addUser(req, res, next) {
+  winstonLogger.info("Running Operation addUser...")
   const { username, email, password, firstName, lastName, phoneNo, userType, accountStatus, creditsAvailable, creditsOwed } = req.value.body
   const parentUsername = req.user.username
   if (await validParent(req.user.userType, userType, res.locals.user) == false) return res.status(403).json({ error: `You have no rights to add this user.` })
@@ -75,10 +80,12 @@ export async function addUser(req, res, next) {
 }
 
 export async function getUser(req, res, next) {
+  winstonLogger.info("Running Operation getUser...")
   return res.status(200).json(res.locals.user)
 }
 
 export async function updateUser(req, res, next) {
+  winstonLogger.info("Running Operation updateUser...")
   if (req.body.password !== undefined) {
     const salt = await bcrypt.genSalt(10)
     req.body.password = await bcrypt.hash(req.body.password, salt)
@@ -88,6 +95,7 @@ export async function updateUser(req, res, next) {
 }
 
 export async function deleteUser(req, res, next) {
+  winstonLogger.info("Running Operation deleteUser...")
   if (req.user.userType == "reseller") return res.status(403).json({ error: `Only your superReseller/admin can delete your account.` })
   if (res.locals.user.childUsernames.length !== 0) return res.status(422).json({ error: `The user ${res.locals.user.username} has childs. Please remove/switch childs before you delete this user.`})
   const username = res.locals.user.username
@@ -97,6 +105,7 @@ export async function deleteUser(req, res, next) {
 }
 
 export async function upgradeUserRole(req, res, next) {
+  winstonLogger.info("Running Operation upgradeUserRole...")
   const { username, userType, password } = req.value.body
   const { email, firstName, lastName, phoneNo, accountStatus, upgradedAccount } = res.locals.user
   const parentUsername = req.user.username
@@ -117,6 +126,7 @@ export async function upgradeUserRole(req, res, next) {
 }
 
 async function getChildren(list, isMinistra) {
+  winstonLogger.info("Running Operation getChildren...")
   // given a list of parentObjects, return all direct childObjects of each parent
   const childUsernames = [].concat(...list.map(parent => parent.childUsernames))
   if (isMinistra == 0) {
@@ -142,5 +152,6 @@ async function getChildren(list, isMinistra) {
 }
 
 export function mergeArrayObjectsByKey(obj1Array, obj2Array, key1, key2) {
+  winstonLogger.info("Running Operation mergeArrayObjectsByKey...")
   return obj1Array.map(obj1=>({...obj1._doc, ...(obj2Array.find(obj2=>obj2[key2]==obj1[key1]))}))
 }
