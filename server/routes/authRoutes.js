@@ -2,6 +2,7 @@ import passport from '../_helpers/passport'
 import { validateBody } from '../validations'
 import { schemas } from '../validations/userValidation'
 import { login } from '../controllers/userController'
+import { winstonLogger } from '../_helpers/logger'
 
 const passportSignIn = passport.authenticate('local', { session: false })
 const passportJWT = passport.authenticate('jwt', { session: false })

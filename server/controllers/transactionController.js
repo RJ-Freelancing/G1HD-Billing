@@ -3,6 +3,7 @@ import userRepo from '../models/userModel'
 import clientRepo from '../models/clientModel'
 import configRepo from '../models/configModel'
 import { checkPermissionRights } from '../_helpers/checkPermission'
+import { winstonLogger } from '../_helpers/logger'
 import axios from 'axios'
 import dateFns from 'date-fns'
 
@@ -20,6 +21,7 @@ const config = {
 }
 
 export async function checkPermission(req, res, next) {
+  winstonLogger.info("Running Operation checkPermission...")
   const macRegex = /^[a-fA-F0-9:]{17}|[a-fA-F0-9]{12}$/
   if (macRegex.test(req.params.id)) {
     const client = await clientRepo.findOne({ clientMac: req.params.id })
@@ -35,11 +37,13 @@ export async function checkPermission(req, res, next) {
 }
 
 export async function getTransactionsForUser(req, res, next) {
+  winstonLogger.info("Running Operation getTransactionsForUser...")
   const transactions = await transactionRepo.find({ $or: [{ transactionTo: { $in: req.params.id } }, { transactionFrom: { $in: req.params.id } }] }, null, { sort: { createdAt: -1 } })
   return res.status(200).json(transactions)
 }
 
 export async function addTransaction(req, res, next) {
+  winstonLogger.info("Running Operation addTransaction...")
   const transactionFrom = req.user.username
   const { credits, description, transactionTo } = req.value.body
   if (!req.user.childUsernames.includes(transactionTo) && req.user.userType !== "superAdmin" ) return res.status(403).json(`You cant add credits to the user ${transactionTo}`)
@@ -105,6 +109,7 @@ export async function addTransaction(req, res, next) {
 }
 
 function expiryDateAfterTransaction(date, n) {
+  winstonLogger.info("Running Operation expiryDateAfterTransaction...")
   var resDate
   if (date == 0) {
     resDate = dateFns.startOfTomorrow()

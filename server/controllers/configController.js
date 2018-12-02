@@ -1,10 +1,12 @@
 import configRepo from '../models/configModel'
 import fs from 'fs'
 import path from 'path'
+import { winstonLogger } from '../_helpers/logger'
 
-const logDirectory = path.join(__dirname, '/../logs/')
+const logDirectory = path.join(__dirname, '/../logs/cron/')
 
 export async function updateConfig(req, res, next) {
+  winstonLogger.info("Running Operation updateConfig...")
   if (req.user.userType !== 'superAdmin') return res.status(403).json({ error: `You Have No Rights To Perform This Action.` })
   const { configName, configValue } = req.value.body
   var query = { configName },
@@ -19,6 +21,7 @@ export async function updateConfig(req, res, next) {
 }
 
 export async function getConfig(req, res, next) {
+  winstonLogger.info("Running Operation getConfig...")
   const config = await configRepo.find()
   if (!config) return res.status(404).json({ error: "No Configs Found." })
   let result = {}
@@ -27,6 +30,7 @@ export async function getConfig(req, res, next) {
 }
 
 export async function readLog(req, res, next) {
+  winstonLogger.info("Running Operation readLog...")
   if (req.user.userType !== 'superAdmin') return res.status(403).json({ error: `You Have No Rights To Perform This Action.` })
   const logFileName = req.params.filename
   await fs.readFile(logDirectory+logFileName, 'utf8', (err, data) => {
@@ -36,6 +40,7 @@ export async function readLog(req, res, next) {
 }
 
 export async function getLogFiles(req, res, next) {
+  winstonLogger.info("Running Operation getLogFiles...")
   if (req.user.userType !== 'superAdmin') return res.status(403).json({ error: `You Have No Rights To Perform This Action.` })
   let logFileList = []
   await fs.readdir(logDirectory, (err, files) => {

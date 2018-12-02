@@ -1,6 +1,7 @@
 import axios from 'axios'
 import querystring from 'querystring'
 import { checkPermissionMinistra } from '../_helpers/checkPermission'
+import { winstonLogger } from '../_helpers/logger'
 
 export const ministraAPI = process.env.MINISTRA_HOST + 'stalker_portal/api/'
 const ministaUser = process.env.MINISTRA_USER
@@ -16,6 +17,7 @@ export const config = {
 }
 
 export async function permissionCheck(req, res, next) {
+  winstonLogger.info("Running Operation permissionCheck...")
   if (req.params.id !== undefined) {
     if (await checkPermissionMinistra(req.params.id, req.user) == false) return res.status(403).json({ error: `You Have No Rights To Perform This Action.` })
   }
@@ -26,10 +28,12 @@ export async function permissionCheck(req, res, next) {
 }
 
 export async function getTariffs(req, res, next) {
+  winstonLogger.info("Running Operation getTariffs...")
   await ministraGetCalls('tariffs/', res)
 }
 
 export async function sendMsg(req, res, next) {
+  winstonLogger.info("Running Operation sendMsg...")
   const ministraPayLoad = querystring.stringify(req.value.body)
   const mac = req.value.body.ids
   var resultMap = await ministraPostCalls('stb_msg/', ministraPayLoad, mac, res)
@@ -38,6 +42,7 @@ export async function sendMsg(req, res, next) {
 }
 
 export async function sendEvent(req, res, next) {
+  winstonLogger.info("Running Operation sendEvent...")
   let resultMap = {}
   if(req.value.body.ttl !== undefined) req.value.body.ttl += (7*60*60)
   const ministraPayLoad = querystring.stringify(req.value.body)
@@ -55,11 +60,13 @@ export async function sendEvent(req, res, next) {
 }
 
 export async function getAccountSub(req, res, next) {
+  winstonLogger.info("Running Operation getAccountSub...")
   const mac = req.params.id
   await ministraGetCalls('account_subscription/' + mac, res)
 }
 
 export async function postAccountSub(req, res, next) {
+  winstonLogger.info("Running Operation postAccountSub...")
   const payloadMap = req.value.body.subscribed.map(x => `subscribed[]=${x}&`).join('')
   const ministraPayLoad = payloadMap.substring(0, payloadMap.length - 1)
   const mac = req.params.id
@@ -69,17 +76,20 @@ export async function postAccountSub(req, res, next) {
 }
 
 export async function putAccountSub(req, res, next) {
+  winstonLogger.info("Running Operation putAccountSub...")
   const ministraPayLoad = querystring.stringify(req.value.body).replace("subscribed", "subscribed[]")
   const mac = req.params.id
   await ministraPutCalls('account_subscription/', ministraPayLoad, mac, res)
 }
 
 export async function deleteAccountSub(req, res, next) {
+  winstonLogger.info("Running Operation deleteAccountSub...")
   const mac = req.params.id
   await ministraDeleteCalls('account_subscription/', mac, res)
 }
 
 async function ministraGetCalls(attribute, res) {
+  winstonLogger.info("Running Operation ministraGetCalls...")
   await axios.get(ministraAPI + attribute, config)
     .then(response => {
       if (response.data.status !== 'OK') return res.status(404).json(response.data.error)
@@ -88,6 +98,7 @@ async function ministraGetCalls(attribute, res) {
 }
 
 async function ministraPostCalls(attribute, ministraPayLoad, id, res) {
+  winstonLogger.info("Running Operation ministraPostCalls...")
   let resultMap = {}
   await axios.post(ministraAPI + attribute + id,
     ministraPayLoad, config)
@@ -100,6 +111,7 @@ async function ministraPostCalls(attribute, ministraPayLoad, id, res) {
 }
 
 async function hugeMinistaPostCalls(attribute, ministraPayLoad, ids, res){
+  winstonLogger.info("Running Operation hugeMinistaPostCalls...")
   let chunkedArr = await chunkArray(ids, 30)
   let responseList = []
   let resultMap = {}
@@ -124,6 +136,7 @@ async function hugeMinistaPostCalls(attribute, ministraPayLoad, ids, res){
 }
 
 async function ministraPutCalls(attribute, ministraPayLoad, mac, res) {
+  winstonLogger.info("Running Operation ministraPutCalls...")
   await axios.put(ministraAPI + attribute + mac,
     ministraPayLoad, config)
     .then(response => {
@@ -133,6 +146,7 @@ async function ministraPutCalls(attribute, ministraPayLoad, mac, res) {
 }
 
 async function ministraDeleteCalls(attribute, mac, res) {
+  winstonLogger.info("Running Operation ministraDeleteCalls...")
   await axios.delete(ministraAPI + attribute + mac, config)
     .then(response => {
       if (response.data.status !== 'OK') return res.status(404).json(response.data.error)
@@ -141,12 +155,14 @@ async function ministraDeleteCalls(attribute, mac, res) {
 }
 
 async function asyncForEach(array, callback) {
+  winstonLogger.info("Running Operation asyncForEach...")
   for (let index = 0; index < array.length; index++) {
     await callback(array[index], index, array);
   }
 }
 
 function chunkArray(myArray, chunk_size) {
+  winstonLogger.info("Running Operation chunkArray...")
   let results = [];
   
   while (myArray.length) {

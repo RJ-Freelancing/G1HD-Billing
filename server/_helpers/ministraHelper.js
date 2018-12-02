@@ -1,4 +1,5 @@
 import mysql from 'mysql'
+import { winstonLogger } from './logger'
 
 var connection = mysql.createConnection({
   host: process.env.MINISTRA_DB_HOST,
@@ -33,13 +34,14 @@ const SQL_SELECT_FIELDS = '\
 
 
 export function getAllClients() {
+  winstonLogger.info("Running getAllClients Function...")
   return new Promise(function (resolve, reject) {
     connection.query(`SELECT ${SQL_SELECT_FIELDS} FROM users`, (err, rows) => {
       if (err) {
-        console.log("Error querying Ministra DB : " + err)
+        winstonLogger.error("Error querying Ministra DB : " + err)
         return reject(err);
       }
-      console.log('Data successfully received from Ministra Db:\n')
+      winstonLogger.info('Data successfully received from Ministra Db:\n')
       connection.pause();
       resolve(rows);
       connection.resume();
@@ -49,13 +51,14 @@ export function getAllClients() {
 
 
 export function getClients(macAdresses) {
+  winstonLogger.info("Running getClients Function for macAdresses : " + macAdresses)
   return new Promise(function (resolve, reject) {
     connection.query(`SELECT ${SQL_SELECT_FIELDS} FROM users WHERE mac IN (${macAdresses.map(x => `'${x}'`)})`, (err, rows) => {
       if (err) {
-        console.log("Error querying Ministra DB : " + err)
+        winstonLogger.error("Error querying Ministra DB : " + err)
         return reject(err);
       }
-      console.log('Data successfully received from Ministra DB:\n')
+      winstonLogger.info('Data successfully received from Ministra DB:\n')
       connection.pause();
       resolve(rows);
       connection.resume();
@@ -64,13 +67,14 @@ export function getClients(macAdresses) {
 }
 
 export function getClientsCron(){
+  winstonLogger.info("Running getClientsCron Function")
   return new Promise(function (resolve, reject) {
     connection.query(`SELECT ${SQL_CRON_SELECT_FIELDS} FROM users`, (err, rows) => {
       if (err) {
-        console.log("Error querying Ministra DB : " + err)
+        winstonLogger.error("Error querying Ministra DB : " + err)
         return reject(err);
       }
-      console.log('Data successfully received from Ministra Db:\n')
+      winstonLogger.info('Data successfully received from Ministra Db:\n')
       connection.pause();
       resolve(rows);
       connection.resume();
