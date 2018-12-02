@@ -37,3 +37,17 @@ export const getUserTransactions = username => ({
   success: '',
   failure: "Something went wrong while retrieving user transactions!"
 })
+
+
+export const increaseCredits = (transaction) => ({
+  types: ['LOADING', 'INCREASE_CREDITS_SUCCESS', 'INCREASE_CREDITS_FAILED'],
+  payload: {
+    request:{
+      url: `/transactions`,
+      method: 'POST',
+      data: transaction
+    }
+  },
+  success: `Successfully increased credits`,
+  failure: "Something went wrong while adding credits!",
+})

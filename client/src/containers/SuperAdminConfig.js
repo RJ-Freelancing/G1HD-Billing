@@ -11,6 +11,7 @@ import Button from '@material-ui/core/Button';
 
 
 import { updateConfig } from 'actions/users'
+import { increaseCredits } from 'actions/transactions'
 
 
 const Wrapper = styled.div`
@@ -36,6 +37,12 @@ const AnnouncementsWrapper = styled(Paper)`
   // padding: 20px;
 `
 
+const IncreaseCreditsWrapper = styled(Paper)`
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 20px;
+  // padding: 20px;
+`
 
 class SuperAdminConfig extends Component {
 
@@ -44,11 +51,21 @@ class SuperAdminConfig extends Component {
     this.state = {
       minimumTransferrableCredits: props.minimumTransferrableCredits,
       UserAnnouncements: RichTextEditor.createValueFromString(props.UserAnnouncements, 'html'),
+      increaseCredits: 1
     }
   }
 
   componentDidMount = () => {
     if (this.props.authUserType !== 'superAdmin') this.props.history.push('/')
+  }
+
+  increaseCredits = (e) => {
+    e.preventDefault()
+    this.props.increaseCredits({
+      credits: this.state.increaseCredits,
+      description: `Added ${this.state.increaseCredits} credit`,
+      transactionTo: this.props.authUsername
+    })
   }
 
 
@@ -114,6 +131,36 @@ class SuperAdminConfig extends Component {
             <SaveIcon style={{marginLeft: 10}}/>
           </Button>
         </AnnouncementsWrapper>
+
+        <IncreaseCreditsWrapper elevation={5}>
+          <Typography variant="body1"  style={{height: '100px', textAlign: 'left', background: 'linear-gradient(60deg, rgb(102, 187, 106), rgb(67, 160, 71))', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}>
+            Increase Self Credits
+          </Typography>
+          <form 
+            style={{textAlign: 'center'}}
+            onSubmit={this.increaseCredits} 
+          >
+            <TextField
+              type="number"
+              inputProps={{ min: 1 }}
+              value={this.state.increaseCredits}
+              onChange={(e)=>this.setState({increaseCredits: e.target.value})}
+              disabled={this.props.loading}
+              error={this.state.increaseCredits < 1}
+              helperText={this.state.increaseCredits < 1 ? "Value must be greater 0" : null}
+            />
+            <br/><br/>
+            <Button 
+              variant="contained" 
+              color="primary" 
+              disabled={ this.props.loading || this.state.increaseCredits < 1 } 
+              onClick={this.increaseCredits}          
+            >
+              Update
+              <SaveIcon style={{marginLeft: 10}}/>
+            </Button>
+          </form>
+        </IncreaseCreditsWrapper>
       </Wrapper>
     )
   }
@@ -125,12 +172,15 @@ const mapStateToProps = state => ({
   token: state.auth.token,
   mobileView: state.general.mobileView,
   authUserType: state.auth.userType,
+  authUsername: state.auth.username,
+  authCreditsBalance: state.auth.creditsAvailable,
   minimumTransferrableCredits: state.config.minimumTransferrableCredits,
   UserAnnouncements: state.config.UserAnnouncements
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateConfig: config => dispatch(updateConfig(config))
+  updateConfig: config => dispatch(updateConfig(config)),
+  increaseCredits: (transaction) => dispatch(increaseCredits(transaction)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(SuperAdminConfig)
