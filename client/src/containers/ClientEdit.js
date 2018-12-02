@@ -393,7 +393,7 @@ class ClientEdit extends Component {
           <CreditsWrapper elevation={24}>
             <Typography variant="h4" style={{background: '#4875b4', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}> Credits </Typography>
             {this.props.authUsername===this.state.client.parentUsername  &&
-              <div>
+              <div style={{padding: 20}}>
                 <br/><br/>
                 <TextField
                   label="Select Credits"
