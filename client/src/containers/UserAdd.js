@@ -3,39 +3,40 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
-import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
-import SaveIcon from '@material-ui/icons/Save';
-import InputMask from 'react-input-mask';
-import Switch from '@material-ui/core/Switch';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Paper from '@material-ui/core/Paper'
+import Button from '@material-ui/core/Button'
+import SaveIcon from '@material-ui/icons/Save'
+import InputMask from 'react-input-mask'
+import Switch from '@material-ui/core/Switch'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 
 
 import { getUsers, addUser } from 'actions/users'
+import { updateCredits } from 'actions/transactions'
 
 
 const validPhoneNo = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
 
 const Wrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-gap: 20px;
-  margin: 20px 20px;
+  display: grid
+  grid-template-columns: 1fr
+  grid-gap: 20px
+  margin: 20px 20px
   @media only screen and (max-width: 768px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr
   }
 `
 
 const ClientEditWrapper = styled(Paper)`
-  padding: 20px 20px;
+  padding: 20px 20px
 `
 
 const ClientEdit = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 20px;
+  display: grid
+  grid-template-columns: 1fr 1fr
+  grid-gap: 20px
   @media only screen and (max-width: 768px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr
   }
 `
 
@@ -53,8 +54,9 @@ class UserAdd extends Component {
         lastName: "",
         phoneNo: "",
         accountStatus: true,
-        credits: 0
-      }
+        credits: this.props.minimumTransferrableCredits
+      },
+      passwordConfirmation: ""
     }
   }
 
@@ -84,7 +86,7 @@ class UserAdd extends Component {
             transactionTo: this.state.newUser.username
           })
           .then(creditAddResponse => {
-            if (creditAddResponse.type==='ADD_CREDIT_SUCCESS') {
+            if (creditAddResponse.type==='UPDATE_CREDIT_SUCCESS') {
               this.props.history.push(`/users/${this.state.newUser.username}`)
             }
           })
@@ -97,12 +99,13 @@ class UserAdd extends Component {
   }
 
   checkValidation = () => {
-    const usernameEmpty = this.state.newUser.username==="";
-    const passwordEmpty = this.state.newUser.password==="";
-    const firstNameEmpty = this.state.newUser.firstName==="";
-    const lastNameEmpty = this.state.newUser.lastName==="";
-    const phoneNoInvalid = this.state.newUser.phoneNo==="" || !this.state.newUser.phoneNo.match(validPhoneNo);
-    return usernameEmpty || passwordEmpty || firstNameEmpty || lastNameEmpty || phoneNoInvalid
+    const usernameEmpty = this.state.newUser.username===""
+    const passwordEmpty = this.state.newUser.password===""
+    const passwordConfirmationNonMatch = this.state.passwordConfirmation !== this.state.newUser.password
+    const firstNameEmpty = this.state.newUser.firstName===""
+    const lastNameEmpty = this.state.newUser.lastName===""
+    const phoneNoInvalid = this.state.newUser.phoneNo==="" || !this.state.newUser.phoneNo.match(validPhoneNo)
+    return usernameEmpty || passwordEmpty || passwordConfirmationNonMatch || firstNameEmpty || lastNameEmpty || phoneNoInvalid
   }
 
   getAddingUserType = () => {
@@ -162,6 +165,24 @@ class UserAdd extends Component {
                 helperText={this.state.newUser.password && this.state.newUser.password==="" ? "Required" : null}
               />
               <TextField
+                label="Password Confirmation"
+                type="password"
+                required
+                value={this.state.passwordConfirmation}
+                onChange={(e)=>this.setState({passwordConfirmation: e.target.value})}
+                fullWidth
+                disabled={this.props.loading}
+                error={
+                  (Boolean(this.state.passwordConfirmation) && this.state.passwordConfirmation==="") ||
+                  (this.state.passwordConfirmation !== this.state.newUser.password)
+                }
+                helperText={
+                  this.state.passwordConfirmation && this.state.passwordConfirmation==="" ? "Required" 
+                  : (this.state.passwordConfirmation !== this.state.newUser.password) ? "Password & Password Confirmation must match"
+                  : null
+                }
+              />
+              <TextField
                 label="First Name"
                 type="firstName"
                 required
@@ -205,10 +226,17 @@ class UserAdd extends Component {
                   onChange={(e)=>this.handleTextChange('credits', e.target.value)}
                   type="number"
                   fullWidth
-                  inputProps={{ min: 0, max: 12 }}
+                  inputProps={{ min: this.props.minimumTransferrableCredits }}
                   disabled={this.props.loading}
-                  error={this.state.newUser.credits > 12 || this.state.newUser.credits < 0}
-                  helperText={ (this.state.newUser.credits > 12 || this.state.newUser.credits < 0) ? "Credits can range from 0 to 12" : null}
+                  error={
+                    (this.state.newUser.credits < this.props.minimumTransferrableCredits) || 
+                    (this.props.authCreditsAvailable < this.state.newUser.credits)
+                  }
+                  helperText={
+                    (this.state.newUser.credits < this.props.minimumTransferrableCredits) ? `Minimum Transferrable credits is ${this.props.minimumTransferrableCredits}` 
+                    : (this.props.authCreditsAvailable < this.state.newUser.credits) ? "You don't have enough credits to transfer" 
+                    : null
+                  }
                 />
               <FormControlLabel
                 label={`Account Status (${this.state.newUser.accountStatus ? 'Active' : 'Inactive'})`}
@@ -224,12 +252,12 @@ class UserAdd extends Component {
               />
             </ClientEdit>
             <br/><br/>
-            <Button variant="contained" type="submit" color="primary" disabled={this.props.loading || this.checkValidation()}>
-              Submit&nbsp;
+            <Button variant="contained" type="submit" color="primary" disabled={this.props.loading || this.checkValidation() || (this.state.newUser.credits < this.props.minimumTransferrableCredits) || (this.props.authCreditsAvailable < this.state.newUser.credits)}>
+              Submit
               <SaveIcon />
             </Button>
             <Button variant="contained" color="secondary" onClick={()=>this.props.history.push('/')} style={{float: 'right'}}>
-              Cancel&nbsp;
+              Cancel
               <SaveIcon />
             </Button>
           </form>
@@ -244,12 +272,16 @@ const mapStateToProps = state => ({
   token: state.auth.token,
   authUsername: state.auth.username, 
   authUserType: state.auth.userType,
+  authCreditsAvailable: state.auth.creditsAvailable,
+  minimumTransferrableCredits: state.config.minimumTransferrableCredits,
   mobileView: state.general.mobileView
 })
 
 const mapDispatchToProps = dispatch => ({
   addUser: (client) => dispatch(addUser(client)),
   getUsers: () => dispatch(getUsers()),
+  updateCredits: (transaction) => dispatch(updateCredits(transaction))
+
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserAdd)

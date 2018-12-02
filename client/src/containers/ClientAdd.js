@@ -92,7 +92,7 @@ class ClientAdd extends Component {
             transactionTo: this.state.newClient.stb_mac
           })
           .then(creditAddResponse => {
-            if (creditAddResponse.type==='ADD_CREDIT_SUCCESS') {
+            if (creditAddResponse.type==='UPDATE_CREDIT_SUCCESS') {
               this.props.history.push(`/clients/${this.state.newClient.stb_mac}`)
             }
           })
