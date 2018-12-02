@@ -46,7 +46,7 @@ class EnhancedTableHead extends React.Component {
   }
 
   render() {
-    const { order, orderBy, viewOnly, data, rows, selected, dataLength, selectAll, isEvent } = this.props
+    const { order, orderBy, data, viewOnly, rows, selected, dataLength, selectAll, isEvent, canDownload } = this.props
     
     return (
       <TableHead>
@@ -62,22 +62,23 @@ class EnhancedTableHead extends React.Component {
                 </Tooltip>
               </TableCell>
             }
-            {!viewOnly && !isEvent && 
-              <TableCell style={{
-                position: 'sticky', 
-                top: 0, 
-                zIndex: 200, 
-                paddingRight: 0, 
-                paddingLeft: 20,
-                backgroundColor: '#F1F3F6'
-            }}>
-              <Tooltip title="Download as CSV">
-                <Fab aria-label="Download as CSV" color="primary" size='small' onClick={()=>downloadCsv(data, rows)}>
-                  <CloudDownloadIcon/>
-                </Fab>
-              </Tooltip>
-            </TableCell>
+            {(canDownload || !viewOnly) && !isEvent &&
+                <TableCell style={{
+                  position: 'sticky', 
+                  top: 0, 
+                  zIndex: 200, 
+                  paddingRight: 0, 
+                  paddingLeft: 20,
+                  backgroundColor: '#F1F3F6'
+              }}>
+                <Tooltip title="Download as CSV">
+                  <Fab aria-label="Download as CSV" color="primary" size='small' onClick={()=>downloadCsv(data, rows)}>
+                    <CloudDownloadIcon/>
+                  </Fab>
+                </Tooltip>
+              </TableCell>            
             }
+
 
             {rows.map(row => {
               return (
@@ -252,7 +253,8 @@ export default class EnhancedTable extends React.Component {
       limit,
       noPagination,
       backgroundColor,
-      headingColor
+      headingColor,
+      canDownload
     } = this.props
 
     const { data, order, orderBy, rowsPerPage, page, selected } = this.state
@@ -285,6 +287,7 @@ export default class EnhancedTable extends React.Component {
               selected={selected}
               dataLength={data.length}
               selectAll={this.handleSelectAll}
+              canDownload={canDownload}
             />
             <TableBody>
               {data.slice(0, limit)
@@ -329,6 +332,10 @@ export default class EnhancedTable extends React.Component {
                           </Tooltip>
                         }
                         </div>
+                      </TableCell>
+                    }
+                    {canDownload && viewOnly &&
+                      <TableCell style={{textAlign: 'center', padding: 0, margin: 0}}>
                       </TableCell>
                     }
                     {Object.entries(n).map(([field, value]) => {

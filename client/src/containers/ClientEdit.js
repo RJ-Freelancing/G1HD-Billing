@@ -364,7 +364,7 @@ class ClientEdit extends Component {
                   label={`Account Status (${this.state.editingClient.status===1 ? 'Active' : 'Inactive'})`}
                   control={
                     <Switch
-                      checked={this.state.editingClient.status===1}
+                      checked={this.state.editingClient.status===0}
                       onChange={(e)=>this.handleTextChange('status', e.target.checked ? 1 : 0)}
                       value={this.state.editingClient.status}
                       color="primary"
@@ -514,7 +514,7 @@ class ClientEdit extends Component {
               </Tooltip>
             </Typography>
             <Typography variant="subtitle2">Receiver Status</Typography>
-            <Typography variant="body2">{this.state.client.online==="1" ? 'Online' : 'Offline'}</Typography>
+            <Typography variant="body2">{this.state.client.now_playing_content || 'Offline'}</Typography>
             <Typography variant="subtitle2">IP</Typography>
             <Typography variant="body2">{this.state.client.ip}</Typography>
             <Typography variant="subtitle2">STB Type</Typography>
@@ -618,7 +618,6 @@ class ClientEdit extends Component {
 }
 
 const mapStateToProps = state => ({
-  token: state.auth.token,
   clients: state.users.clients,
   authCreditsAvailable: state.auth.creditsAvailable,
   authcreditsOwed: state.auth.creditsOwed,

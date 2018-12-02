@@ -102,12 +102,13 @@ class UserEdit extends Component {
     if (user) {
       this.props.getUserTransactions(username)
       .then(resnponseTransactions => { 
-        this.setState({user, editingUser: {...user}, transactions: resnponseTransactions.payload.data}, ()=>{
+        this.setState({user, editingUser: {...user}, transactions: resnponseTransactions.payload ? resnponseTransactions.payload.data : []}, ()=>{
           this.props.getConfig()
         })
       })
     }
   }
+
 
   componentDidUpdate = (prevProps, prevState, snapshot) => {
     const username = this.props.match.params.id
@@ -221,6 +222,17 @@ class UserEdit extends Component {
         return false
     }
   }
+
+  userIsUpgradable = () => {
+    const alreadyUpgraded = this.state.user.upgradedAccount 
+    const isUpgradableUserType = ['superReseller', 'reseller'].includes(this.state.user.userType)
+    if ((this.state.user.userType === 'superReseller') && (this.props.authUserType !== 'superAdmin'))
+      return false
+    else if ((this.state.user.userType === 'reseller') && (this.props.authUserType !== 'admin'))
+      return false   
+    else
+      return !alreadyUpgraded && isUpgradableUserType
+  }
   
   render() {    
     if (!this.state.user)
@@ -232,8 +244,8 @@ class UserEdit extends Component {
         </Wrapper>
       )
 
-    const userIsUpgradable = !this.state.user.upgradedAccount && ['superReseller', 'reseller'].includes(this.state.user.userType)
-
+    const userIsUpgradable = this.userIsUpgradable()
+  
     return (
       <Wrapper>
         <UserEditWrapper elevation={24}>
@@ -247,13 +259,10 @@ class UserEdit extends Component {
                 <TextField
                   label="Email"
                   type="email"
-                  required
                   value={this.state.editingUser.email}
                   onChange={(e)=>this.handleTextChange('email', e.target.value)}
                   fullWidth
                   disabled={this.props.loading}
-                  error={Boolean(this.state.editingUser.email) && this.state.editingUser.email===""}
-                  helperText={this.state.editingUser.email && this.state.editingUser.email==="" ? "Required" : null}
                 />
                 <InputMask mask="999-999-9999" 
                   value={this.state.editingUser.phoneNo}  
@@ -338,11 +347,11 @@ class UserEdit extends Component {
             <Typography variant="h4" style={{textAlign: 'left', background: 'linear-gradient(60deg, rgb(255, 167, 38), rgb(251, 140, 0))', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}> Credits </Typography>
             <br/><br/>
             {this.state.user && this.props.authUsername===this.state.user.parentUsername  &&
-              <div>
+              <div style={{padding: 20}}>
                 <TextField
                   label="Select Credits"
                   type="number"
-                  inputProps={{ min: this.state.credits.action==='recover' ? 1 : this.props.minimumTransferrableCredits }}
+                  inputProps={{ min: this.state.credits.action==='recover' ? (this.props.authUserType==='superReseller' ? this.props.nonRefundableCredits : 1) : this.props.minimumTransferrableCredits }}
                   value={this.state.credits.value}
                   onChange={(e)=>this.setState({credits: {...this.state.credits, value: parseInt(e.target.value)}})}
                   fullWidth
@@ -350,12 +359,14 @@ class UserEdit extends Component {
                   error={
                     (this.state.credits.action==='add' && (this.state.credits.value < this.props.minimumTransferrableCredits)) || 
                     (this.state.credits.action==='add' && (this.props.authCreditsAvailable < this.state.credits.value)) ||
-                    (this.state.credits.action==='recover' && (this.state.user.creditsAvailable-this.state.credits.value < 0))
+                    (this.state.credits.action==='recover' && (this.state.user.creditsAvailable-this.state.credits.value < 0)) ||
+                    (this.props.authUserType==='superReseller' && this.state.credits.action==='recover' && (this.state.user.creditsAvailable-this.state.credits.value < this.props.nonRefundableCredits))
                   }
                   helperText={
                     (this.state.credits.action==='add' && (this.state.credits.value < this.props.minimumTransferrableCredits)) ? `Minimum Transferrable credits is ${this.props.minimumTransferrableCredits}` 
                     : (this.state.credits.action==='add' && (this.props.authCreditsAvailable < this.state.credits.value)) ? "You don't have enough credits to transfer" 
                     : (this.state.credits.action==='recover' && (this.state.user.creditsAvailable-this.state.credits.value < 0)) ? 'User has not enough credits to recover'
+                    : (this.props.authUserType==='superReseller' && this.state.credits.action==='recover' && (this.state.user.creditsAvailable-this.state.credits.value < this.props.nonRefundableCredits)) ? `Cannot recover past non refundable credits ${this.props.nonRefundableCredits}`
                     : null
                   }
                 />
@@ -388,7 +399,8 @@ class UserEdit extends Component {
                     (this.props.loading) || 
                     (this.state.credits.action==='add' && (this.state.credits.value < this.props.minimumTransferrableCredits)) || 
                     (this.state.credits.action==='add' && (this.props.authCreditsAvailable < this.state.credits.value)) ||
-                    (this.state.credits.action==='recover' && (this.state.user.creditsAvailable-this.state.credits.value < 0))
+                    (this.state.credits.action==='recover' && (this.state.user.creditsAvailable-this.state.credits.value < 0)) ||
+                    (this.props.authUserType==='superReseller' && this.state.credits.action==='recover' && (this.state.user.creditsAvailable-this.state.credits.value < this.props.nonRefundableCredits))
                   } 
                   style={{float: 'right'}} 
                   onClick={()=>this.updateCredits()}
@@ -398,14 +410,15 @@ class UserEdit extends Component {
                 </Button>
               </div>
            }
-            <br/><br/><br/>
-            <div style={{textAlign: 'center'}}>
-              Credits Available<br/> <div style={{fontSize: 50}}> {this.state.user.creditsAvailable} </div>
+            <br/>
+            <div style={{textAlign: 'center', alignItems: 'center', display: 'grid', gridGap: 10, gridTemplateColumns: this.state.user.userType==='reseller' ? '1fr 1fr' : '1fr'}}>
+              <>
+                Credits Available <div style={{fontSize: 50}}> {this.state.user.creditsAvailable} </div>
+              </>
               {this.state.user.userType==='reseller' &&
-                <>
-                <br/><br/>
-                Credits Owed<br/> <div style={{fontSize: 50}}> {this.state.user.creditsOwed} </div>
-                </>
+              <>
+              Credits Owed<div style={{fontSize: 50}}> {this.state.user.creditsOwed} </div>
+              </>
               }
             </div>
           </CreditsWrapper>
@@ -452,7 +465,7 @@ class UserEdit extends Component {
                 type="text"
                 required
                 value={this.state.upgradingNewUsername}
-                onChange={(e)=>this.setState({upgradingNewUsername: e.target.value})}
+                onChange={(e)=>this.setState({upgradingNewUsername: e.target.value.trim()})}
                 fullWidth
                 error={this.state.upgradingNewUsername===''}
                 helperText={this.state.upgradingNewUsername===''? "Required" : null}
@@ -515,7 +528,6 @@ class UserEdit extends Component {
 }
 
 const mapStateToProps = state => ({
-  token: state.auth.token,
   authUserType: state.auth.userType,
   authCreditsAvailable: state.auth.creditsAvailable,
   admins: state.users.admins,
@@ -524,6 +536,7 @@ const mapStateToProps = state => ({
   authUsername: state.auth.username, 
   mobileView: state.general.mobileView,
   minimumTransferrableCredits: state.config.minimumTransferrableCredits,
+  nonRefundableCredits: state.config.nonRefundableCredits,
   loading: state.general.loading
 })
 

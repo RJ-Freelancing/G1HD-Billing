@@ -19,8 +19,22 @@ import { increaseCredits } from 'actions/transactions'
 
 const Wrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr 2fr;
   grid-gap: 20px;
+`
+
+const Top = styled.div`
+  display: grid;
+  grid-gap: 20px;
+  grid-template-columns: 1fr 1fr 1fr;
+  @media only screen and (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`
+
+const Bottom = styled.div`
+  display: grid;
+  grid-gap: 20px;
+  grid-template-columns: 1fr 1fr;
   @media only screen and (max-width: 768px) {
     grid-template-columns: 1fr;
   }
@@ -60,8 +74,9 @@ class SuperAdminConfig extends Component {
     super(props)
     this.state = {
       minimumTransferrableCredits: props.minimumTransferrableCredits,
+      nonRefundableCredits: props.nonRefundableCredits,
+      increaseCredits: 1,
       UserAnnouncements: RichTextEditor.createValueFromString(props.UserAnnouncements, 'html'),
-      increaseCredits: 1
     }
   }
 
@@ -82,146 +97,194 @@ class SuperAdminConfig extends Component {
   render() {
     return (
       <Wrapper>
-        <CreditsWrapper elevation={5}>
-          <Typography variant="body1" style={{height: '100px', textAlign: 'left', background: 'rgb(72, 117, 180)', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}>
-            Minimum Transferrable Credits
-          </Typography>
-          <form 
-            style={{textAlign: 'center', paddingBottom: 10}}
-            onSubmit={(e)=>{
-              e.preventDefault()
-              this.props.updateConfig({configName: 'minimumTransferrableCredits', configValue: this.state.minimumTransferrableCredits})
-            }} 
-          >
-            <TextField
-              type="number"
-              inputProps={{ min: 1 }}
-              value={this.state.minimumTransferrableCredits}
-              onChange={(e)=>this.setState({minimumTransferrableCredits: e.target.value})}
-              disabled={this.props.loading}
-              error={this.state.minimumTransferrableCredits < 1}
-              helperText={this.state.minimumTransferrableCredits < 1 ? "Value must be greater 0" : null}
-            />
-            <br/><br/>
-            <Button 
-              variant="contained" 
-              color="primary" 
-              disabled={
-                this.props.loading || 
-                this.state.minimumTransferrableCredits < 1 || 
-                this.state.minimumTransferrableCredits===this.props.minimumTransferrableCredits
-              } 
-              onClick={()=>
+        <Top>
+        
+          <CreditsWrapper elevation={5}>
+            <Typography variant="body1" style={{height: '100px', textAlign: 'left', background: 'rgb(128, 91, 190)', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}>
+              Minimum Transferrable Credits
+            </Typography>
+            <form 
+              style={{textAlign: 'center', paddingBottom: 10}}
+              onSubmit={(e)=>{
+                e.preventDefault()
                 this.props.updateConfig({configName: 'minimumTransferrableCredits', configValue: this.state.minimumTransferrableCredits})
-              }          
+              }} 
             >
-              Update
-              <SaveIcon style={{marginLeft: 10}}/>
-            </Button>
-          </form>
-        </CreditsWrapper>
+              <TextField
+                type="number"
+                inputProps={{ min: 1 }}
+                value={this.state.minimumTransferrableCredits}
+                onChange={(e)=>this.setState({minimumTransferrableCredits: e.target.value})}
+                disabled={this.props.loading}
+                error={this.state.minimumTransferrableCredits < 1}
+                helperText={this.state.minimumTransferrableCredits < 1 ? "Value must be greater 0" : null}
+              />
+              <br/><br/>
+              <Button 
+                variant="contained" 
+                color="primary" 
+                disabled={
+                  this.props.loading || 
+                  this.state.minimumTransferrableCredits < 1 || 
+                  this.state.minimumTransferrableCredits===this.props.minimumTransferrableCredits
+                } 
+                onClick={()=>
+                  this.props.updateConfig({configName: 'minimumTransferrableCredits', configValue: this.state.minimumTransferrableCredits})
+                }          
+              >
+                Update
+                <SaveIcon style={{marginLeft: 10}}/>
+              </Button>
+            </form>
+          </CreditsWrapper>
 
-        <AnnouncementsWrapper elevation={5}>
-          <Typography variant="body1"  style={{height: '100px', textAlign: 'left', background: 'linear-gradient(60deg, rgb(255, 167, 38), rgb(251, 140, 0))', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}>
-            Announcements
-          </Typography>
-          <RichTextEditor
-            value={this.state.UserAnnouncements}
-            onChange={(value) => this.setState({ UserAnnouncements: value })}
-          />
-          <Button 
-            variant="contained" 
-            color="primary" 
-            disabled={this.props.loading || isEqual(this.state.UserAnnouncements.toString('html'), this.props.UserAnnouncements)} 
-            onClick={()=>
-              this.props.updateConfig({configName: 'UserAnnouncements', configValue: this.state.UserAnnouncements.toString('html')})
-            }
-          >
-            Update
-            <SaveIcon style={{marginLeft: 10}}/>
-          </Button>
-        </AnnouncementsWrapper>
+          <CreditsWrapper elevation={5}>
+            <Typography variant="body1" style={{height: '100px', textAlign: 'left', background: 'linear-gradient(60deg, rgb(239, 83, 80), rgb(229, 57, 53))', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}>
+              Non Refundable Credits
+            </Typography>
+            <form 
+              style={{textAlign: 'center', paddingBottom: 10}}
+              onSubmit={(e)=>{
+                e.preventDefault()
+                this.props.updateConfig({configName: 'nonRefundableCredits', configValue: this.state.nonRefundableCredits})
+              }} 
+            >
+              <TextField
+                type="number"
+                inputProps={{ min: 1 }}
+                value={this.state.nonRefundableCredits}
+                onChange={(e)=>this.setState({nonRefundableCredits: e.target.value})}
+                disabled={this.props.loading}
+                error={this.state.nonRefundableCredits < 1}
+                helperText={this.state.nonRefundableCredits < 1 ? "Value must be greater 0" : null}
+              />
+              <br/><br/>
+              <Button 
+                variant="contained" 
+                color="primary" 
+                disabled={
+                  this.props.loading || 
+                  this.state.nonRefundableCredits < 1 || 
+                  this.state.nonRefundableCredits===this.props.nonRefundableCredits
+                } 
+                onClick={()=>
+                  this.props.updateConfig({configName: 'nonRefundableCredits', configValue: this.state.nonRefundableCredits})
+                }          
+              >
+                Update
+                <SaveIcon style={{marginLeft: 10}}/>
+              </Button>
+            </form>
+          </CreditsWrapper>
 
-        <IncreaseCreditsWrapper elevation={5}>
-          <Typography variant="body1"  style={{height: '100px', textAlign: 'left', background: 'linear-gradient(60deg, rgb(102, 187, 106), rgb(67, 160, 71))', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}>
-            Increase Self Credits
-          </Typography>
-          <form 
-            style={{textAlign: 'center', paddingBottom: 10}}
-            onSubmit={this.increaseCredits} 
-          >
-            <TextField
-              type="number"
-              inputProps={{ min: 1 }}
-              value={this.state.increaseCredits}
-              onChange={(e)=>this.setState({increaseCredits: e.target.value})}
-              disabled={this.props.loading}
-              error={this.state.increaseCredits < 1}
-              helperText={this.state.increaseCredits < 1 ? "Value must be greater 0" : null}
+
+          <IncreaseCreditsWrapper elevation={5}>
+            <Typography variant="body1"  style={{height: '100px', textAlign: 'left', background: 'linear-gradient(60deg, rgb(102, 187, 106), rgb(67, 160, 71))', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}>
+              Increase My Credits
+            </Typography>
+            <form 
+              style={{textAlign: 'center', paddingBottom: 10}}
+              onSubmit={this.increaseCredits} 
+            >
+              <TextField
+                type="number"
+                inputProps={{ min: 1 }}
+                value={this.state.increaseCredits}
+                onChange={(e)=>this.setState({increaseCredits: e.target.value})}
+                disabled={this.props.loading}
+                error={this.state.increaseCredits < 1}
+                helperText={this.state.increaseCredits < 1 ? "Value must be greater 0" : null}
+              />
+              <br/><br/>
+              <Button 
+                variant="contained" 
+                color="primary" 
+                disabled={ this.props.loading || this.state.increaseCredits < 1 } 
+                onClick={this.increaseCredits}          
+              >
+                Update
+                <SaveIcon style={{marginLeft: 10}}/>
+              </Button>
+            </form>
+          </IncreaseCreditsWrapper>
+
+        </Top>
+
+        <Bottom>
+
+          <AnnouncementsWrapper elevation={5}>
+            <Typography variant="body1"  style={{height: '100px', textAlign: 'left', background: 'linear-gradient(60deg, rgb(255, 167, 38), rgb(251, 140, 0))', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}>
+              Announcements
+            </Typography>
+            <RichTextEditor
+              value={this.state.UserAnnouncements}
+              onChange={(value) => this.setState({ UserAnnouncements: value })}
             />
-            <br/><br/>
             <Button 
               variant="contained" 
               color="primary" 
-              disabled={ this.props.loading || this.state.increaseCredits < 1 } 
-              onClick={this.increaseCredits}          
+              disabled={this.props.loading || isEqual(this.state.UserAnnouncements.toString('html'), this.props.UserAnnouncements)} 
+              onClick={()=>
+                this.props.updateConfig({configName: 'UserAnnouncements', configValue: this.state.UserAnnouncements.toString('html')})
+              }
             >
               Update
               <SaveIcon style={{marginLeft: 10}}/>
             </Button>
-          </form>
-        </IncreaseCreditsWrapper>
+          </AnnouncementsWrapper>
 
-        <SendEventsWrapper elevation={5}>
-          <Typography variant="body1"  style={{height: '100px', textAlign: 'left', background: 'linear-gradient(60deg, rgb(239, 83, 80), rgb(229, 57, 53))', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}>
-            Sending Events Capability
-          </Typography>
-          <FormControl component="fieldset" style={{padding: 20}}>
-            <FormLabel component="legend">Select Users who are allowed to Send Events to Clients</FormLabel>
-              <FormControlLabel
-                control={
-                  <Checkbox 
-                    checked={this.props.enableSendEventsFor['admin']} 
-                    onChange={()=>                    
-                      this.props.updateConfig({
-                        configName: 'enableSendEventsFor', 
-                        configValue: {...this.props.enableSendEventsFor, admin: !this.props.enableSendEventsFor['admin']}
-                      })
-                    } 
-                  />
-                }
-                label="Admin"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox 
-                    checked={this.props.enableSendEventsFor['superReseller']} 
-                    onChange={()=>
-                      this.props.updateConfig({
-                        configName: 'enableSendEventsFor', 
-                        configValue: {...this.props.enableSendEventsFor, superReseller: !this.props.enableSendEventsFor['superReseller']}
-                      })
-                    } 
-                  />
-                }
-                label="Super Reseller"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox 
-                    checked={this.props.enableSendEventsFor['reseller']} 
-                    onChange={()=>
-                      this.props.updateConfig({
-                        configName: 'enableSendEventsFor', 
-                        configValue: {...this.props.enableSendEventsFor, reseller: !this.props.enableSendEventsFor['reseller']}
-                      })
-                    } 
-                  />
-                }
-                label="Reseller"
-              />
-          </FormControl>
-        </SendEventsWrapper>
+          <SendEventsWrapper elevation={5}>
+            <Typography variant="body1"  style={{height: '100px', textAlign: 'left', background: 'rgb(72, 117, 180)', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}>
+              Sending Events Capability
+            </Typography>
+            <FormControl component="fieldset" style={{padding: 20}}>
+              <FormLabel component="legend">Select users types who are allowed to send events to clients</FormLabel>
+                <FormControlLabel
+                  control={
+                    <Checkbox 
+                      checked={this.props.enableSendEventsFor['admin']} 
+                      onChange={()=>                    
+                        this.props.updateConfig({
+                          configName: 'enableSendEventsFor', 
+                          configValue: {...this.props.enableSendEventsFor, admin: !this.props.enableSendEventsFor['admin']}
+                        })
+                      } 
+                    />
+                  }
+                  label="Admin"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox 
+                      checked={this.props.enableSendEventsFor['superReseller']} 
+                      onChange={()=>
+                        this.props.updateConfig({
+                          configName: 'enableSendEventsFor', 
+                          configValue: {...this.props.enableSendEventsFor, superReseller: !this.props.enableSendEventsFor['superReseller']}
+                        })
+                      } 
+                    />
+                  }
+                  label="Super Reseller"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox 
+                      checked={this.props.enableSendEventsFor['reseller']} 
+                      onChange={()=>
+                        this.props.updateConfig({
+                          configName: 'enableSendEventsFor', 
+                          configValue: {...this.props.enableSendEventsFor, reseller: !this.props.enableSendEventsFor['reseller']}
+                        })
+                      } 
+                    />
+                  }
+                  label="Reseller"
+                />
+            </FormControl>
+          </SendEventsWrapper>
+        </Bottom>
+
       </Wrapper>
     )
   }
@@ -237,7 +300,8 @@ const mapStateToProps = state => ({
   authCreditsBalance: state.auth.creditsAvailable,
   minimumTransferrableCredits: state.config.minimumTransferrableCredits,
   UserAnnouncements: state.config.UserAnnouncements,
-  enableSendEventsFor: state.config.enableSendEventsFor
+  enableSendEventsFor: state.config.enableSendEventsFor,
+  nonRefundableCredits: state.config.nonRefundableCredits
 })
 
 const mapDispatchToProps = dispatch => ({

@@ -20,7 +20,7 @@ export const schemas = {
 
   updateSchema: Joi.object({
     username: Joi.string(),
-    email: Joi.string().email().error(new Error('Email Address should be a valid Email Address.')),
+    email: Joi.string().allow("").email().error(new Error('Email Address should be a valid Email Address.')),
     password: Joi.string(),
     firstName: Joi.string(),
     lastName: Joi.string(),
