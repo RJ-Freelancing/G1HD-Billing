@@ -77,10 +77,10 @@ const users = (state = initialState, action) => {
     case 'DELETE_USER_SUCCESS':
       // Find the deleted user and remove from appropiate list
       username = action.meta.previousAction.payload.request.url.split('/').pop()     
-      user = findInternalUserFromUsername(state, username)
+      user = findInternalUserFromUsername(state, username)  
       return {
         ...state, 
-        [`${user.userType}s`]: state[`${user.userType}s`].filter(user.username===username)
+        [`${user.userType}s`]: (state[`${user.userType}s`]).filter(user => user.username!==username)
       }
     case 'DELETE_CLIENT_SUCCESS':
       // Find the deleted client and remove from clients list

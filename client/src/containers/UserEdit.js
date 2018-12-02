@@ -158,10 +158,11 @@ class UserEdit extends Component {
 
   deleteUser = (event) => {
     event.preventDefault()
+    const { username, userType } = this.state.user
     this.confirmationProceed = () => {
       this.setState({confirmation: false}, ()=>{
-        this.props.deleteUser(this.state.user.username)
-        .then(() => this.props.history.push(`/${this.state.user.userType}s`))
+        this.props.deleteUser(username)
+        .then(() => this.props.history.push(`/${userType}s`))
       })
     }
     this.setState({confirmation: true, confirmationMessage: "Are you sure you want to delete this user ?", newPassword: ""})
