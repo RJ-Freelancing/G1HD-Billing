@@ -6,6 +6,9 @@ import { winstonLoggerCron } from './logger'
 
 export async function nightlyCronJob(isMaintenance){
     isMaintenance = true
+    console.log('1sttttt');
+    await delay(10000).then();
+    console.log('2nddddd');
     winstonLoggerCron.info('Started Daily Maintenance Cron Job...')
     const ministraClients = await getClientsCron()
     const mongoClients = await clientRepo.find({})
@@ -44,3 +47,12 @@ export async function nightlyCronJob(isMaintenance){
       await callback(array[index], index, array);
     }
   }
+
+  function delay(ms){
+    var ctr, rej, p = new Promise(function (resolve, reject) {
+        ctr = setTimeout(resolve, ms);
+        rej = reject;
+    });
+    p.cancel = function(){ clearTimeout(ctr); rej(Error("Cancelled"))};
+    return p; 
+}

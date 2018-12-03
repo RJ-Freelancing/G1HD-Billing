@@ -49,17 +49,17 @@ export const winstonLoggerCron = winston.createLogger({
     format: 'YYYY-MM-DD HH:mm:ss'
   }),
   transports: [
-    new winston.transports.File({ 
-      format : winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`),
-      filename: logDirectoryCron+'/'+filenameGenerator()
+    new winston.transports.Console({ 
+      format : winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
     })
   ]
 })
 
 // Disable winston logging on console for production
-if (process.env.NODE_ENV !== 'production') {
-  winstonLoggerCron.add(new winston.transports.Console({
-    format : winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
+if (process.env.NODE_ENV === 'production') {
+  winstonLoggerCron.add(new winston.transports.File({
+    format : winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`),
+    filename: logDirectoryCron+'/'+filenameGenerator()
   }))
 }
 

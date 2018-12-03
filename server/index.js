@@ -51,9 +51,9 @@ app.use(helmet())
 app.use(express.json({ limit: '10mb' }))
 
 // Page to show under maintenance
-app.use(express.static(path.join(__dirname, 'maintenance')));
 if(isMaintenance){
-  app.get('/', function(req, res) {
+  app.use(express.static(path.join(__dirname, 'maintenance')));
+  app.get('*', function(req, res) {
     res.sendFile(path.join(__dirname , 'maintenance', 'index.html'));
   });
 }
@@ -93,7 +93,7 @@ app.use((err, req, res, next) => {
 })
 
 //Maintenance Cron Job Runs everyday Night at 3.
-cron.schedule("0,30 * * * * *", function() {
+cron.schedule("30 * * * * *", function() {
   isMaintenance = nightlyCronJob(isMaintenance)
 }); 
 
