@@ -1,6 +1,7 @@
 import passport from '../_helpers/passport'
 import { validateParam, validateBody } from '../validations'
 import { schemas } from '../validations/userValidation'
+import { checkMaintenance } from '../_helpers/checkMaintenance'
 import { getAllUsers, addUser, validateUsername, getUser, updateUser, deleteUser, upgradeUserRole } from '../controllers/userController'
 
 
@@ -9,6 +10,7 @@ const router = require('express-promise-router')()
 
 router.route('/')
   .all(
+    checkMaintenance,
     passportJWT
   )
   .get(
@@ -21,6 +23,7 @@ router.route('/')
 
 router.route('/:username')
   .all(
+    checkMaintenance,
     passportJWT,
     validateParam(schemas.usernameSchema, 'username'),
     validateUsername
@@ -38,6 +41,7 @@ router.route('/:username')
 
 router.route('/upgrade/:username')
 .post(
+  checkMaintenance,
   passportJWT,
   validateParam(schemas.usernameSchema, 'username'),
   validateUsername,

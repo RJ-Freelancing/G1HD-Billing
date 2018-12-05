@@ -2,7 +2,7 @@ import passport from '../_helpers/passport'
 import { validateBody } from '../validations'
 import { schemas } from '../validations/userValidation'
 import { login } from '../controllers/userController'
-import { winstonLogger } from '../_helpers/logger'
+import { checkMaintenance } from '../_helpers/checkMaintenance'
 
 const passportSignIn = passport.authenticate('local', { session: false })
 const passportJWT = passport.authenticate('jwt', { session: false })
@@ -10,6 +10,7 @@ const router = require('express-promise-router')()
 
 router.route('/login')
   .post(
+    checkMaintenance,
     validateBody(schemas.userLoginSchema),
     passportSignIn,
     login
@@ -17,6 +18,7 @@ router.route('/login')
 
 router.route('/refreshtoken')
   .get(
+    checkMaintenance,
     passportJWT,
     login
   )

@@ -12,7 +12,6 @@ import ministraRoutes from './routes/ministraRoutes'
 import configRoutes from './routes/configRoutes'
 import { nightlyCronJob } from './_helpers/cronJob'
 
-let isMaintenance = false
 
 // Use bluebird promise to persist stack trace while using async/await
 global.Promise=require('bluebird');
@@ -50,14 +49,6 @@ app.use(helmet())
 // Parse incoming requests with JSON payloads
 app.use(express.json({ limit: '10mb' }))
 
-// Page to show under maintenance
-if(isMaintenance){
-  app.use(express.static(path.join(__dirname, 'maintenance')));
-  app.get('*', function(req, res) {
-    res.sendFile(path.join(__dirname , 'maintenance', 'index.html'));
-  });
-}
-
 // Routes
 app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)
@@ -73,8 +64,6 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.join(__dirname, 'client', 'index.html'));
   });
 }
-
-
 
 // Catch 404 Errors
 app.use((req, res, next) => {
@@ -92,9 +81,16 @@ app.use((err, req, res, next) => {
   res.status(status).json({ error: err.message })
 })
 
+
+// Get Maintenance Time
+const cronStartTime = process.env.MAINTENANCE_START_TIME
+const cronStartHour = parseInt(cronStartTime.substr(0,2))
+const cronStartMins = parseInt(cronStartTime.substr(2, 3))
+
 //Maintenance Cron Job Runs everyday Night at 3.
-cron.schedule("30 * * * * *", function() {
-  isMaintenance = nightlyCronJob(isMaintenance)
+const cronStr = "0 " + (cronStartMins) + " " + cronStartHour + " * * *"
+cron.schedule(cronStr, function() {
+  nightlyCronJob()
 }); 
 
 // Start the server
