@@ -132,11 +132,13 @@ class Dashboard extends Component {
   getClientsData = () => {    
     let displayData = []
     for (let client of this.props.clients) {
-      let clientData = {}
-      for (let row of clientRows) {
-        clientData[row.field] = client[row.field]
+      if (!isPast(client.tariff_expired_date)) {
+        let clientData = {}
+        for (let row of clientRows) {
+          clientData[row.field] = client[row.field]
+        }
+        displayData.push({...clientData})
       }
-      displayData.push({...clientData})
     }
     return displayData
   } 
@@ -144,13 +146,13 @@ class Dashboard extends Component {
   getUsersData = (rows, urlPath) => {       
     const users = [...this.props.admins, ...this.props.superResellers, ...this.props.resellers]
     let displayData = []
-    for (let user of users) {    
+    for (let user of users) {      
       let userData = {}
       for (let row of userRows) {
         userData[row.field] = user[row.field]
       }   
       displayData.push({...userData})
-    }   
+    }  
     return displayData
   } 
 
