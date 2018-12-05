@@ -71,7 +71,7 @@ class ClientList extends Component {
   render() {
     return (
       <>
-        <Tabs value={this.state.filter} onChange={this.handleFilter}>
+        <Tabs value={this.state.filter} onChange={this.handleFilter} >
           <Tab label="Active" value='active' icon={<Icon>live_tv</Icon>}/>
           <Tab label="Expired" value='expired' icon={<Icon>tv_off</Icon> }/>
         </Tabs>

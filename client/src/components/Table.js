@@ -274,7 +274,7 @@ export default class EnhancedTable extends React.Component {
           headingColor={headingColor}
         />
         <div style={{height: tableHeight, overflowX: 'auto'}} >
-          <Table aria-labelledby="tableTitle">
+          <Table aria-labelledby="tableTitle" padding='none'>
             <EnhancedTableHead
               order={order}
               orderBy={orderBy}
@@ -348,7 +348,7 @@ export default class EnhancedTable extends React.Component {
                             </TableCell>
                           )
                         case 'integer':
-                          return <TableCell key={field} style={{textAlign: 'center', paddingLeft: 0}}> {value} </TableCell>
+                          return <TableCell key={field} style={{textAlign: 'center', paddingLeft: 0, color: value < 0 ? 'red' : ''}}> {value} </TableCell>
                         case 'date':
                           return <TableCell key={field}> {format(Date.parse(value), 'D MMM YYYY @ HH:mm:ss')} </TableCell>
                         default:
