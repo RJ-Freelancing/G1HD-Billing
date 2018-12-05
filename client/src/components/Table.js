@@ -274,7 +274,7 @@ export default class EnhancedTable extends React.Component {
           headingColor={headingColor}
         />
         <div style={{height: tableHeight, overflowX: 'auto'}} >
-          <Table aria-labelledby="tableTitle" padding='none'>
+          <Table aria-labelledby="tableTitle" padding='dense'>
             <EnhancedTableHead
               order={order}
               orderBy={orderBy}
