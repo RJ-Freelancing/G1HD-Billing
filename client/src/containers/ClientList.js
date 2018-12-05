@@ -2,14 +2,17 @@ import React, { Component } from 'react'
 import Table from 'components/Table'
 import { connect } from 'react-redux'
 import Confirmation from 'components/Confirmation'
-
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Icon from '@material-ui/core/Icon';
+import { isPast } from 'date-fns'
 
 import { updateCredits } from 'actions/transactions'
 
 
 
 const rows = [
-  { field: 'stb_mac', label: 'MAC Address', type: 'string'  },
+  { field: 'stb_mac', label: 'MAC Address', type: 'string', link: true  },
   { field: 'full_name', label: 'Full Name', type: 'string'  },
   { field: 'phone', label: 'Telephone', type: 'string'  },
   { field: 'accountBalance', label: 'Credits Available', type: 'integer'  },
@@ -25,18 +28,22 @@ class ClientList extends Component {
     super(props)
     this.state = {
       confirmation: false,
-      plusOneClient: null
+      plusOneClient: null,
+      filter: 'active'
     }
   }
 
   getTableData = () => {    
     let displayData = []
     for (let client of this.props.clients) {
-      let clientData = {}
-      for (let row of rows) {
-        clientData[row.field] = client[row.field]
+      let canPush = (this.state.filter==='active' && !isPast(client.tariff_expired_date)) || (this.state.filter==='expired' && isPast(client.tariff_expired_date))
+      if (canPush) {
+        let clientData = {}
+        for (let row of rows) {
+          clientData[row.field] = client[row.field]
+        }
+        displayData.push({...clientData})
       }
-      displayData.push({...clientData})
     }
     return displayData
   } 
@@ -57,9 +64,18 @@ class ClientList extends Component {
     this.setState({confirmation: true, plusOneClient: client.stb_mac})
   }
 
+  handleFilter = (event, filter) => {
+    this.setState({ filter })
+  }
+
   render() {
     return (
       <>
+        <Tabs value={this.state.filter} onChange={this.handleFilter}>
+          <Tab label="Active" value='active' icon={<Icon>live_tv</Icon>}/>
+          <Tab label="Expired" value='expired' icon={<Icon>tv_off</Icon> }/>
+        </Tabs>
+ 
         <Table
           title={'Clients'}
           rows={rows}
