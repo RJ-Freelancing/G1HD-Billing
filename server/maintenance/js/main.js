@@ -1,8 +1,6 @@
 
 (function ($) {
     
-   /*==================================================================
-    [ Simple slide100 ]*/
 
     $('.simpleslide100').each(function(){
         var delay = 7000;
