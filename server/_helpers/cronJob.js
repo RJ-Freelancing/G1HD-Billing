@@ -36,6 +36,10 @@ export async function nightlyCronJob(){
       })
     })
     //Actual Logic Starts Here
+    await asyncForEach(ministraClients, async (element) => {
+      console.log('element: ', element);
+      // if (element.)
+    })
 
     
     await configRepo.findOneAndUpdate({ configName : 'runningCron' }, { configValue : false })
