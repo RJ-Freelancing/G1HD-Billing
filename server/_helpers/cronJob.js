@@ -1,18 +1,23 @@
 import axios from 'axios'
+import querystring from 'querystring'
 import { getClientsCron } from '../_helpers/ministraHelper'
 import { ministraAPI, config } from '../controllers/ministraController'
+import { mergeArrayObjectsByKey } from '../controllers/userController'
 import clientRepo from '../models/clientModel'
 import configRepo from '../models/configModel'
 import { winstonLoggerCron } from './logger'
+import userRepo from '../models/userModel'
+import dateFns from 'date-fns'
 
 export async function nightlyCronJob(){
     winstonLoggerCron.info('Started Daily Maintenance Cron Job...')
     await configRepo.findOneAndUpdate({ configName : 'runningCron' }, { configValue : true })
     winstonLoggerCron.info('Delaying 1 Minute till starting activities...')
-    await delay(60000).then();
+    await delay(6000).then();
     winstonLoggerCron.info('Completed Delay...')
     const ministraClients = await getClientsCron()
     const mongoClients = await clientRepo.find({})
+    const mergedClients = mergeArrayObjectsByKey(mongoClients, ministraClients, 'clientMac', 'stb_mac')
     let ministraMacMap = ministraClients.map(x => x.stb_mac)
     let mongoMacMap = mongoClients.map(x => x.clientMac)
     let extrasOnMinistra = ministraMacMap.filter(x => !mongoMacMap.includes(x))
@@ -36,9 +41,23 @@ export async function nightlyCronJob(){
       })
     })
     //Actual Logic Starts Here
-    await asyncForEach(ministraClients, async (element) => {
-      console.log('element: ', element);
-      // if (element.)
+
+    await asyncForEach(mergedClients, async (element) => {
+      const cronCheckDate = dateFns.subMonths(element.tariff_expired_date, element.accountBalance)
+      const parent = await userRepo.findOne({ username : element.parentUsername })
+      if (element.accountBalance > 0 && dateFns.isToday(cronCheckDate)){
+        if( parent.creditsAvailable > 0 ){
+          await userRepo.findOneAndUpdate({ username : element.parentUsername }, { $inc: { creditsAvailable : -1, creditsOwed : -1 } })
+          await clientRepo.findOneAndUpdate({ clientMac : element.clientMac }, { accountBalance : (element.accountBalance-1) } )
+        }
+        else {
+          await axios.put(ministraAPI + 'accounts/' + element.stb_mac,
+            querystring.stringify('{}'), config)
+            .then(response => {
+              res.locals.updatedUser = response.data
+            })
+        }
+      }
     })
 
     
