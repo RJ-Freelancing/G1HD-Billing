@@ -18,7 +18,7 @@ export default class InactivityPopup extends Component {
     window.onclick = this.resetInactiveTimer
     window.onkeypress = this.resetInactiveTimer
     window.onscroll = this.resetInactiveTimer
-    this.idleTimer = setTimeout(this.onIdle, 200000)
+    this.idleTimer = setTimeout(this.onIdle, 20000)
     this.refreshTokenTimer = setInterval(this.props.refreshToken, 280000)
   }
 
@@ -31,6 +31,10 @@ export default class InactivityPopup extends Component {
     clearInterval(this.timer)
     clearTimeout(this.idleTimer)
     clearInterval(this.refreshTokenTimer)
+    window.removeEventListener('onmousemove', this.resetInactiveTimer)
+    window.removeEventListener('onclick', this.resetInactiveTimer)
+    window.removeEventListener('onkeypress', this.resetInactiveTimer)
+    window.removeEventListener('onscroll', this.resetInactiveTimer)
   }
 
   resetInactiveTimer = () => {
@@ -38,25 +42,32 @@ export default class InactivityPopup extends Component {
     this.setState({ inactivity: 0 }, ()=>{
       clearTimeout(this.idleTimer)
       clearInterval(this.timer)
-      this.idleTimer = setTimeout(this.onIdle, 200000)
+      this.idleTimer = setTimeout(this.onIdle, 20000)
     }
   )}
 
   progress = () => {
     const { inactivity } = this.state
-    if (inactivity >= 60) {
+    if (inactivity >= 20) {
+      clearInterval(this.timer)
+      clearTimeout(this.idleTimer)
+      clearInterval(this.refreshTokenTimer)
+      window.removeEventListener('onmousemove', this.resetInactiveTimer)
+      window.removeEventListener('onclick', this.resetInactiveTimer)
+      window.removeEventListener('onkeypress', this.resetInactiveTimer)
+      window.removeEventListener('onscroll', this.resetInactiveTimer)
       this.props.logout()
     }
     else this.setState({ inactivity: inactivity + 1 })
   }
 
   render() {
-    if (!this.state.inactivity || this.state.inactivity > 60) return <></>
+    if (!this.state.inactivity || this.state.inactivity > 20) return <></>
 
     return (
       <PopupMessage
         title="Session Idle"
-        description={`You will be logged out in ${60-this.state.inactivity} seconds due to inactivity.`}
+        description={`You will be logged out in ${20-this.state.inactivity} seconds due to inactivity.`}
         image={Inactivity}
       /> 
     )
