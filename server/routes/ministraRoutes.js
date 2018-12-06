@@ -2,7 +2,6 @@ import passport from '../_helpers/passport'
 import { getTariffs, sendMsg, sendEvent, getAccountSub, putAccountSub, postAccountSub, deleteAccountSub, permissionCheck } from '../controllers/ministraController'
 import { validateBody, validateParam } from '../validations'
 import { schemas } from '../validations/ministraValidation'
-import { checkMaintenance } from '../_helpers/checkMaintenance'
 
 
 const passportJWT = passport.authenticate('jwt', { session: false })
@@ -10,14 +9,12 @@ const router = require('express-promise-router')()
 
 router.route('/tariffs')
   .get(
-    checkMaintenance,
     passportJWT,
     getTariffs
   )
 
 router.route('/stb_msg/')
   .post(
-    checkMaintenance,
     passportJWT,
     validateBody(schemas.msgSchema),
     permissionCheck,
@@ -26,7 +23,6 @@ router.route('/stb_msg/')
 
 router.route('/send_event/')
   .post(
-    checkMaintenance,
     passportJWT,
     validateBody(schemas.eventSchema),
     permissionCheck,
@@ -35,7 +31,6 @@ router.route('/send_event/')
 
 router.route('/account_subscription/:id')
   .all(
-    checkMaintenance,
     passportJWT,
     validateParam(schemas.idSchema, 'id'),
     permissionCheck,

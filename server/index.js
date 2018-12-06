@@ -12,6 +12,7 @@ import ministraRoutes from './routes/ministraRoutes'
 import configRoutes from './routes/configRoutes'
 import { nightlyCronJob } from './_helpers/cronJob'
 import configRepo from './models/configModel'
+import { winstonLogger } from './_helpers/logger'
 
 
 // Use bluebird promise to persist stack trace while using async/await
@@ -53,10 +54,10 @@ app.use(express.json({ limit: '10mb' }))
 
 // Maintenance
 app.use(express.static(path.join(__dirname, 'maintenance')))
-app.get('*', async function(req, res, next) {
-  winstonLogger.info("Running checkMaintenance Operation.")
-  const isCronRunning = await configRepo.findOne({ configName : "runningCron" }).configValue
-  if (isCronRunning)  res.sendFile(path.join(__dirname, 'maintenance', 'index.html'))
+app.get('*', async function(req, res, next) { 
+  winstonLogger.info("Running checkMaintenance Operation.") 
+  const isCronRunning = await configRepo.findOne({ configName : "runningCron" })
+  if (isCronRunning.configValue) return res.sendFile(path.join(__dirname, 'maintenance', 'index.html'))
   next() 
 })
 
