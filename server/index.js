@@ -52,11 +52,11 @@ app.use(express.json({ limit: '10mb' }))
 
 
 // Maintenance
-app.use('/maintenance', express.static(path.join(__dirname, 'maintenanceNEW')))
+app.use('/maintenance', express.static(path.join(__dirname, 'maintenance')))
 app.all('*', async function(req, res, next) { 
   winstonLogger.info("Running checkMaintenance Operation.") 
   const isCronRunning = await configRepo.findOne({ configName : "runningCron" })
-  if (isCronRunning.configValue) return res.sendFile(path.join(__dirname, 'maintenanceNEW', 'index.html'))
+  if (isCronRunning.configValue) return res.sendFile(path.join(__dirname, 'maintenance', 'index.html'))
   next() 
 })
 
