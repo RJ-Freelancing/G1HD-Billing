@@ -1,0 +1,2213 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0",
+      "title": "Billing",
+      "description": "TODO: Add Description",
+      "contact": {}
+    },
+    "host": "example.com",
+    "basePath": "/api",
+    "securityDefinitions": {
+      "auth": {
+        "type": "oauth2",
+        "flow": "implicit",
+        "authorizationUrl": "http://example.com/api",
+        "scopes": {}
+      }
+    },
+    "schemes": [
+      "http"
+    ],
+    "consumes": [
+      "application/json"
+    ],
+    "produces": [
+      "application/json"
+    ],
+    "paths": {
+      "/transactions/{id}": {
+        "get": {
+          "description": "TODO: Add Description",
+          "summary": "Get User Transactions",
+          "tags": [
+            "Transactions"
+          ],
+          "operationId": "TransactionsByIdGet",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": true,
+              "type": "string",
+              "description": ""
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "headers": {}
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        }
+      },
+      "/transactions": {
+        "post": {
+          "description": "TODO: Add Description",
+          "summary": "Add Transaction",
+          "tags": [
+            "Transactions"
+          ],
+          "operationId": "TransactionsPost",
+          "produces": [
+            "application/json; charset=utf-8"
+          ],
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Body",
+              "in": "body",
+              "required": true,
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/AddTransactionRequest"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/DeleteAccount"
+              },
+              "examples": {
+                "application/json; charset=utf-8": {
+                  "_id": "5bca8ab5b722e401dd3e1ea5",
+                  "email": "admin@mail.com",
+                  "password": "$2a$10$Dk7X4emlUZivKzqRgimkJOpaHwm0UBNUduqHJ3fKfMNVd9vOqIY5i",
+                  "__v": 0
+                }
+              },
+              "headers": {
+                "Access-Control-Allow-Headers": {
+                  "type": "string",
+                  "default": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+                },
+                "Access-Control-Allow-Methods": {
+                  "type": "string",
+                  "default": "GET,PUT,POST,DELETE,OPTIONS"
+                },
+                "Access-Control-Allow-Origin": {
+                  "type": "string",
+                  "default": "*"
+                },
+                "Connection": {
+                  "type": "string",
+                  "default": "keep-alive"
+                },
+                "Content-Length": {
+                  "type": "string",
+                  "default": "141"
+                },
+                "Date": {
+                  "type": "string",
+                  "default": "Sat, 20 Oct 2018 02:31:32 GMT"
+                },
+                "ETag": {
+                  "type": "string",
+                  "default": "W/\"8d-sR5l8iBaHBZqyRYAgBbueCgj6b8\""
+                },
+                "Strict-Transport-Security": {
+                  "type": "string",
+                  "default": "max-age=15552000; includeSubDomains"
+                },
+                "X-Content-Type-Options": {
+                  "type": "string",
+                  "default": "nosniff"
+                },
+                "X-DNS-Prefetch-Control": {
+                  "type": "string",
+                  "default": "off"
+                },
+                "X-Download-Options": {
+                  "type": "string",
+                  "default": "noopen"
+                },
+                "X-Frame-Options": {
+                  "type": "string",
+                  "default": "SAMEORIGIN"
+                },
+                "X-XSS-Protection": {
+                  "type": "string",
+                  "default": "1; mode=block"
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        }
+      },
+      "/users": {
+        "get": {
+          "description": "TODO: Add Description",
+          "summary": "Get All Users",
+          "tags": [
+            "Internal User"
+          ],
+          "operationId": "UsersGet",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "",
+              "headers": {}
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        },
+        "post": {
+          "description": "TODO: Add Description",
+          "summary": "Add User",
+          "tags": [
+            "Internal User"
+          ],
+          "operationId": "UsersPost",
+          "produces": [
+            "application/json; charset=utf-8"
+          ],
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Body",
+              "in": "body",
+              "required": true,
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/AddUserRequest"
+              }
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/RegisterAccount"
+              },
+              "examples": {
+                "application/json; charset=utf-8": {
+                  "user": {
+                    "_id": "5bca9394aea0a40141dbcba5",
+                    "email": "admin@mail.com",
+                    "password": "$2a$10$YtLUQeWpgDF0ptsbE7xF9u108W5CqAw4/tiJTTCvCKAzD.TSF66Oq",
+                    "__v": 0
+                  },
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJCdWRnZXQiLCJzdWIiOiI1YmNhOTM5NGFlYTBhNDAxNDFkYmNiYTUiLCJpYXQiOjE1NDAwMDI3MDg2MzYsImV4cCI6MTU0MDA4OTEwODYzNn0.dO7P43eRjzPk0G0pWmcdgYxgg2FpbpXUvSPO9-4WXK0"
+                }
+              },
+              "headers": {
+                "Access-Control-Allow-Headers": {
+                  "type": "string",
+                  "default": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+                },
+                "Access-Control-Allow-Methods": {
+                  "type": "string",
+                  "default": "GET,PUT,POST,DELETE,OPTIONS"
+                },
+                "Access-Control-Allow-Origin": {
+                  "type": "string",
+                  "default": "*"
+                },
+                "Connection": {
+                  "type": "string",
+                  "default": "keep-alive"
+                },
+                "Content-Length": {
+                  "type": "string",
+                  "default": "361"
+                },
+                "Date": {
+                  "type": "string",
+                  "default": "Sat, 20 Oct 2018 02:31:48 GMT"
+                },
+                "ETag": {
+                  "type": "string",
+                  "default": "W/\"169-yEyJr81xfqBFn+g/82Yw3jZbO5M\""
+                },
+                "Strict-Transport-Security": {
+                  "type": "string",
+                  "default": "max-age=15552000; includeSubDomains"
+                },
+                "X-Content-Type-Options": {
+                  "type": "string",
+                  "default": "nosniff"
+                },
+                "X-DNS-Prefetch-Control": {
+                  "type": "string",
+                  "default": "off"
+                },
+                "X-Download-Options": {
+                  "type": "string",
+                  "default": "noopen"
+                },
+                "X-Frame-Options": {
+                  "type": "string",
+                  "default": "SAMEORIGIN"
+                },
+                "X-XSS-Protection": {
+                  "type": "string",
+                  "default": "1; mode=block"
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "schema": {
+                "$ref": "#/definitions/AddUser"
+              },
+              "examples": {
+                "application/json": {
+                  "error": "User already exists with username: admin2"
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        }
+      },
+      "/users/{id}": {
+        "get": {
+          "description": "TODO: Add Description",
+          "summary": "Get User",
+          "tags": [
+            "Internal User"
+          ],
+          "operationId": "UsersByIdGet",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": ""
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "headers": {}
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        },
+        "patch": {
+          "description": "TODO: Add Description",
+          "summary": "Update User",
+          "tags": [
+            "Internal User"
+          ],
+          "operationId": "UsersByIdPatch",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Body",
+              "in": "body",
+              "required": true,
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/UpdateUserRequest"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "headers": {}
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        },
+        "delete": {
+          "description": "TODO: Add Description",
+          "summary": "Delete User",
+          "tags": [
+            "Internal User"
+          ],
+          "operationId": "UsersByIdDelete",
+          "produces": [
+            "application/json; charset=utf-8"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": true,
+              "type": "string",
+              "description": ""
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/DeleteAccount"
+              },
+              "examples": {
+                "application/json; charset=utf-8": {
+                  "_id": "5bca8ab5b722e401dd3e1ea5",
+                  "email": "admin@mail.com",
+                  "password": "$2a$10$Dk7X4emlUZivKzqRgimkJOpaHwm0UBNUduqHJ3fKfMNVd9vOqIY5i",
+                  "__v": 0
+                }
+              },
+              "headers": {
+                "Access-Control-Allow-Headers": {
+                  "type": "string",
+                  "default": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+                },
+                "Access-Control-Allow-Methods": {
+                  "type": "string",
+                  "default": "GET,PUT,POST,DELETE,OPTIONS"
+                },
+                "Access-Control-Allow-Origin": {
+                  "type": "string",
+                  "default": "*"
+                },
+                "Connection": {
+                  "type": "string",
+                  "default": "keep-alive"
+                },
+                "Content-Length": {
+                  "type": "string",
+                  "default": "141"
+                },
+                "Date": {
+                  "type": "string",
+                  "default": "Sat, 20 Oct 2018 02:31:32 GMT"
+                },
+                "ETag": {
+                  "type": "string",
+                  "default": "W/\"8d-sR5l8iBaHBZqyRYAgBbueCgj6b8\""
+                },
+                "Strict-Transport-Security": {
+                  "type": "string",
+                  "default": "max-age=15552000; includeSubDomains"
+                },
+                "X-Content-Type-Options": {
+                  "type": "string",
+                  "default": "nosniff"
+                },
+                "X-DNS-Prefetch-Control": {
+                  "type": "string",
+                  "default": "off"
+                },
+                "X-Download-Options": {
+                  "type": "string",
+                  "default": "noopen"
+                },
+                "X-Frame-Options": {
+                  "type": "string",
+                  "default": "SAMEORIGIN"
+                },
+                "X-XSS-Protection": {
+                  "type": "string",
+                  "default": "1; mode=block"
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        }
+      },
+      "/auth/login": {
+        "post": {
+          "description": "TODO: Add Description",
+          "summary": "Login",
+          "tags": [
+            "Internal User"
+          ],
+          "operationId": "AuthLoginPost",
+          "produces": [
+            "application/json; charset=utf-8"
+          ],
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Body",
+              "in": "body",
+              "required": true,
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/LoginRequest"
+              }
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/Login"
+              },
+              "examples": {
+                "application/json; charset=utf-8": {
+                  "user": {
+                    "_id": "5bca9394aea0a40141dbcba5",
+                    "email": "admin@mail.com",
+                    "password": "$2a$10$YtLUQeWpgDF0ptsbE7xF9u108W5CqAw4/tiJTTCvCKAzD.TSF66Oq",
+                    "__v": 0
+                  },
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJCdWRnZXQiLCJzdWIiOiI1YmNhOTM5NGFlYTBhNDAxNDFkYmNiYTUiLCJpYXQiOjE1NDAwMDI3MTY0OTUsImV4cCI6MTU0MDA4OTExNjQ5NX0.-0FAephn9UH2KH0yotmkvWH5rJeRHATRAnbLqOpOScM"
+                }
+              },
+              "headers": {
+                "Access-Control-Allow-Headers": {
+                  "type": "string",
+                  "default": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+                },
+                "Access-Control-Allow-Methods": {
+                  "type": "string",
+                  "default": "GET,PUT,POST,DELETE,OPTIONS"
+                },
+                "Access-Control-Allow-Origin": {
+                  "type": "string",
+                  "default": "*"
+                },
+                "Connection": {
+                  "type": "string",
+                  "default": "keep-alive"
+                },
+                "Content-Length": {
+                  "type": "string",
+                  "default": "361"
+                },
+                "Date": {
+                  "type": "string",
+                  "default": "Sat, 20 Oct 2018 02:31:56 GMT"
+                },
+                "ETag": {
+                  "type": "string",
+                  "default": "W/\"169-8uRtCbXJXDZUVBmDTtdqJ9Xo4cM\""
+                },
+                "Strict-Transport-Security": {
+                  "type": "string",
+                  "default": "max-age=15552000; includeSubDomains"
+                },
+                "X-Content-Type-Options": {
+                  "type": "string",
+                  "default": "nosniff"
+                },
+                "X-DNS-Prefetch-Control": {
+                  "type": "string",
+                  "default": "off"
+                },
+                "X-Download-Options": {
+                  "type": "string",
+                  "default": "noopen"
+                },
+                "X-Frame-Options": {
+                  "type": "string",
+                  "default": "SAMEORIGIN"
+                },
+                "X-XSS-Protection": {
+                  "type": "string",
+                  "default": "1; mode=block"
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "schema": {}
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        }
+      },
+      "/users/upgrade/{id}": {
+        "post": {
+          "description": "TODO: Add Description",
+          "summary": "Upgrade User Role",
+          "tags": [
+            "Internal User"
+          ],
+          "operationId": "UsersUpgradeByIdPost",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Body",
+              "in": "body",
+              "required": true,
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/UpgradeUserRoleRequest"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "headers": {}
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        }
+      },
+      "/auth/refreshtoken": {
+        "get": {
+          "description": "TODO: Add Description",
+          "summary": "Refresh Token",
+          "tags": [
+            "Internal User"
+          ],
+          "operationId": "AuthRefreshtokenGet",
+          "produces": [
+            "application/json; charset=utf-8"
+          ],
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": true,
+              "type": "string",
+              "description": ""
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/Login"
+              },
+              "examples": {
+                "application/json; charset=utf-8": {
+                  "user": {
+                    "_id": "5bca9394aea0a40141dbcba5",
+                    "email": "admin@mail.com",
+                    "password": "$2a$10$YtLUQeWpgDF0ptsbE7xF9u108W5CqAw4/tiJTTCvCKAzD.TSF66Oq",
+                    "__v": 0
+                  },
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJCdWRnZXQiLCJzdWIiOiI1YmNhOTM5NGFlYTBhNDAxNDFkYmNiYTUiLCJpYXQiOjE1NDAwMDI3MTY0OTUsImV4cCI6MTU0MDA4OTExNjQ5NX0.-0FAephn9UH2KH0yotmkvWH5rJeRHATRAnbLqOpOScM"
+                }
+              },
+              "headers": {
+                "Access-Control-Allow-Headers": {
+                  "type": "string",
+                  "default": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+                },
+                "Access-Control-Allow-Methods": {
+                  "type": "string",
+                  "default": "GET,PUT,POST,DELETE,OPTIONS"
+                },
+                "Access-Control-Allow-Origin": {
+                  "type": "string",
+                  "default": "*"
+                },
+                "Connection": {
+                  "type": "string",
+                  "default": "keep-alive"
+                },
+                "Content-Length": {
+                  "type": "string",
+                  "default": "361"
+                },
+                "Date": {
+                  "type": "string",
+                  "default": "Sat, 20 Oct 2018 02:31:56 GMT"
+                },
+                "ETag": {
+                  "type": "string",
+                  "default": "W/\"169-8uRtCbXJXDZUVBmDTtdqJ9Xo4cM\""
+                },
+                "Strict-Transport-Security": {
+                  "type": "string",
+                  "default": "max-age=15552000; includeSubDomains"
+                },
+                "X-Content-Type-Options": {
+                  "type": "string",
+                  "default": "nosniff"
+                },
+                "X-DNS-Prefetch-Control": {
+                  "type": "string",
+                  "default": "off"
+                },
+                "X-Download-Options": {
+                  "type": "string",
+                  "default": "noopen"
+                },
+                "X-Frame-Options": {
+                  "type": "string",
+                  "default": "SAMEORIGIN"
+                },
+                "X-XSS-Protection": {
+                  "type": "string",
+                  "default": "1; mode=block"
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "schema": {}
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        }
+      },
+      "/config": {
+        "get": {
+          "description": "TODO: Add Description",
+          "summary": "Get Config",
+          "tags": [
+            "Configs"
+          ],
+          "operationId": "ConfigGet",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": true,
+              "type": "string",
+              "description": ""
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "headers": {}
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        },
+        "put": {
+          "description": "TODO: Add Description",
+          "summary": "Update Config",
+          "tags": [
+            "Configs"
+          ],
+          "operationId": "ConfigPut",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Body",
+              "in": "body",
+              "required": true,
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/UpdateConfigRequest"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "headers": {}
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        }
+      },
+      "/config/log/2018-11-14_05.33.47.log": {
+        "get": {
+          "description": "TODO: Add Description",
+          "summary": "Read Log",
+          "tags": [
+            "Configs"
+          ],
+          "operationId": "ConfigLog20181114053347LogGet",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": true,
+              "type": "string",
+              "description": ""
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "headers": {}
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        }
+      },
+      "/config/getlogfiles": {
+        "get": {
+          "description": "TODO: Add Description",
+          "summary": "Get Log File Names",
+          "tags": [
+            "Configs"
+          ],
+          "operationId": "ConfigGetlogfilesGet",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": true,
+              "type": "string",
+              "description": ""
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "headers": {}
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        }
+      },
+      "/clients": {
+        "post": {
+          "description": "TODO: Add Description",
+          "summary": "Add Clients",
+          "tags": [
+            "Clients"
+          ],
+          "operationId": "ClientsPost",
+          "produces": [
+            "application/json; charset=utf-8"
+          ],
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Body",
+              "in": "body",
+              "required": true,
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/AddClientsRequest"
+              }
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/RegisterAccount"
+              },
+              "examples": {
+                "application/json; charset=utf-8": {
+                  "user": {
+                    "_id": "5bca9394aea0a40141dbcba5",
+                    "email": "admin@mail.com",
+                    "password": "$2a$10$YtLUQeWpgDF0ptsbE7xF9u108W5CqAw4/tiJTTCvCKAzD.TSF66Oq",
+                    "__v": 0
+                  },
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJCdWRnZXQiLCJzdWIiOiI1YmNhOTM5NGFlYTBhNDAxNDFkYmNiYTUiLCJpYXQiOjE1NDAwMDI3MDg2MzYsImV4cCI6MTU0MDA4OTEwODYzNn0.dO7P43eRjzPk0G0pWmcdgYxgg2FpbpXUvSPO9-4WXK0"
+                }
+              },
+              "headers": {
+                "Access-Control-Allow-Headers": {
+                  "type": "string",
+                  "default": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+                },
+                "Access-Control-Allow-Methods": {
+                  "type": "string",
+                  "default": "GET,PUT,POST,DELETE,OPTIONS"
+                },
+                "Access-Control-Allow-Origin": {
+                  "type": "string",
+                  "default": "*"
+                },
+                "Connection": {
+                  "type": "string",
+                  "default": "keep-alive"
+                },
+                "Content-Length": {
+                  "type": "string",
+                  "default": "361"
+                },
+                "Date": {
+                  "type": "string",
+                  "default": "Sat, 20 Oct 2018 02:31:48 GMT"
+                },
+                "ETag": {
+                  "type": "string",
+                  "default": "W/\"169-yEyJr81xfqBFn+g/82Yw3jZbO5M\""
+                },
+                "Strict-Transport-Security": {
+                  "type": "string",
+                  "default": "max-age=15552000; includeSubDomains"
+                },
+                "X-Content-Type-Options": {
+                  "type": "string",
+                  "default": "nosniff"
+                },
+                "X-DNS-Prefetch-Control": {
+                  "type": "string",
+                  "default": "off"
+                },
+                "X-Download-Options": {
+                  "type": "string",
+                  "default": "noopen"
+                },
+                "X-Frame-Options": {
+                  "type": "string",
+                  "default": "SAMEORIGIN"
+                },
+                "X-XSS-Protection": {
+                  "type": "string",
+                  "default": "1; mode=block"
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "schema": {
+                "$ref": "#/definitions/AddUser"
+              },
+              "examples": {
+                "application/json": {
+                  "error": "User already exists with username: admin2"
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        }
+      },
+      "/clients/{id}": {
+        "put": {
+          "description": "TODO: Add Description",
+          "summary": "Update Client",
+          "tags": [
+            "Clients"
+          ],
+          "operationId": "ClientsByIdPut",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Body",
+              "in": "body",
+              "required": true,
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/UpdateClientRequest"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "headers": {}
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        },
+        "delete": {
+          "description": "TODO: Add Description",
+          "summary": "Delete Client",
+          "tags": [
+            "Clients"
+          ],
+          "operationId": "ClientsByIdDelete",
+          "produces": [
+            "application/json; charset=utf-8"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Body",
+              "in": "body",
+              "required": true,
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/DeleteClientRequest"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/DeleteAccount"
+              },
+              "examples": {
+                "application/json; charset=utf-8": {
+                  "_id": "5bca8ab5b722e401dd3e1ea5",
+                  "email": "admin@mail.com",
+                  "password": "$2a$10$Dk7X4emlUZivKzqRgimkJOpaHwm0UBNUduqHJ3fKfMNVd9vOqIY5i",
+                  "__v": 0
+                }
+              },
+              "headers": {
+                "Access-Control-Allow-Headers": {
+                  "type": "string",
+                  "default": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+                },
+                "Access-Control-Allow-Methods": {
+                  "type": "string",
+                  "default": "GET,PUT,POST,DELETE,OPTIONS"
+                },
+                "Access-Control-Allow-Origin": {
+                  "type": "string",
+                  "default": "*"
+                },
+                "Connection": {
+                  "type": "string",
+                  "default": "keep-alive"
+                },
+                "Content-Length": {
+                  "type": "string",
+                  "default": "141"
+                },
+                "Date": {
+                  "type": "string",
+                  "default": "Sat, 20 Oct 2018 02:31:32 GMT"
+                },
+                "ETag": {
+                  "type": "string",
+                  "default": "W/\"8d-sR5l8iBaHBZqyRYAgBbueCgj6b8\""
+                },
+                "Strict-Transport-Security": {
+                  "type": "string",
+                  "default": "max-age=15552000; includeSubDomains"
+                },
+                "X-Content-Type-Options": {
+                  "type": "string",
+                  "default": "nosniff"
+                },
+                "X-DNS-Prefetch-Control": {
+                  "type": "string",
+                  "default": "off"
+                },
+                "X-Download-Options": {
+                  "type": "string",
+                  "default": "noopen"
+                },
+                "X-Frame-Options": {
+                  "type": "string",
+                  "default": "SAMEORIGIN"
+                },
+                "X-XSS-Protection": {
+                  "type": "string",
+                  "default": "1; mode=block"
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        }
+      },
+      "/clients/checkmac/{id}": {
+        "get": {
+          "description": "TODO: Add Description",
+          "summary": "Check Mac",
+          "tags": [
+            "Clients"
+          ],
+          "operationId": "ClientsCheckmacByIdGet",
+          "produces": [
+            "application/json; charset=utf-8"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": true,
+              "type": "string",
+              "description": ""
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/RegisterAccount"
+              },
+              "examples": {
+                "application/json; charset=utf-8": {
+                  "user": {
+                    "_id": "5bca9394aea0a40141dbcba5",
+                    "email": "admin@mail.com",
+                    "password": "$2a$10$YtLUQeWpgDF0ptsbE7xF9u108W5CqAw4/tiJTTCvCKAzD.TSF66Oq",
+                    "__v": 0
+                  },
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJCdWRnZXQiLCJzdWIiOiI1YmNhOTM5NGFlYTBhNDAxNDFkYmNiYTUiLCJpYXQiOjE1NDAwMDI3MDg2MzYsImV4cCI6MTU0MDA4OTEwODYzNn0.dO7P43eRjzPk0G0pWmcdgYxgg2FpbpXUvSPO9-4WXK0"
+                }
+              },
+              "headers": {
+                "Access-Control-Allow-Headers": {
+                  "type": "string",
+                  "default": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+                },
+                "Access-Control-Allow-Methods": {
+                  "type": "string",
+                  "default": "GET,PUT,POST,DELETE,OPTIONS"
+                },
+                "Access-Control-Allow-Origin": {
+                  "type": "string",
+                  "default": "*"
+                },
+                "Connection": {
+                  "type": "string",
+                  "default": "keep-alive"
+                },
+                "Content-Length": {
+                  "type": "string",
+                  "default": "361"
+                },
+                "Date": {
+                  "type": "string",
+                  "default": "Sat, 20 Oct 2018 02:31:48 GMT"
+                },
+                "ETag": {
+                  "type": "string",
+                  "default": "W/\"169-yEyJr81xfqBFn+g/82Yw3jZbO5M\""
+                },
+                "Strict-Transport-Security": {
+                  "type": "string",
+                  "default": "max-age=15552000; includeSubDomains"
+                },
+                "X-Content-Type-Options": {
+                  "type": "string",
+                  "default": "nosniff"
+                },
+                "X-DNS-Prefetch-Control": {
+                  "type": "string",
+                  "default": "off"
+                },
+                "X-Download-Options": {
+                  "type": "string",
+                  "default": "noopen"
+                },
+                "X-Frame-Options": {
+                  "type": "string",
+                  "default": "SAMEORIGIN"
+                },
+                "X-XSS-Protection": {
+                  "type": "string",
+                  "default": "1; mode=block"
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "schema": {
+                "$ref": "#/definitions/AddUser"
+              },
+              "examples": {
+                "application/json": {
+                  "error": "User already exists with username: admin2"
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        }
+      },
+      "/ministra/tariffs": {
+        "get": {
+          "description": "TODO: Add Description",
+          "summary": "Get Tariffs",
+          "tags": [
+            "Ministra APIs"
+          ],
+          "operationId": "MinistraTariffsGet",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "",
+              "headers": {}
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        }
+      },
+      "/ministra/send_event": {
+        "post": {
+          "description": "TODO: Add Description",
+          "summary": "Send Event",
+          "tags": [
+            "Ministra APIs"
+          ],
+          "operationId": "MinistraSendEventPost",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Body",
+              "in": "body",
+              "required": true,
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/SendEventRequest"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "headers": {}
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        }
+      },
+      "/ministra/stb_msg": {
+        "post": {
+          "description": "TODO: Add Description",
+          "summary": "Send Msg",
+          "tags": [
+            "Ministra APIs"
+          ],
+          "operationId": "MinistraStbMsgPost",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Body",
+              "in": "body",
+              "required": true,
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/SendMsgRequest"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "headers": {}
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        }
+      },
+      "/ministra/account_subscription/{id}": {
+        "post": {
+          "description": "TODO: Add Description",
+          "summary": "Post Account Sub",
+          "tags": [
+            "Ministra APIs"
+          ],
+          "operationId": "MinistraAccountSubscriptionByIdPost",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Body",
+              "in": "body",
+              "required": true,
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/PostAccountSubRequest"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "headers": {}
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        },
+        "put": {
+          "description": "TODO: Add Description",
+          "summary": "Put Account Sub",
+          "tags": [
+            "Ministra APIs"
+          ],
+          "operationId": "MinistraAccountSubscriptionByIdPut",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Body",
+              "in": "body",
+              "required": true,
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/PutAccountSubRequest"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "headers": {}
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        },
+        "delete": {
+          "description": "TODO: Add Description",
+          "summary": "Delete Account Sub",
+          "tags": [
+            "Ministra APIs"
+          ],
+          "operationId": "MinistraAccountSubscriptionByIdDelete",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": true,
+              "type": "string",
+              "description": ""
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "headers": {}
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        },
+        "get": {
+          "description": "TODO: Add Description",
+          "summary": "Get Account Sub",
+          "tags": [
+            "Ministra APIs"
+          ],
+          "operationId": "MinistraAccountSubscriptionByIdGet",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": true,
+              "type": "string",
+              "description": ""
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "headers": {}
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        }
+      },
+      "/{id}": {
+        "delete": {
+          "description": "TODO: Add Description",
+          "summary": "Original Ministra Call",
+          "tags": [
+            "Ministra APIs"
+          ],
+          "operationId": "ByIdDelete",
+          "produces": [
+            "application/json; charset=utf-8"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": ""
+            },
+            {
+              "name": "Content-Type",
+              "in": "header",
+              "required": true,
+              "type": "string",
+              "description": ""
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/RegisterAccount"
+              },
+              "examples": {
+                "application/json; charset=utf-8": {
+                  "user": {
+                    "_id": "5bca9394aea0a40141dbcba5",
+                    "email": "admin@mail.com",
+                    "password": "$2a$10$YtLUQeWpgDF0ptsbE7xF9u108W5CqAw4/tiJTTCvCKAzD.TSF66Oq",
+                    "__v": 0
+                  },
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJCdWRnZXQiLCJzdWIiOiI1YmNhOTM5NGFlYTBhNDAxNDFkYmNiYTUiLCJpYXQiOjE1NDAwMDI3MDg2MzYsImV4cCI6MTU0MDA4OTEwODYzNn0.dO7P43eRjzPk0G0pWmcdgYxgg2FpbpXUvSPO9-4WXK0"
+                }
+              },
+              "headers": {
+                "Access-Control-Allow-Headers": {
+                  "type": "string",
+                  "default": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+                },
+                "Access-Control-Allow-Methods": {
+                  "type": "string",
+                  "default": "GET,PUT,POST,DELETE,OPTIONS"
+                },
+                "Access-Control-Allow-Origin": {
+                  "type": "string",
+                  "default": "*"
+                },
+                "Connection": {
+                  "type": "string",
+                  "default": "keep-alive"
+                },
+                "Content-Length": {
+                  "type": "string",
+                  "default": "361"
+                },
+                "Date": {
+                  "type": "string",
+                  "default": "Sat, 20 Oct 2018 02:31:48 GMT"
+                },
+                "ETag": {
+                  "type": "string",
+                  "default": "W/\"169-yEyJr81xfqBFn+g/82Yw3jZbO5M\""
+                },
+                "Strict-Transport-Security": {
+                  "type": "string",
+                  "default": "max-age=15552000; includeSubDomains"
+                },
+                "X-Content-Type-Options": {
+                  "type": "string",
+                  "default": "nosniff"
+                },
+                "X-DNS-Prefetch-Control": {
+                  "type": "string",
+                  "default": "off"
+                },
+                "X-Download-Options": {
+                  "type": "string",
+                  "default": "noopen"
+                },
+                "X-Frame-Options": {
+                  "type": "string",
+                  "default": "SAMEORIGIN"
+                },
+                "X-XSS-Protection": {
+                  "type": "string",
+                  "default": "1; mode=block"
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized",
+              "schema": {
+                "$ref": "#/definitions/AddUser"
+              },
+              "examples": {
+                "application/json": {
+                  "error": "User already exists with username: admin2"
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "auth": []
+            }
+          ]
+        }
+      }
+    },
+    "definitions": {
+      "AddTransactionRequest": {
+        "title": "AddTransactionRequest",
+        "example": {
+          "credits": -10,
+          "description": "To Client",
+          "transactionTo": "reseller"
+        },
+        "type": "object",
+        "properties": {
+          "credits": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string"
+          },
+          "transactionTo": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "credits",
+          "description",
+          "transactionTo"
+        ]
+      },
+      "DeleteAccount": {
+        "title": "DeleteAccount",
+        "example": {
+          "_id": "5bca8ab5b722e401dd3e1ea5",
+          "email": "admin@mail.com",
+          "password": "$2a$10$Dk7X4emlUZivKzqRgimkJOpaHwm0UBNUduqHJ3fKfMNVd9vOqIY5i",
+          "__v": 0
+        },
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "__v": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "_id",
+          "email",
+          "password",
+          "__v"
+        ]
+      },
+      "AddUserRequest": {
+        "title": "AddUserRequest",
+        "example": {
+          "username": "super-reseller-k",
+          "password": "xxxxx",
+          "userType": "super-reseller",
+          "email": "admin-x@g1hd.com",
+          "firstName": "admin-x",
+          "lastName": "admin-x",
+          "accountStatus": false,
+          "phoneNo": "4166847983"
+        },
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "userType": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "accountStatus": {
+            "type": "boolean"
+          },
+          "phoneNo": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "username",
+          "password",
+          "userType",
+          "email",
+          "firstName",
+          "lastName",
+          "accountStatus",
+          "phoneNo"
+        ]
+      },
+      "RegisterAccount": {
+        "title": "RegisterAccount",
+        "example": {
+          "user": {
+            "_id": "5bca9394aea0a40141dbcba5",
+            "email": "admin@mail.com",
+            "password": "$2a$10$YtLUQeWpgDF0ptsbE7xF9u108W5CqAw4/tiJTTCvCKAzD.TSF66Oq",
+            "__v": 0
+          },
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJCdWRnZXQiLCJzdWIiOiI1YmNhOTM5NGFlYTBhNDAxNDFkYmNiYTUiLCJpYXQiOjE1NDAwMDI3MDg2MzYsImV4cCI6MTU0MDA4OTEwODYzNn0.dO7P43eRjzPk0G0pWmcdgYxgg2FpbpXUvSPO9-4WXK0"
+        },
+        "type": "object",
+        "properties": {
+          "user": {
+            "$ref": "#/definitions/User"
+          },
+          "token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "user",
+          "token"
+        ]
+      },
+      "User": {
+        "title": "User",
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "__v": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "_id",
+          "email",
+          "password",
+          "__v"
+        ]
+      },
+      "AddUser": {
+        "title": "AddUser",
+        "example": {
+          "error": "User already exists with username: admin2"
+        },
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "LoginRequest": {
+        "title": "LoginRequest",
+        "example": {
+          "username": "super-admin",
+          "password": "xxxxx"
+        },
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "username",
+          "password"
+        ]
+      },
+      "Login": {
+        "title": "Login",
+        "example": {
+          "user": {
+            "_id": "5bca9394aea0a40141dbcba5",
+            "email": "admin@mail.com",
+            "password": "$2a$10$YtLUQeWpgDF0ptsbE7xF9u108W5CqAw4/tiJTTCvCKAzD.TSF66Oq",
+            "__v": 0
+          },
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJCdWRnZXQiLCJzdWIiOiI1YmNhOTM5NGFlYTBhNDAxNDFkYmNiYTUiLCJpYXQiOjE1NDAwMDI3MTY0OTUsImV4cCI6MTU0MDA4OTExNjQ5NX0.-0FAephn9UH2KH0yotmkvWH5rJeRHATRAnbLqOpOScM"
+        },
+        "type": "object",
+        "properties": {
+          "user": {
+            "$ref": "#/definitions/User"
+          },
+          "token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "user",
+          "token"
+        ]
+      },
+      "UpdateUserRequest": {
+        "title": "UpdateUserRequest",
+        "example": {
+          "accountStatus": true
+        },
+        "type": "object",
+        "properties": {
+          "accountStatus": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "accountStatus"
+        ]
+      },
+      "UpgradeUserRoleRequest": {
+        "title": "UpgradeUserRoleRequest",
+        "example": {
+          "username": "super-reseller-y",
+          "userType": "super-reseller"
+        },
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "userType": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "username",
+          "userType"
+        ]
+      },
+      "UpdateConfigRequest": {
+        "title": "UpdateConfigRequest",
+        "example": {
+          "configName": "UserAnnouncements",
+          "configValue": "THIS IS AN ANNOUNEMENTS"
+        },
+        "type": "object",
+        "properties": {
+          "configName": {
+            "type": "string"
+          },
+          "configValue": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "configName",
+          "configValue"
+        ]
+      },
+      "AddClientsRequest": {
+        "title": "AddClientsRequest",
+        "example": {
+          "login": "yoyo1",
+          "stb_mac": "00:1A:79:1A:1A:13",
+          "full_name": "yoyo User By API",
+          "phone": "416-684-7893",
+          "status": 1,
+          "tariff_plan": "2",
+          "tariff_expired_date": "2018-10-21"
+        },
+        "type": "object",
+        "properties": {
+          "login": {
+            "type": "string"
+          },
+          "stb_mac": {
+            "type": "string"
+          },
+          "full_name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tariff_plan": {
+            "type": "string"
+          },
+          "tariff_expired_date": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "login",
+          "stb_mac",
+          "full_name",
+          "phone",
+          "status",
+          "tariff_plan",
+          "tariff_expired_date"
+        ]
+      },
+      "UpdateClientRequest": {
+        "title": "UpdateClientRequest",
+        "example": {
+          "tariff_plan": 4,
+          "tariff_expired_date": "2018-11-20",
+          "stb_mac": "00:1A:79:1A:2A:3A"
+        },
+        "type": "object",
+        "properties": {
+          "tariff_plan": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tariff_expired_date": {
+            "type": "string"
+          },
+          "stb_mac": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "tariff_plan",
+          "tariff_expired_date",
+          "stb_mac"
+        ]
+      },
+      "DeleteClientRequest": {
+        "title": "DeleteClientRequest",
+        "example": {
+          "accountIDs": [
+            "5b821af257e2310b2e0e0c15",
+            "5b821b61c4959e0b672da7dc",
+            "5b821bdf3469bf0ba0868f7c"
+          ],
+          "groupIDs": [],
+          "name": "sadsadsadas",
+          "startDate": "2017-12-01T00:00:00Z"
+        },
+        "type": "object",
+        "properties": {
+          "accountIDs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "groupIDs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "name": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "accountIDs",
+          "groupIDs",
+          "name",
+          "startDate"
+        ]
+      },
+      "SendEventRequest": {
+        "title": "SendEventRequest",
+        "example": {
+          "ids": [],
+          "event": "send_msg",
+          "msg": "reload_portal",
+          "need_reboot": 1,
+          "channel": 1,
+          "ttl": 1
+        },
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "event": {
+            "type": "string"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "need_reboot": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "channel": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ttl": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "ids",
+          "event",
+          "msg",
+          "need_reboot",
+          "channel",
+          "ttl"
+        ]
+      },
+      "SendMsgRequest": {
+        "title": "SendMsgRequest",
+        "example": {
+          "ids": [
+            "00:1A:79:54:69:F1"
+          ],
+          "msg": "reload_portal"
+        },
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "msg": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "ids",
+          "msg"
+        ]
+      },
+      "PostAccountSubRequest": {
+        "title": "PostAccountSubRequest",
+        "example": {
+          "subscribed": [
+            "5",
+            "6"
+          ]
+        },
+        "type": "object",
+        "properties": {
+          "subscribed": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "subscribed"
+        ]
+      },
+      "PutAccountSubRequest": {
+        "title": "PutAccountSubRequest",
+        "example": {
+          "subscribed": "6"
+        },
+        "type": "object",
+        "properties": {
+          "subscribed": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "subscribed"
+        ]
+      }
+    },
+    "tags": [
+      {
+        "name": "Transactions"
+      },
+      {
+        "name": "Internal User"
+      },
+      {
+        "name": "Configs"
+      },
+      {
+        "name": "Clients"
+      },
+      {
+        "name": "Ministra APIs"
+      }
+    ]
+  }

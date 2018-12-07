@@ -11,7 +11,8 @@ import dateFns from 'date-fns'
 
 export async function nightlyCronJob(){
     winstonLoggerCron.info('Started Daily Maintenance Cron Job...')
-    await configRepo.findOneAndUpdate({ configName : 'runningCron' }, { configValue : true })
+    winstonLoggerCron.info('Updating runningCron value to true to stop API calls...')
+    // await configRepo.findOneAndUpdate({ configName : 'runningCron' }, { configValue : true })
     winstonLoggerCron.info('Delaying 1 Minute till starting activities...')
     await delay(6000).then();
     winstonLoggerCron.info('Completed Delay...')
@@ -61,7 +62,8 @@ export async function nightlyCronJob(){
     })
 
     
-    await configRepo.findOneAndUpdate({ configName : 'runningCron' }, { configValue : false })
+    winstonLoggerCron.info('Updating runningCron value to false to allow back API calls...')
+    // await configRepo.findOneAndUpdate({ configName : 'runningCron' }, { configValue : false })
     winstonLoggerCron.info('Daily Maintenance Cron Job is Completed Successfully...')
   }
   
