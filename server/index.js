@@ -79,7 +79,6 @@ if (process.env.NODE_ENV === 'production') {
 // Swagger Documentation
 const swaggerUi = require('swagger-ui-express'),
     swaggerDocument = require('./swagger.json');
-
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Catch 404 Errors
