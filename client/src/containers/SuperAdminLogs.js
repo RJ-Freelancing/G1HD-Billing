@@ -86,7 +86,7 @@ class SuperAdminLogs extends Component {
               <Typography>{filename}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails style={{background: '#F1F3F6'}}>
-              <pre style={{overflowX: 'scroll', width: '75vw'}}>
+              <pre style={this.props.mobileView ? {overflowX: 'scroll', width: '75vw'} : {}}>
                 {this.state.selectedLog}
               </pre>
             </ExpansionPanelDetails>
@@ -101,6 +101,7 @@ class SuperAdminLogs extends Component {
 
 const mapStateToProps = state => ({
   authUserType: state.auth.userType,
+  mobileView: state.general.mobileView,
 })
 
 
