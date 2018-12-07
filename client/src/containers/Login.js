@@ -19,12 +19,16 @@ import { getUsers, getConfig } from 'actions/users'
 import { getTariffPlans } from 'actions/general'
 
 
+import ReCAPTCHA from "react-google-recaptcha";
+
+const recaptchaRef = React.createRef()
+
 const Wrapper = styled(Paper)`
   max-width: 400px;
   max-height: 600px;
   margin: 10vh auto;
   text-align: center;
-  background: transparent !important;
+  background: #fff !important;
 `
 
 const TextInput = styled(TextField)`
@@ -41,7 +45,8 @@ class Login extends Component {
     super(props)
     this.state = {
       username: "",
-      password: ""
+      password: "",
+      recaptchaError: false
     }
   }
 
@@ -59,24 +64,30 @@ class Login extends Component {
 
   login = (event) => {
     event.preventDefault()
-    const { username, password } = this.state
-    this.props.login({username, password})
-    .then(loginResponse => {
-      if (loginResponse.type === 'LOGIN_SUCCESS') {
-        this.props.getUsers()
-        .then(()=>this.props.getTariffPlans())
-        .then(()=>this.props.getTransactions(loginResponse.payload.data.user.username))
-        .then(()=>this.props.getConfig())
-      }
-    })
+    const recaptchaError = recaptchaRef.current.getValue()
+    if (recaptchaError) {
+      this.setState({recaptchaError: false})
+      const { username, password } = this.state
+      this.props.login({username, password})
+      .then(loginResponse => {
+        if (loginResponse.type === 'LOGIN_SUCCESS') {
+          this.props.getUsers()
+          .then(()=>this.props.getTariffPlans())
+          .then(()=>this.props.getTransactions(loginResponse.payload.data.user.username))
+          .then(()=>this.props.getConfig())
+        }
+      })
+    } else {
+      this.setState({recaptchaError: true})
+    }
   }
 
-  render() {  
+  render() {     
     return (
       <Wrapper elevation={24}>
         {this.props.loading && <Loading />}
         <Notification />
-        <form onSubmit={this.login} style={{padding: 10}}>
+        <form onSubmit={this.login} style={{padding: 10, display: 'grid', justifyItems: 'center'}}>
           <Typography variant='h6'>G1HD Billing</Typography>
           <img src={Logo} alt="Logo" style={{maxWidth: 200, padding: 10}}/>
           <TextInput
@@ -100,6 +111,13 @@ class Login extends Component {
             value={this.state.password}
             required
           />
+          <ReCAPTCHA
+            ref={recaptchaRef}
+            sitekey="6LcXUX8UAAAAAEG9mlCZqSCWQ_Cg_IPkwHaI7-Nw"
+          />
+          {this.state.recaptchaError && 
+            <Typography variant='h6' color='secondary'>ReCaptcha Error</Typography>
+          }
           <LoginButton variant="contained" type="submit" color="primary" fullWidth>
             Login
           </LoginButton>

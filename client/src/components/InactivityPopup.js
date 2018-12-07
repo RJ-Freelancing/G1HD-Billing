@@ -18,7 +18,7 @@ export default class InactivityPopup extends Component {
     window.onclick = this.resetInactiveTimer
     window.onkeypress = this.resetInactiveTimer
     window.onscroll = this.resetInactiveTimer
-    this.idleTimer = setTimeout(this.onIdle, 20000)
+    this.idleTimer = setTimeout(this.onIdle, 120000)
     this.refreshTokenTimer = setInterval(this.props.refreshToken, 280000)
   }
 
@@ -42,13 +42,13 @@ export default class InactivityPopup extends Component {
     this.setState({ inactivity: 0 }, ()=>{
       clearTimeout(this.idleTimer)
       clearInterval(this.timer)
-      this.idleTimer = setTimeout(this.onIdle, 20000)
+      this.idleTimer = setTimeout(this.onIdle, 120000)
     }
   )}
 
   progress = () => {
     const { inactivity } = this.state
-    if (inactivity >= 20) {
+    if (inactivity >= 60) {
       clearInterval(this.timer)
       clearTimeout(this.idleTimer)
       clearInterval(this.refreshTokenTimer)
@@ -62,12 +62,12 @@ export default class InactivityPopup extends Component {
   }
 
   render() {
-    if (!this.state.inactivity || this.state.inactivity > 20) return <></>
+    if (!this.state.inactivity || this.state.inactivity > 60) return <></>
 
     return (
       <PopupMessage
         title="Session Idle"
-        description={`You will be logged out in ${20-this.state.inactivity} seconds due to inactivity.`}
+        description={`You will be logged out in ${60-this.state.inactivity} seconds due to inactivity.`}
         image={Inactivity}
       /> 
     )
