@@ -293,11 +293,8 @@ class SuperAdminConfig extends Component {
 
 
 const mapStateToProps = state => ({
-  token: state.auth.token,
-  mobileView: state.general.mobileView,
   authUserType: state.auth.userType,
   authUsername: state.auth.username,
-  authCreditsBalance: state.auth.creditsAvailable,
   minimumTransferrableCredits: state.config.minimumTransferrableCredits,
   UserAnnouncements: state.config.UserAnnouncements,
   enableSendEventsFor: state.config.enableSendEventsFor,

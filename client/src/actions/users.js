@@ -100,3 +100,29 @@ export const upgradeUser = (username, upgradingUser) => ({
   success: `Successfully upgraded ${upgradingUser.username} to ${upgradingUser.userType}`,
   failure: "Something went wrong while upgrading user !"
 })
+
+
+export const getAllLogs = () => ({
+  types: ['LOADING', 'GET_ALL_LOGS_SUCCESS', 'GET_ALL_LOGS_FAILED'],
+  payload: {
+    request:{
+      url: '/config/getlogfiles',
+      method: 'GET'
+    }
+  },
+  success: false,
+  failure: "Something went wrong while retrieving log files !"
+})
+ 
+
+export const readLog = (filename) => ({
+  types: ['LOADING', 'READ_LOG_SUCCESS', 'READ_LOG_FAILED'],
+  payload: {
+    request:{
+      url: `/config/log/${filename}`,
+      method: 'GET'
+    }
+  },
+  success: false,
+  failure: "Something went wrong while retrieving log file !"
+})

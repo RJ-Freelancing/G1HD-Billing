@@ -20,6 +20,7 @@ import ClientEdit from 'containers/ClientEdit'
 import Transaction from 'containers/Transaction'
 import Events from 'containers/Events'
 import SuperAdminConfig from 'containers/SuperAdminConfig'
+import SuperAdminLogs from 'containers/SuperAdminLogs'
 
 import { refreshToken, logout } from 'actions/auth'
 import { setMobileView, toggleMobileSideBar } from 'actions/general'
@@ -87,6 +88,7 @@ class Wrapper extends Component {
             <Route exact path="/transactions" component={Transaction} />
             <Route exact path="/events" component={Events} />
             <Route exact path="/config" component={SuperAdminConfig} />
+            <Route exact path="/logs" component={SuperAdminLogs} />
             <Route exact path="/profile" component={Profile} />
             <Route exact path="/users/new" component={UserAdd} />
             <Route exact path="/clients/new" component={ClientAdd} />

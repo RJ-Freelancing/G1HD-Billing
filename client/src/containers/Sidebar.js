@@ -31,9 +31,9 @@ const styles = theme => ({
 
 let permissionsDenied = {
   'superAdmin': [],
-  'admin': ['/admins', '/config'],
-  'superReseller': ['/admins', '/superResellers', '/config'],
-  'reseller': ['/admins', '/superResellers', '/resellers', '/config']
+  'admin': ['/admins', '/config', '/logs'],
+  'superReseller': ['/admins', '/superResellers', '/config', '/logs'],
+  'reseller': ['/admins', '/superResellers', '/resellers', '/config', '/logs']
 }
 
 
@@ -46,6 +46,7 @@ const menus = [
   {label: 'Transactions', link: '/transactions', icon: 'attach_money'},
   {label: 'Send Events', link: '/events', icon: 'near_me'},
   {label: 'Configuration', link: '/config', icon: 'info'},
+  {label: 'Cron Logs', link: '/logs', icon: 'reorder'},
   {label: 'My Account', link: '/profile', icon: 'settings'},
 ];
 
