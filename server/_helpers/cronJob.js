@@ -1,5 +1,4 @@
 import axios from 'axios'
-import querystring from 'querystring'
 import { getClientsCron } from '../_helpers/ministraHelper'
 import { ministraAPI, config } from '../controllers/ministraController'
 import { mergeArrayObjectsByKey } from '../controllers/userController'
@@ -14,7 +13,7 @@ export async function nightlyCronJob(){
     winstonLoggerCron.info('Updating runningCron value to true to stop API calls...')
     // await configRepo.findOneAndUpdate({ configName : 'runningCron' }, { configValue : true })
     winstonLoggerCron.info('Delaying 1 Minute till starting activities...')
-    await delay(6000).then();
+    await delay(3000).then();
     winstonLoggerCron.info('Completed Delay...')
     const ministraClients = await getClientsCron()
     const mongoClients = await clientRepo.find({})
@@ -26,10 +25,10 @@ export async function nightlyCronJob(){
   
     winstonLoggerCron.info('Starting Deletion of Extra Clients on Mongo : ' + extrasOnMongo)
     await asyncForEach(extrasOnMongo, async (element) => {
-      const delClient = await clientRepo.findOneAndRemove({ clientMac : element })
-      if(delClient) {
-        winstonLoggerCron.info('Deleted : ' + element)
-      }
+      const delClient = await clientRepo.findOne({ clientMac : element })
+      await userRepo.findOneAndUpdate({ username: delClient.parentUsername }, { $pull: { childUsernames: delClient.clientMac } })
+      await delClient.remove()
+      winstonLoggerCron.info('Deleted : ' + element)
     })
     
     winstonLoggerCron.info('Starting Deletion of Extra Clients on Ministra: ' + extrasOnMinistra)
@@ -41,27 +40,60 @@ export async function nightlyCronJob(){
         }
       })
     })
-    //Actual Logic Starts Here
 
+    //Actual Logic Starts Here
     await asyncForEach(mergedClients, async (element) => {
       const cronCheckDate = dateFns.subMonths(element.tariff_expired_date, element.accountBalance)
       const parent = await userRepo.findOne({ username : element.parentUsername })
+
+      // Delete client if expiry date is more than a month
+      let deletingMinistraClient
+      if(dateFns.isBefore(element.tariff_expired_date, dateFns.subMonths(new Date(), 1)) && element.accountBalance == 0){
+        console.log("RUNNING");
+        await axios.delete(ministraAPI + 'accounts/' + element.stb_mac, config)
+        .then(response => {
+          deletingMinistraClient = response.data
+          if (response.data.status == 'OK') {
+            winstonLoggerCron.info('Deleted Client ' + element.clientMac + ' from ministra system.')
+          }
+        })
+        if (deletingMinistraClient.status !== 'OK') {
+          winstonLoggerCron.info('Failed to Delete Client ' + element.clientMac + ' from ministra system.')
+        }
+        else {
+          await parent.update({ $pull: { childUsernames: element.clientMac } })
+          const deletedMongoClient = await clientRepo.findOneAndRemove({ clientMac : element.clientMac })
+          if(deletedMongoClient) winstonLoggerCron.info('Deleted Client : ' + element.clientMac + ' from DB')
+        }
+      }
+
+      // in db status = 1 means inactive
       if (element.accountBalance > 0 && dateFns.isToday(cronCheckDate)){
         if( parent.creditsAvailable > 0 ){
           await userRepo.findOneAndUpdate({ username : element.parentUsername }, { $inc: { creditsAvailable : -1, creditsOwed : -1 } })
-          await clientRepo.findOneAndUpdate({ clientMac : element.clientMac }, { accountBalance : (element.accountBalance-1) } )
+          await clientRepo.findOneAndUpdate({ clientMac : element.clientMac }, { $inc: { accountBalance : -1 } } )
         }
         else {
           await axios.put(ministraAPI + 'accounts/' + element.stb_mac,
-            querystring.stringify('{}'), config)
+            'status=0', config)
             .then(response => {
-              res.locals.updatedUser = response.data
+              if (response.data.status == 'OK') winstonLoggerCron.info('Updated Client ' + element.clientMac +  ' Status to False')
             })
+        }
+      }
+      else if(element.accountBalance > 0 && element.status == 1){
+        if( parent.creditsAvailable > 0 ){
+          await axios.put(ministraAPI + 'accounts/' + element.stb_mac,
+            'status=1', config)
+            .then(response => {
+              if (response.data.status == 'OK') winstonLoggerCron.info('Updated Client ' + element.clientMac +  ' Status to True')
+            })
+            await userRepo.findOneAndUpdate({ username : element.parentUsername }, { $inc: { creditsAvailable : -1, creditsOwed : -1 } })
+            await clientRepo.findOneAndUpdate({ clientMac : element.clientMac }, { accountBalance : (element.accountBalance-1) } )  
         }
       }
     })
 
-    
     winstonLoggerCron.info('Updating runningCron value to false to allow back API calls...')
     // await configRepo.findOneAndUpdate({ configName : 'runningCron' }, { configValue : false })
     winstonLoggerCron.info('Daily Maintenance Cron Job is Completed Successfully...')

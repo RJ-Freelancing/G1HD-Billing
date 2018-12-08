@@ -10,6 +10,7 @@ var connection = mysql.createConnection({
 
 const SQL_CRON_SELECT_FIELDS = '\
   mac AS stb_mac, \
+  status, \
   IFNULL(tariff_expired_date, "2000-01-01 00:00:00") AS tariff_expired_date \
   '
 

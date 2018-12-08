@@ -1,7 +1,7 @@
 import passport from '../_helpers/passport'
 import { validateParam, validateBody } from '../validations'
 import { schemas } from '../validations/clientValidation'
-import { addClient, validateMAC, updateClient, deleteClient, checkMac } from '../controllers/clientController'
+import { addClient, validateMAC, updateClient, deleteClient, checkMac, reActivate } from '../controllers/clientController'
 
 
 const passportJWT = passport.authenticate('jwt', { session: false })
@@ -26,6 +26,13 @@ router.route('/:id')
   )
   .delete(
     deleteClient
+  )
+
+router.route('/reactivate/:id')
+  .put(
+    passportJWT,
+    validateParam(schemas.idSchema, 'id'),
+    reActivate
   )
 
 router.route('/checkmac/:id')
