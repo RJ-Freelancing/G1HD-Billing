@@ -196,7 +196,7 @@ class Dashboard extends Component {
 
           <Announcements elevation={10}>
             <Typography  style={{textAlign: 'left', padding: 10, color: 'white', fontSize: '18px', letterSpacing: 1, backgroundImage: 'linear-gradient(60deg, #ffa726, #fb8c00)'}} variant="overline"> Announcements </Typography>
-            <div style={{color: 'black', padding: 10}}>
+            <div style={{color: 'black', padding: 10, fontSize: '14px', letterSpacing: 1, fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif'}}>
               {ReactHtmlParser(UserAnnouncements)}
             </div>
           </Announcements>
@@ -337,6 +337,7 @@ class Dashboard extends Component {
 
 const mapStateToProps = state => ({
   token: state.auth.token,
+
   authUserType: state.auth.userType,
   authCreditsAvailable: state.auth.creditsAvailable,
   authcreditsOwed: state.auth.creditsOwed,
