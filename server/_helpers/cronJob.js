@@ -71,7 +71,7 @@ export async function nightlyCronJob(){
       if (element.accountBalance > 0 && dateFns.isToday(cronCheckDate)){
         if( parent.creditsAvailable > 0 ){
           await userRepo.findOneAndUpdate({ username : element.parentUsername }, { $inc: { creditsAvailable : -1, creditsOwed : -1 } })
-          await clientRepo.findOneAndUpdate({ clientMac : element.clientMac }, { accountBalance : (element.accountBalance-1) } )
+          await clientRepo.findOneAndUpdate({ clientMac : element.clientMac }, { $inc: { accountBalance : -1 } } )
         }
         else {
           await axios.put(ministraAPI + 'accounts/' + element.stb_mac,

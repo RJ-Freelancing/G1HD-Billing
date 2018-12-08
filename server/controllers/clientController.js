@@ -158,3 +158,25 @@ export async function deleteClient(req, res, next) {
     return res.status(200).json(req.params.id)
   }
 }
+
+export async function reActivate(req, res, next) {
+  winstonLogger.info("Running reActivate Operation.")
+  if (req.user.userType !== 'reseller') return res.status(403).json({ error: `Only reseller can reActivate his client.` })
+  if (await checkPermissionRights(req.params.id, req.user, 0) == false) return res.status(403).json({ error: `You Have No Rights To Perform This Action.` })
+  const mongoClient = await clientRepo.findOne({ clientMac: req.params.id })
+  await axios.get(ministraAPI + 'accounts/' + req.params.id, config)
+    .then(response => {
+      res.locals.reActivateClient = response.data
+    })
+  if (res.locals.reActivateClient.results[0].status != 0 || mongoClient.accountBalance == 0){
+    return res.status(422).json({ error: `Client is already active or there is no account balance for this client.` })
+  }
+  await axios.put(ministraAPI + 'accounts/' + req.params.id,
+  'status=1', config)
+  .then(response => {
+    if (response.data.status == 'OK') winstonLogger.info('Updated Client ' + req.params.id +  ' Status to True')
+  })
+  await mongoClient.update({ $inc: { accountBalance : -1 } } )
+  await userRepo.findOneAndUpdate({ username : mongoClient.parentUsername }, { $inc: { creditsAvailable : -1, creditsOwed : -1 } })
+return res.status(201).json(req.params.id)
+}
