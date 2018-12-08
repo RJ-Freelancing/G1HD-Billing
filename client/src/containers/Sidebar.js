@@ -70,6 +70,9 @@ const Sidebar = (props) => {
       <Typography variant="button" color="inherit" noWrap style={{color: 'white'}}>
         Welcome {props.auth.username} <br/>
       </Typography>
+      <Typography variant="button" color="inherit" noWrap style={{color: 'white'}}>
+        Last Login IP: xxx.xxx.xxx.xxx <br/>
+      </Typography>
       <Typography variant="subtitle2" color="inherit" noWrap style={{color: 'white'}}>
         Credits Available <strong style={{fontSize: 20}}>{props.auth.creditsAvailable}</strong>
       </Typography>

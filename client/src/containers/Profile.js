@@ -10,6 +10,7 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
 import Confirmation from 'components/Confirmation'
+import Table from 'components/Table'
 
 import { updateProfile } from 'actions/users'
 
@@ -42,11 +43,25 @@ const ProfileDetailsWrapper = styled(Paper)`
 `
 
 const ProfileDetails = styled.div`
-display: grid;
-grid-template-columns: 1fr 1fr;
-grid-gap: 20px;
-padding: 20px 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+  padding: 20px 20px;
 `
+
+
+const ProfileActivityWrapper = styled.div`
+// padding: 20px 20px;
+  grid-column: 1/-1
+`
+
+const rows = [
+  { field: 'login_date', label: 'Login Date', type: 'string' },
+  { field: 'login_ip', label: 'Login IP', type: 'string'  },
+  { field: 'user_agent', label: 'User Agent', type: 'string'  },
+]
+
+
 
 const validPhoneNo = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
 
@@ -93,6 +108,21 @@ class Profile extends Component {
 
   confirmationProceed = () => this.setState({confirmation: false})
   confirmationCancel = () => this.setState({confirmation: false})
+
+
+  getTableData = () => {    
+    let displayData = []
+    for (let activity of this.props.loginActivities) {
+      let activityData = {}
+      for (let row of rows) {
+        activityData[row.field] = activity[row.field]
+      }
+      displayData.push({...activityData})
+
+    }
+    return displayData
+  } 
+
 
   render() {
     return (
@@ -185,6 +215,21 @@ class Profile extends Component {
           </ProfileDetails>
         </ProfileDetailsWrapper>
 
+        <ProfileActivityWrapper>
+          <Typography variant="overline" style={{background: 'linear-gradient(60deg, rgb(255, 167, 38), rgb(251, 140, 0))', padding: 20, color: 'white', fontSize: '25px', letterSpacing: 1}}> Account Activity </Typography>
+          <br/>
+          <Table
+            rows={rows}
+            data={this.getTableData()}
+            orderBy='login_date'
+            orderByDirection='desc'
+            mobileView={this.props.mobileView}
+            viewOnly={true}
+            // tableHeight={this.props.mobileView ? '75vh' : '85vh'}
+          />
+
+        </ProfileActivityWrapper>
+
       <Confirmation
         open={this.state.confirmation}
         message="You are changing your password. Are you sure you want to continue ?"
@@ -198,7 +243,8 @@ class Profile extends Component {
 }
 
 const mapStateToProps = state => ({
-  auth: state.auth
+  auth: state.auth,
+  loginActivities: state.auth.loginActivities
 })
 
 const mapDispatchToProps = dispatch => ({

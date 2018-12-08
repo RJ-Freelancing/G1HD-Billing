@@ -1,7 +1,8 @@
 const initialState = {
   _id: "",
   username: "",
-  token: ""
+  token: "",
+  loginActivities: []
 };
 
 const auth = (state = initialState, action) => {

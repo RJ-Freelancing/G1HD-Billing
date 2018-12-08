@@ -9,6 +9,8 @@ import { winstonLogger } from '../_helpers/logger'
 const tokenExpiryHours = process.env.TOKEN_EXPIRY_HOURS
 
 export async function login(req, res, next) {
+  console.log(req);
+  
   winstonLogger.info("Running Operation login...")
   const user = req.user
   if (user.accountStatus == false) return res.status(403).json({ error: `Your account is locked. Please contact your Adminstrator for more information.` })
