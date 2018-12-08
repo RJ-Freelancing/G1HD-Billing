@@ -45,6 +45,27 @@ class ClientList extends Component {
     }   
   }
 
+  componentDidUpdate = (prevProps, prevState, snapshot) => {
+    if (this.state.showReactivateFilter) {     
+      for (let client of this.props.clients) {      
+        if (this.props.authUserType === 'reseller' && client.accountBalance > 0 && client.status === 1) {       
+          return
+        } 
+      }
+      this.setState({showReactivateFilter: false, filter: 'active'})
+    }
+  }
+
+
+  componentDidMount = () => {
+    for (let client of this.props.clients) {      
+      if (this.props.authUserType === 'reseller' && !this.state.showReactivateFilter && client.accountBalance > 0 && client.status === 1) {       
+        this.setState({showReactivateFilter: true})
+        break
+      } 
+    }   
+  }
+
   getTableData = () => {    
     let displayData = []
     for (let client of this.props.clients) {
