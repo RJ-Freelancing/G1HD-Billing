@@ -72,6 +72,12 @@ app.post('/api/verifyCaptcha', function (req, res) {
 });
 
 
+// Check offline status endpoint
+app.get('/api/checkStatus', function (req, res) {
+  res.status(200).json({status: 'Online'})
+});
+
+
 // Routes
 app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)
