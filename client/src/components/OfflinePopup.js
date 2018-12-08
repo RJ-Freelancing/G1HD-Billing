@@ -7,7 +7,7 @@ import NoInternetGIF from 'assets/noInternet.gif'
 export default class OfflinePopup extends Component {
   render() {
     return (
-      <Offline polling={{interval: 300000, url: '/api/checkStatus'}}>
+      <Offline polling={{interval: 30000, url: '/api/checkStatus'}}>
         <PopupMessage
           title='No Active Internet Connection Detected'
           description='You can continue with your work once the connection is back.'
