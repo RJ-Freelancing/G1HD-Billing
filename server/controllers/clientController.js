@@ -67,7 +67,6 @@ export async function addClient(req, res, next) {
     .then(response => {
       res.locals.existingDeletingClient = response.data
     })
-    console.log(new Date());
     if(new Date(res.locals.existingDeletingClient.results[0].tariff_expired_date) < new Date()){
       await checkAndDeleteUnwantedClient(stb_mac)
       await existingClient.remove()

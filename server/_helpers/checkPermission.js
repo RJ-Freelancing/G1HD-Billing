@@ -2,7 +2,7 @@ import userRepo from '../models/userModel'
 import { winstonLogger } from './logger'
 
 export async function checkPermissionRights(reqestedUser, currentUser, ifUsers) {
-  winstonLogger.info("Checking Permission for reqestedUser : " + reqestedUser + " and currentUser : " + currentUser)
+  winstonLogger.info("Checking Permission for reqestedUser : " + reqestedUser + " and currentUser : " + currentUser.username)
   if (currentUser.userType == "reseller") {
     if (ifUsers == 1) {
       if (currentUser.username !== reqestedUser.username) return false
