@@ -126,7 +126,7 @@ class Login extends Component {
             Login
           </LoginButton>
         </form>
-        <Offline polling={{interval:30000, url: '/api'}}>
+        <Offline polling={{interval:30000, url: '/api/checkStatus'}}>
           <Loading />
           <PopupMessage
             title='No Active Internet Connection Detected'

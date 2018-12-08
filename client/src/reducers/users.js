@@ -74,6 +74,18 @@ const users = (state = initialState, action) => {
             return client
         })
       }
+    case 'REACTIVATE_CLIENT_SUCCESS':
+      // Find the updated client and merge with payload
+      stb_mac = action.meta.previousAction.payload.request.url.split('/').pop()     
+      return {
+        ...state, 
+        clients: state.clients.map(client => {
+          if (client.stb_mac===stb_mac)
+            return {...client, status: 0, accountBalance: client.accountBalance-1}
+          else
+            return client
+        })
+      }
     case 'UPGRADE_USER_SUCCESS':
       const upgradedUserType = action.meta.previousAction.payload.request.data.userType     
       return {

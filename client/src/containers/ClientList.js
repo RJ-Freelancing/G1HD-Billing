@@ -8,6 +8,8 @@ import Icon from '@material-ui/core/Icon';
 import { isPast } from 'date-fns'
 
 import { updateCredits } from 'actions/transactions'
+import { reactivateClient } from 'actions/clients'
+
 
 
 
@@ -29,14 +31,25 @@ class ClientList extends Component {
     this.state = {
       confirmation: false,
       plusOneClient: null,
-      filter: 'active'
+      filter: 'active',
+      showReactivateFilter: false
     }
+  }
+
+  componentDidMount = () => {
+    for (let client of this.props.clients) {      
+      if (this.props.authUserType === 'reseller' && !this.state.showReactivateFilter && client.accountBalance > 0 && client.status === 1) {       
+        this.setState({showReactivateFilter: true})
+        break
+      } 
+    }   
   }
 
   getTableData = () => {    
     let displayData = []
     for (let client of this.props.clients) {
       let canPush = (this.state.filter==='active' && !isPast(client.tariff_expired_date)) || (this.state.filter==='expired' && isPast(client.tariff_expired_date))
+      canPush = canPush || (this.state.filter==='reactivate' && client.accountBalance > 0 && client.status === 1)
       if (canPush) {
         let clientData = {}
         for (let row of rows) {
@@ -64,6 +77,7 @@ class ClientList extends Component {
     this.setState({confirmation: true, plusOneClient: client.stb_mac})
   }
 
+
   handleFilter = (event, filter) => {
     this.setState({ filter })
   }
@@ -74,6 +88,9 @@ class ClientList extends Component {
         <Tabs value={this.state.filter} onChange={this.handleFilter} >
           <Tab label="Active" value='active' icon={<Icon style={{color:'green'}}>live_tv</Icon>}/>
           <Tab label="Expired" value='expired' icon={<Icon style={{color:'red'}}>tv_off</Icon> }/>
+          {this.props.authUserType === 'reseller' && this.state.showReactivateFilter && 
+            <Tab label="To Be Reactivated" value='reactivate' icon={<Icon style={{color:'blue'}}>settings_input_hdmi</Icon> }/>
+          }
         </Tabs>
  
         <Table
@@ -86,6 +103,7 @@ class ClientList extends Component {
           gotoLink={(client)=>this.props.history.push(`/clients/${client.stb_mac}`)}
           addNew={()=>this.props.history.push('/clients/new')}
           incrementClientCredit={this.props.authUserType==='reseller' ? (client)=>this.incrementClientCredit(client) : false}
+          reactivateClient={this.state.filter==='reactivate' ? (client)=>this.props.reactivateClient(client.stb_mac) : false}
           authCreditsAvailable={this.props.authCreditsAvailable}
           authcreditsOwed={this.props.authcreditsOwed}
           tableHeight={this.props.mobileView ? '75vh' : '85vh'}
@@ -115,6 +133,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateCredits: (transaction, currentAccountBalance) => dispatch(updateCredits(transaction, currentAccountBalance)),
+  reactivateClient: mac => dispatch(reactivateClient(mac))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ClientList)

@@ -106,3 +106,17 @@ export const checkMAC = mac => ({
   failure: "Something went wrong while checking MAC !"
 })
 
+
+
+export const reactivateClient = mac => ({
+  types: ['NO_LOADING', 'REACTIVATE_CLIENT_SUCCESS', 'REACTIVATE_CLIENT_FAILED'],
+  payload: {
+    request:{
+      url: `/clients/reactivate/${mac}`,
+      method: 'PUT'
+    }
+  },
+  success: 'Successfully reactivated client',
+  failure: "Something went wrong while reactivating client !"
+})
+

@@ -29,14 +29,6 @@ const styles = theme => ({
 })
 
 
-let permissionsDenied = {
-  'superAdmin': [],
-  'admin': ['/admins', '/config', '/logs'],
-  'superReseller': ['/admins', '/superResellers', '/config', '/logs'],
-  'reseller': ['/admins', '/superResellers', '/resellers', '/config', '/logs']
-}
-
-
 const menus = [
   {label: 'Dashboard', link: '/', icon: 'dashboard'},
   {label: 'Admins', link: '/admins', icon: 'local_library'},
@@ -93,6 +85,13 @@ const Sidebar = (props) => {
       }
     </div>
   )
+
+  let permissionsDenied = {
+    'superAdmin': [],
+    'admin': ['/admins', '/config', '/logs'],
+    'superReseller': ['/admins', '/superResellers', '/config', '/logs'],
+    'reseller': ['/admins', '/superResellers', '/resellers', '/config', '/logs']
+  }
 
   if (!props.enableSendEventsFor['admin']) permissionsDenied['admin'].push('/events')
   if (!props.enableSendEventsFor['superReseller']) permissionsDenied['superReseller'].push('/events')

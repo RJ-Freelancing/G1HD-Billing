@@ -14,6 +14,7 @@ import Tooltip from '@material-ui/core/Tooltip'
 import AddIcon from '@material-ui/icons/Add'
 import EditIcon from '@material-ui/icons/Edit'
 import PlusOneIcon from '@material-ui/icons/PlusOne'
+import SettingsRemoteIcon from '@material-ui/icons/SettingsRemote'
 import SearchIcon from '@material-ui/icons/Search'
 import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
@@ -247,6 +248,7 @@ export default class EnhancedTable extends React.Component {
       addNew, 
       canAdd, 
       incrementClientCredit, 
+      reactivateClient,
       authCreditsAvailable, 
       gotoLink,
       sendEvent,
@@ -320,7 +322,18 @@ export default class EnhancedTable extends React.Component {
                             <EditIcon fontSize="small" color="primary"/>
                           </IconButton>
                         </Tooltip>
-                        {incrementClientCredit && 
+                        {reactivateClient &&
+                          <Tooltip title={(authCreditsAvailable<=0) ? "No credits available to reactivate" : "Reactivate"}>
+                            <IconButton 
+                              aria-label="Reactivate" 
+                              style={{padding: 9}} 
+                              onClick={()=>(authCreditsAvailable<=0) ? {} : reactivateClient(n)}
+                            >
+                              <SettingsRemoteIcon fontSize="small" color="primary"/>
+                            </IconButton>
+                          </Tooltip>
+                        }
+                        {incrementClientCredit && !reactivateClient &&
                           <Tooltip title={(authCreditsAvailable<=0 && n.accountBalance===0) ? "No credits available to transfer" : "Add 1 Credit"}>
                             <IconButton 
                               aria-label="Add 1 Credit" 

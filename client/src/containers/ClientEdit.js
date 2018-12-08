@@ -360,18 +360,20 @@ class ClientEdit extends Component {
                   rowsMax="3"
                   disabled={this.props.loading}
                 />
-                <FormControlLabel
-                  label={`Account Status (${this.state.editingClient.status===1 ? 'Active' : 'Inactive'})`}
-                  control={
-                    <Switch
-                      checked={this.state.editingClient.status===1}
-                      onChange={(e)=>this.handleTextChange('status', e.target.checked ? 1 : 0)}
-                      value={this.state.editingClient.status}
-                      color="primary"
-                      disabled={this.props.loading}
-                    />
-                  }
-                />
+                {this.props.authUserType !== 'reseller' &&
+                  <FormControlLabel
+                    label={`Account Status (${this.state.editingClient.status===0 ? 'Active' : 'Inactive'})`}
+                    control={
+                      <Switch
+                        checked={this.state.editingClient.status===0}
+                        onChange={(e)=>this.handleTextChange('status', e.target.checked ? 0 : 1)}
+                        value={this.state.editingClient.status}
+                        color="primary"
+                        disabled={this.props.loading}
+                      />
+                    }
+                  />
+                }
               </ClientProfile>
               <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: 20}}>
                 <Button 
@@ -621,6 +623,7 @@ const mapStateToProps = state => ({
   clients: state.users.clients,
   authCreditsAvailable: state.auth.creditsAvailable,
   authcreditsOwed: state.auth.creditsOwed,
+  authUserType: state.auth.userType,
   tariffPlans: state.config.tariffPlans,
   authUsername: state.auth.username, 
   mobileView: state.general.mobileView
