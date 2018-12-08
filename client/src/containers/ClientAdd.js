@@ -82,7 +82,7 @@ class ClientAdd extends Component {
   addClient = (event) => {
     event.preventDefault()
     const { login, stb_mac, full_name, phone, tariff_plan, status } = this.state.newClient
-    this.props.addClient({login, stb_mac, full_name, phone, tariff_plan, status})
+    this.props.addClient({login, stb_mac, full_name, phone, tariff_plan, status: status===1 ? 0 : 1})
     .then(clientAddResponse => {
       if (clientAddResponse.type==='ADD_CLIENT_SUCCESS') {
         if (this.state.newClient.credits > 0) {
@@ -212,11 +212,11 @@ class ClientAdd extends Component {
                     null}
                 />
               <FormControlLabel
-                label={`Account Status (${this.state.newClient.status===1 ? 'Active' : 'Inactive'})`}
+                label={`Account Status (${this.state.newClient.status===0 ? 'Active' : 'Inactive'})`}
                 control={
                   <Switch
-                    checked={this.state.newClient.status===1}
-                    onChange={(e)=>this.handleTextChange('status', e.target.checked ? 1 : 0)}
+                    checked={this.state.newClient.status===0}
+                    onChange={(e)=>this.handleTextChange('status', e.target.checked ? 0 : 1)}
                     value={this.state.newClient.status}
                     color="primary"
                     disabled={this.props.loading || this.props.authCreditsAvailable<=0}
