@@ -1,5 +1,6 @@
 import userRepo from '../models/userModel'
 import clientRepo from '../models/clientModel'
+import userLoginsRepo from '../models/userLoginsModel'
 import JWT from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import { getAllClients, getClients } from '../_helpers/ministraHelper'
@@ -11,9 +12,21 @@ const tokenExpiryHours = process.env.TOKEN_EXPIRY_HOURS
 export async function login(req, res, next) {
   winstonLogger.info("Running Operation login...")
   const user = req.user
+  const lastLogin = await userLoginsRepo.findOne({ username : user.username }).sort({ loginDate : -1 }).limit(1)
   if (user.accountStatus == false) return res.status(403).json({ error: `Your account is locked. Please contact your Adminstrator for more information.` })
   const token = getToken(user)
+  
   res.status(201).json({ user, token })
+}
+
+async function postLoginDetails(req)  {
+  winstonLogger.info("Get login details...")
+  const loginUserAgent = req.get('User-Agent')
+  const lastLoginDate = new Date()
+  const loginIp = req.headers['x-forwarded-for'] || 
+    req.connection.remoteAddress || req.socket.remoteAddress ||
+    (req.connection.socket ? req.connection.socket.remoteAddress : null);
+const currLogin = await userLoginsRepo.create([{ username, loginUserAgent, lastLoginDate, loginIp }], { lean: true })
 }
 
 const getToken = user => {
