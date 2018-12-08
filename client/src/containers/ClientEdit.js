@@ -360,20 +360,18 @@ class ClientEdit extends Component {
                   rowsMax="3"
                   disabled={this.props.loading}
                 />
-                {this.props.authUserType !== 'reseller' &&
-                  <FormControlLabel
-                    label={`Account Status (${this.state.editingClient.status===0 ? 'Active' : 'Inactive'})`}
-                    control={
-                      <Switch
-                        checked={this.state.editingClient.status===0}
-                        onChange={(e)=>this.handleTextChange('status', e.target.checked ? 0 : 1)}
-                        value={this.state.editingClient.status}
-                        color="primary"
-                        disabled={this.props.loading}
-                      />
-                    }
-                  />
-                }
+                <FormControlLabel
+                  label={`Account Status (${this.state.editingClient.status===0 ? 'Active' : 'Inactive'})`}
+                  control={
+                    <Switch
+                      checked={this.state.editingClient.status===0}
+                      onChange={(e)=>this.handleTextChange('status', e.target.checked ? 0 : 1)}
+                      value={this.state.editingClient.status}
+                      color="primary"
+                      disabled={this.props.loading || this.props.authUserType === 'reseller'}
+                    />
+                  }
+                />
               </ClientProfile>
               <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: 20}}>
                 <Button 
