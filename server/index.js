@@ -12,6 +12,7 @@ import ministraRoutes from './routes/ministraRoutes'
 import configRoutes from './routes/configRoutes'
 import { nightlyCronJob } from './_helpers/cronJob'
 import configRepo from './models/configModel'
+import axios from 'axios'
 
 
 // Use bluebird promise to persist stack trace while using async/await
@@ -59,6 +60,17 @@ app.all('*', async function(req, res, next) {
   if (isCronRunning.configValue) return res.sendFile(path.join(__dirname, 'maintenance', 'index.html'))
   next() 
 })
+
+
+// Google ReCaptcha
+app.post('/api/verifyCaptcha', function (req, res) {
+  axios.post(`https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${req.body.token}`)
+  .then(response=>{   
+    if (response.data.success) return res.status(200).json(response.data)
+    else return res.status(422).json({error: 'Unable to verify ReCaptcha'})
+  })
+});
+
 
 // Routes
 app.use('/api/auth', authRoutes)
