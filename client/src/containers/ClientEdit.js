@@ -213,7 +213,7 @@ class ClientEdit extends Component {
     event.preventDefault()
     const { stb_mac } = this.state.editingClient
     const { full_name, phone, comment, status } = this.state.editingClient
-    this.props.updateClient(stb_mac, {full_name, phone, comment, status})
+    this.props.updateClient(stb_mac, {full_name, phone, comment, status: status===1 ? 0 : 1})
   }
 
   checkValidation = () => {
