@@ -6,6 +6,7 @@ import bcrypt from 'bcryptjs'
 import { getAllClients, getClients } from '../_helpers/ministraHelper'
 import { checkPermissionRights, validParent } from '../_helpers/checkPermission'
 import { winstonLogger } from '../_helpers/logger'
+import dateFns from 'date-fns'
  
 const tokenExpiryHours = process.env.TOKEN_EXPIRY_HOURS
 
@@ -23,7 +24,7 @@ async function postLoginDetails(req)  {
   winstonLogger.info("Get login details...")
   const username = req.user.username
   const loginUserAgent = req.get('User-Agent')
-  const loginDate = new Date().toISOString()
+  const loginDate = new Date().toLocaleString() 
   const loginIp = req.headers['x-forwarded-for'] || 
     req.connection.remoteAddress || req.socket.remoteAddress ||
     (req.connection.socket ? req.connection.socket.remoteAddress : null)
