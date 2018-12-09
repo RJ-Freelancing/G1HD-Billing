@@ -25,10 +25,17 @@ async function postLoginDetails(req)  {
   const username = req.user.username
   const loginUserAgent = req.get('User-Agent')
   const loginDate = new Date().toLocaleString() 
-  const loginIp = req.headers['x-forwarded-for'] || 
+  var loginIp = req.headers['x-forwarded-for'] || 
     req.connection.remoteAddress || req.socket.remoteAddress ||
     (req.connection.socket ? req.connection.socket.remoteAddress : null)
+  loginIp = loginIp.replace('::ffff:','')
   await userLoginsRepo.create([{ username, loginUserAgent, loginDate, loginIp }], { lean: true })
+}
+
+export async function getLastLogins(req, res, next) {
+  winstonLogger.info("Running getLastLogins operation...")
+  const loginDetails = await userLoginsRepo.find({ username : req.user.username })
+  return res.status(200).json({loginDetails})
 }
 
 const getToken = user => {
