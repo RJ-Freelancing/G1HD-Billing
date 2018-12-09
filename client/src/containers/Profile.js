@@ -13,6 +13,9 @@ import Confirmation from 'components/Confirmation'
 import Table from 'components/Table'
 
 import { updateProfile } from 'actions/users'
+import { getLoginActivities } from 'actions/auth'
+
+
 
 
 const Wrapper = styled.div`
@@ -74,6 +77,11 @@ class Profile extends Component {
       confirmation: false,
     }
   }
+
+  componentDidMount = () => {
+    this.props.getLoginActivities()
+  }
+
 
   componentDidUpdate = (prevProps, prevState, snapshot) => {
     if (!isEqual(prevProps.auth, this.props.auth)) {
@@ -221,11 +229,10 @@ class Profile extends Component {
           <Table
             rows={rows}
             data={this.getTableData()}
-            orderBy='login_date'
-            orderByDirection='desc'
+            orderBy='loginDate'
+            orderByDirection='asc'
             mobileView={this.props.mobileView}
             viewOnly={true}
-            // tableHeight={this.props.mobileView ? '75vh' : '85vh'}
           />
 
         </ProfileActivityWrapper>
@@ -249,6 +256,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateProfile: (username, user) => dispatch(updateProfile(username, user)),
+  getLoginActivities: () => dispatch(getLoginActivities())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile)

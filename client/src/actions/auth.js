@@ -39,6 +39,21 @@ export const refreshToken = () => ({
 })
 
 
+
+export const getLoginActivities = () => ({
+  types: ['NO_LOADING', 'GET_LOGIN_ACTIVITIES_SUCCESS', 'GET_LOGIN_ACTIVITIES_FAILED'],
+  payload: {
+    request:{
+      url: '/auth/logindetails',
+      method: 'GET',
+    }
+  },
+  success: false,
+  failure: "Something went wront when trying to retrieve login activities."
+})
+
+
+
 export const logout = () => ({
   type: 'LOGOUT'
 })

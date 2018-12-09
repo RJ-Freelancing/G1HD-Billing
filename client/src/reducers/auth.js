@@ -28,6 +28,11 @@ const auth = (state = initialState, action) => {
         ...state,
         ...action.payload.data
       }
+    case 'GET_LOGIN_ACTIVITIES_SUCCESS':
+      return {
+        ...state,
+        loginActivities: action.payload.data.loginDetails
+      }
     case 'UPDATE_CREDIT_SUCCESS':              
       const {credits} = action.payload.data.transaction  
       if (state.userType==='reseller') {
