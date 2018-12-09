@@ -113,6 +113,7 @@ export async function updateUser(req, res, next) {
     req.body.password = await bcrypt.hash(req.body.password, salt)
   }
   await res.locals.user.update(req.body)
+  req.value.body.updatedAt = new Date()
   return res.status(200).json({ ...res.locals.user._doc, ...req.value.body })
 }
 
