@@ -70,9 +70,11 @@ const Sidebar = (props) => {
       <Typography variant="button" color="inherit" noWrap style={{color: 'white'}}>
         Welcome {props.auth.username} <br/>
       </Typography>
+      {props.lastLogin &&
       <Typography variant="button" color="inherit" noWrap style={{color: 'white'}}>
-        Last Login IP: xxx.xxx.xxx.xxx <br/>
+        Last Login IP: {props.lastLogin.loginIp} <br/>
       </Typography>
+      }
       <Typography variant="subtitle2" color="inherit" noWrap style={{color: 'white'}}>
         Credits Available <strong style={{fontSize: 20}}>{props.auth.creditsAvailable}</strong>
       </Typography>
@@ -149,6 +151,7 @@ const Sidebar = (props) => {
 const mapStateToProps = state => ({
   auth: state.auth,
   authUserType: state.auth.userType,
+  lastLogin: state.auth.lastLogin,
   mobileMenu: state.general.mobileMenu,
   mobileView: state.general.mobileView,
   notificationShow: state.general.notificationShow,

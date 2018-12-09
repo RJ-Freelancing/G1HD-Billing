@@ -56,9 +56,9 @@ const ProfileActivityWrapper = styled.div`
 `
 
 const rows = [
-  { field: 'login_date', label: 'Login Date', type: 'string' },
-  { field: 'login_ip', label: 'Login IP', type: 'string'  },
-  { field: 'user_agent', label: 'User Agent', type: 'string'  },
+  { field: 'loginDate', label: 'Login Date', type: 'date' },
+  { field: 'loginIp', label: 'Login IP', type: 'string'  },
+  { field: 'loginUserAgent', label: 'User Agent', type: 'string'  },
 ]
 
 

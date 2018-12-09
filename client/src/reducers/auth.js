@@ -2,6 +2,7 @@ const initialState = {
   _id: "",
   username: "",
   token: "",
+  lastLogin: {},
   loginActivities: []
 };
 
@@ -12,6 +13,7 @@ const auth = (state = initialState, action) => {
         ...state,
         ...action.payload.data.user,
         token: action.payload.data.token,
+        lastLogin: action.payload.data.lastLogin
       }
     case 'LOGIN_FAILED':
       return {
