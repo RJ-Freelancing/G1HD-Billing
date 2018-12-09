@@ -207,19 +207,19 @@ class Profile extends Component {
           <br/><br/>
           <ProfileDetails>
             <Typography variant="overline" style={{fontSize: '12px'}}>Account Type</Typography>
-            <Typography variant="overline" style={{fontSize: '12px'}}>{this.state.auth.userType}</Typography>
+            <Typography variant="overline" style={{fontSize: '12px'}}>{this.props.auth.userType}</Typography>
             <Typography variant="overline" style={{fontSize: '12px'}}>Credits Available</Typography>
-            <Typography variant="overline" style={{fontSize: '12px'}}>{this.state.auth.creditsAvailable}</Typography>
+            <Typography variant="overline" style={{fontSize: '12px'}}>{this.props.auth.creditsAvailable}</Typography>
             {this.props.auth.userType==='reseller' && 
               <>
                 <Typography variant="overline" style={{fontSize: '12px'}}>Credits on Hold</Typography>
-                <Typography variant="overline" style={{fontSize: '12px'}}>{this.state.auth.creditsOwed}</Typography>
+                <Typography variant="overline" style={{fontSize: '12px'}}>{this.props.auth.creditsOwed}</Typography>
               </>
             }
             <Typography variant="overline" style={{fontSize: '12px'}}>Date Joined</Typography>
-            <Typography variant="overline" style={{fontSize: '12px'}}>{format(Date.parse(this.state.auth.createdAt), 'D MMM YYYY @ HH:mm:ss')}</Typography>
+            <Typography variant="overline" style={{fontSize: '12px'}}>{format(Date.parse(this.props.auth.createdAt), 'D MMM YYYY @ HH:mm:ss')}</Typography>
             <Typography variant="overline" style={{fontSize: '12px'}}>Last Updated</Typography>
-            <Typography variant="overline" style={{fontSize: '12px'}}>{format(Date.parse(this.state.auth.updatedAt), 'D MMM YYYY @ HH:mm:ss')}</Typography>
+            <Typography variant="overline" style={{fontSize: '12px'}}>{format(Date.parse(this.props.auth.updatedAt), 'D MMM YYYY @ HH:mm:ss')}</Typography>
           </ProfileDetails>
         </ProfileDetailsWrapper>
 
