@@ -1,8 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
 
-const options = {
-  timestamps: true
-}
 
 const userLoginsSchema = new Schema({
   username: {
@@ -21,6 +18,6 @@ const userLoginsSchema = new Schema({
     type: String,
     required: true
   }
-}, options)
+})
 
 export default mongoose.model('UserLogins', userLoginsSchema)

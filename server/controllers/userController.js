@@ -9,26 +9,25 @@ import { winstonLogger } from '../_helpers/logger'
  
 const tokenExpiryHours = process.env.TOKEN_EXPIRY_HOURS
 
-export async function login(req, res, next) {
-  console.log(req);
-  
+export async function login(req, res, next) { 
   winstonLogger.info("Running Operation login...")
   const user = req.user
   const lastLogin = await userLoginsRepo.findOne({ username : user.username }).sort({ loginDate : -1 }).limit(1)
   if (user.accountStatus == false) return res.status(403).json({ error: `Your account is locked. Please contact your Adminstrator for more information.` })
   const token = getToken(user)
-  
-  res.status(201).json({ user, token })
+  await postLoginDetails(req) 
+  res.status(201).json({ user, token, lastLogin })
 }
 
 async function postLoginDetails(req)  {
   winstonLogger.info("Get login details...")
+  const username = req.user.username
   const loginUserAgent = req.get('User-Agent')
-  const lastLoginDate = new Date()
+  const loginDate = new Date().toISOString()
   const loginIp = req.headers['x-forwarded-for'] || 
     req.connection.remoteAddress || req.socket.remoteAddress ||
-    (req.connection.socket ? req.connection.socket.remoteAddress : null);
-const currLogin = await userLoginsRepo.create([{ username, loginUserAgent, lastLoginDate, loginIp }], { lean: true })
+    (req.connection.socket ? req.connection.socket.remoteAddress : null)
+  await userLoginsRepo.create([{ username, loginUserAgent, loginDate, loginIp }], { lean: true })
 }
 
 const getToken = user => {
