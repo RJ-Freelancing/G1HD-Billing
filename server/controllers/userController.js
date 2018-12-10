@@ -6,7 +6,6 @@ import bcrypt from 'bcryptjs'
 import { getAllClients, getClients } from '../_helpers/ministraHelper'
 import { checkPermissionRights, validParent } from '../_helpers/checkPermission'
 import { winstonLogger } from '../_helpers/logger'
-import dateFns from 'date-fns'
  
 const tokenExpiryHours = process.env.TOKEN_EXPIRY_HOURS
 
@@ -27,7 +26,7 @@ async function postLoginDetails(req)  {
   const loginDate = new Date().toLocaleString() 
   var loginIp = req.headers['x-forwarded-for'] || 
     req.connection.remoteAddress || req.socket.remoteAddress ||
-    (req.connection.socket ? req.connection.socket.remoteAddress : null)
+    (req.connection.socket ? req.connection.socket.remoteAddress : null) || ''
   loginIp = loginIp.replace('::ffff:','')
   await userLoginsRepo.create([{ username, loginUserAgent, loginDate, loginIp }], { lean: true })
 }
@@ -44,7 +43,7 @@ const getToken = user => {
     iss: 'G1HD',
     sub: user.id,
     iat: new Date().getTime(),
-    exp: Math.floor(Date.now() / 1000) + (60 * 60 * tokenExpiryHours) // Set to 30 days for development mode in .env
+    exp: Math.floor(Date.now() / 1000) + (60 * 60 * tokenExpiryHours) 
   }, process.env.JWT_SECRET)
 }
 
