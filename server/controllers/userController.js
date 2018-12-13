@@ -166,7 +166,7 @@ async function getChildren(list, isMinistra) {
     return mergeArrayObjectsByKey(mongoClients, ministraClients, 'clientMac', 'stb_mac')
   }
   else {
-    const macAdresses = await (list.length == 0 ? "1" : list)
+    const macAdresses = await (list.length == 0 ? ['1'] : list)
     const ministraClients = await getClients(macAdresses)
     const mongoClients = await clientRepo.find({ clientMac: { $in: macAdresses } })
     return mergeArrayObjectsByKey(mongoClients, ministraClients, 'clientMac', 'stb_mac')
