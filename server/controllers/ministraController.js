@@ -44,7 +44,7 @@ export async function sendMsg(req, res, next) {
 export async function sendEvent(req, res, next) {
   winstonLogger.info("Running Operation sendEvent...")
   let resultMap = {}
-  if(req.value.body.ttl !== undefined) req.value.body.ttl += (7*60*60)
+  if(req.value.body.ttl !== undefined) req.value.body.ttl
   const ministraPayLoad = querystring.stringify(req.value.body)
   var mac = req.value.body.ids
   if (mac == "" && req.user.userType !== "superAdmin") return res.status(403).json("You Have No Rights To Perform This Action.")
