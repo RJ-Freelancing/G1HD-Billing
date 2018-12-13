@@ -4,7 +4,7 @@ import fs from 'fs'
 import rfs from 'rotating-file-stream'
 import winston from 'winston'
 
-const level = process.env.LOG_LEVEL
+const logLevel = process.env.LOG_LEVEL
 
 const filenameGenerator = () => {
   const dateiso = new Date().toISOString()
@@ -23,28 +23,29 @@ fs.existsSync(logDirectoryCron) || fs.mkdirSync(logDirectoryCron)
 
 // Enable winston logging for levels of logging
 export const winstonLogger = winston.createLogger({
-  level: process.env.LOG_LEVEL,
+  level: logLevel,
   format: winston.format.timestamp({
     format: 'YYYY-MM-DD HH:mm:ss'
   }),
   transports: [
-    new winston.transports.File({ 
-      format : winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`),
-      filename: logDirectoryInfo+'/'+filenameGenerator()
+    new winston.transports.Console({
+      format : winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
     })
   ]
 })
 
 // Disable winston logging on console for production
-if (process.env.NODE_ENV !== 'production') {
-  winstonLogger.add(new winston.transports.Console({
-    format : winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
+if (process.env.NODE_ENV === 'production') {
+  winstonLogger.clear()
+  winstonLogger.add(new winston.transports.File({ 
+    format : winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`),
+    filename: logDirectoryInfo+'/'+filenameGenerator()
   }))
 }
 
 // Winston logging for Cron
 export const winstonLoggerCron = winston.createLogger({
-  level: process.env.LOG_LEVEL,
+  level: logLevel,
   format: winston.format.timestamp({
     format: 'YYYY-MM-DD HH:mm:ss'
   }),
@@ -57,6 +58,7 @@ export const winstonLoggerCron = winston.createLogger({
 
 // Disable winston logging on console for production
 if (process.env.NODE_ENV === 'production') {
+  winstonLogger.clear()
   winstonLoggerCron.add(new winston.transports.File({
     format : winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`),
     filename: logDirectoryCron+'/'+filenameGenerator()
