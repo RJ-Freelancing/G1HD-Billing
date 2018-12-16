@@ -86,7 +86,7 @@ class ClientAdd extends Component {
   addClient = (event) => {
     event.preventDefault()
     const { login, stb_mac, full_name, phone, tariff_plan, password } = this.state.newClient
-    this.props.addClient({login, stb_mac, full_name, phone, tariff_plan, status: 0, password})
+    this.props.addClient({login, stb_mac, full_name, phone, tariff_plan, status: 0})
     .then(clientAddResponse => {
       if (clientAddResponse.type==='ADD_CLIENT_SUCCESS') {
         if (this.state.newClient.credits > 0) {
