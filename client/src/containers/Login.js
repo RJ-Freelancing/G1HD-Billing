@@ -13,15 +13,11 @@ import NoInternetGIF from 'assets/noInternet.gif'
 import Typography from '@material-ui/core/Typography'
 
 
-import { login, verifyCaptcha } from 'actions/auth'
+import { login } from 'actions/auth'
 import { getTransactions } from 'actions/transactions'
 import { getUsers, getConfig } from 'actions/users'
 import { getTariffPlans } from 'actions/general'
 
-
-import ReCAPTCHA from "react-google-recaptcha";
-
-const recaptchaRef = React.createRef()
 
 const Wrapper = styled(Paper)`
   max-width: 400px;
@@ -64,23 +60,14 @@ class Login extends Component {
 
   login = (event) => {
     event.preventDefault()
-    const token = recaptchaRef.current.getValue()
-    this.props.verifyCaptcha(token)
-    .then(response => {
-      if (response.type==='VERIFY_CAPTCHA_SUCCESS') {
-        this.setState({recaptchaError: false})
-        const { username, password } = this.state
-        this.props.login({username, password})
-        .then(loginResponse => {
-          if (loginResponse.type === 'LOGIN_SUCCESS') {
-            this.props.getUsers()
-            .then(()=>this.props.getTariffPlans())
-            .then(()=>this.props.getTransactions(loginResponse.payload.data.user.username))
-            .then(()=>this.props.getConfig())
-          }
-        })
-      } else {
-        this.setState({recaptchaError: true})
+    const { username, password } = this.state
+    this.props.login({username, password})
+    .then(loginResponse => {
+      if (loginResponse.type === 'LOGIN_SUCCESS') {
+        this.props.getUsers()
+        .then(()=>this.props.getTariffPlans())
+        .then(()=>this.props.getTransactions(loginResponse.payload.data.user.username))
+        .then(()=>this.props.getConfig())
       }
     })
 
@@ -115,10 +102,6 @@ class Login extends Component {
             value={this.state.password}
             required
           />
-          <ReCAPTCHA
-            ref={recaptchaRef}
-            sitekey="6LcXUX8UAAAAAEG9mlCZqSCWQ_Cg_IPkwHaI7-Nw"
-          />
           {this.state.recaptchaError && 
             <Typography variant='h6' color='secondary'>ReCaptcha Error</Typography>
           }
@@ -147,7 +130,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   login: credentials => dispatch(login(credentials)),
-  verifyCaptcha: token => dispatch(verifyCaptcha(token)),
   getTransactions: username => dispatch(getTransactions(username)),
   getConfig: () => dispatch(getConfig()),
   getUsers: () => dispatch(getUsers()),
