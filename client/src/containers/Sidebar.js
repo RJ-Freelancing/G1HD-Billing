@@ -15,7 +15,7 @@ import { logout } from 'actions/auth'
 
 const styles = theme => ({
   drawerPaper: {
-    width: 240,
+    width: 250,
     border: 'none',
     background: '#2D3446',
   },
@@ -84,7 +84,7 @@ const Sidebar = (props) => {
         </Typography>
       }
       {props.auth.creditsOwed > props.auth.creditsAvailable &&
-        <Typography variant="subtitle2" color="secondary">
+        <Typography variant="subtitle2" color="secondary" style={{color: 'yellow'}}>
           WARNING ! <br/>You owe more credits than available
         </Typography>
       }
