@@ -7,12 +7,10 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
 import InputMask from 'react-input-mask';
-import Switch from '@material-ui/core/Switch';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 
 import { getUsers } from 'actions/users'
@@ -32,15 +30,20 @@ const Wrapper = styled.div`
   @media only screen and (max-width: 768px) {
     grid-template-columns: 1fr;
   }
+  justify-items: center;
 `
 
 const ClientEditWrapper = styled(Paper)`
   padding: 20px 20px;
+  min-width: 1068px;
+  @media only screen and (max-width: 768px) {
+    min-width: 80vw;
+  }
 `
 
 const ClientEdit = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   grid-gap: 20px;
   @media only screen and (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -56,12 +59,13 @@ class ClientAdd extends Component {
       newClient: {
         login: "",
         stb_mac: "00-1A-79",
+        password: "",
         full_name: "",
         phone: "",
         tariff_plan: "1",
-        status: 1,
         credits: 0
-      }
+      },
+      passwordConfirmation: ""
     }
   }
 
@@ -81,8 +85,8 @@ class ClientAdd extends Component {
 
   addClient = (event) => {
     event.preventDefault()
-    const { login, stb_mac, full_name, phone, tariff_plan, status } = this.state.newClient
-    this.props.addClient({login, stb_mac, full_name, phone, tariff_plan, status: status===1 ? 0 : 1})
+    const { login, stb_mac, full_name, phone, tariff_plan, password } = this.state.newClient
+    this.props.addClient({login, stb_mac, full_name, phone, tariff_plan, status: 0, password})
     .then(clientAddResponse => {
       if (clientAddResponse.type==='ADD_CLIENT_SUCCESS') {
         if (this.state.newClient.credits > 0) {
@@ -106,10 +110,12 @@ class ClientAdd extends Component {
 
   checkValidation = () => {
     const loginEmpty = this.state.newClient.login==="";
+    const passwordEmpty = this.state.newClient.password===""
+    const passwordConfirmationNonMatch = this.state.passwordConfirmation !== this.state.newClient.password
     const fullNameEmpty = this.state.newClient.full_name==="";
     const invalidMAC = this.state.newClient.stb_mac==="" || !this.state.newClient.stb_mac.match(validMAC);
     const phoneInvalid = this.state.newClient.phone==="" || !this.state.newClient.phone.match(validPhoneNo);
-    return loginEmpty || fullNameEmpty || phoneInvalid || invalidMAC
+    return loginEmpty || passwordEmpty || passwordConfirmationNonMatch || fullNameEmpty || phoneInvalid || invalidMAC
   }
 
   render() {   
@@ -135,17 +141,6 @@ class ClientAdd extends Component {
                 error={!this.props.authCreditsAvailable<=0 && this.state.newClient.login===""}
                 helperText={!this.props.authCreditsAvailable<=0 && this.state.newClient.login==="" ? "Required" : null}
               />
-              <TextField
-                label="Full Name"
-                type="name"
-                required
-                value={this.state.newClient.full_name}
-                onChange={(e)=>this.handleTextChange('full_name', e.target.value)}
-                fullWidth
-                disabled={this.props.loading || this.props.authCreditsAvailable<=0}
-                error={Boolean(this.state.newClient.full_name) && this.state.newClient.full_name===""}
-                helperText={this.state.newClient.full_name && this.state.newClient.full_name==="" ? "Required" : null}
-              />
               <InputMask mask="**:**:**:**:**:**" 
                 value={this.state.newClient.stb_mac}  
                 onChange={(e)=>this.handleTextChange('stb_mac', e.target.value.toUpperCase())}
@@ -162,6 +157,46 @@ class ClientAdd extends Component {
                   />
                 )}
               </InputMask>
+              <TextField
+                label="Password"
+                type="password"
+                required
+                value={this.state.newClient.password}
+                onChange={(e)=>this.handleTextChange('password', e.target.value)}
+                fullWidth
+                disabled={this.props.loading}
+                error={Boolean(this.state.newClient.password) && this.state.newClient.password===""}
+                helperText={this.state.newClient.password && this.state.newClient.password==="" ? "Required" : null}
+              />
+              <TextField
+                label="Password Confirmation"
+                type="password"
+                required
+                value={this.state.passwordConfirmation}
+                onChange={(e)=>this.setState({passwordConfirmation: e.target.value})}
+                fullWidth
+                disabled={this.props.loading}
+                error={
+                  (Boolean(this.state.passwordConfirmation) && this.state.passwordConfirmation==="") ||
+                  (this.state.passwordConfirmation !== this.state.newClient.password)
+                }
+                helperText={
+                  this.state.passwordConfirmation && this.state.passwordConfirmation==="" ? "Required" 
+                  : (this.state.passwordConfirmation !== this.state.newClient.password) ? "Password & Password Confirmation must match"
+                  : null
+                }
+              />
+              <TextField
+                label="Full Name"
+                type="name"
+                required
+                value={this.state.newClient.full_name}
+                onChange={(e)=>this.handleTextChange('full_name', e.target.value)}
+                fullWidth
+                disabled={this.props.loading || this.props.authCreditsAvailable<=0}
+                error={Boolean(this.state.newClient.full_name) && this.state.newClient.full_name===""}
+                helperText={this.state.newClient.full_name && this.state.newClient.full_name==="" ? "Required" : null}
+              />
               <InputMask mask="999-999-9999" 
                 value={this.state.newClient.phone}  
                 onChange={(e)=>this.handleTextChange('phone', e.target.value)}
@@ -211,18 +246,6 @@ class ClientAdd extends Component {
                     (this.props.authCreditsAvailable<=0 && this.state.newClient.credits > 0) ? "You don't have enough credits to add" :
                     null}
                 />
-              <FormControlLabel
-                label={`Account Status (${this.state.newClient.status===0 ? 'Active' : 'Inactive'})`}
-                control={
-                  <Switch
-                    checked={this.state.newClient.status===0}
-                    onChange={(e)=>this.handleTextChange('status', e.target.checked ? 0 : 1)}
-                    value={this.state.newClient.status}
-                    color="primary"
-                    disabled={this.props.loading || this.props.authCreditsAvailable<=0}
-                  />
-                }
-              />
               {this.props.authCreditsAvailable<=0 && <Typography variant="h6" color='secondary'> You don't have enough credits to add a new client. </Typography>}
             </ClientEdit>
             <br/><br/>
