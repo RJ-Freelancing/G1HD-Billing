@@ -70,7 +70,7 @@ class Wrapper extends Component {
       flex-grow: 1;
       min-width: 0px;
       padding: 16px;
-      margin-left: ${mobileView ? 'inherit' : '240px'}
+      margin-left: ${mobileView ? 'inherit' : '250px'}
       padding-top: ${mobileView ? '70px' : '10px'}
     `
 

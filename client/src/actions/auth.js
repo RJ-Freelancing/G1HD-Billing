@@ -12,20 +12,6 @@ export const login = ({username, password}) => ({
 })
 
 
-export const verifyCaptcha = token => ({
-  types: ['NO_LOADING', 'VERIFY_CAPTCHA_SUCCESS', 'VERIFY_CAPTCHA_FAILED'],
-  payload: {
-    request:{
-      url: '/verifyCaptcha',
-      method: 'POST',
-      data: {token}
-    }
-  },
-  success: false,
-  failure: "Something went wrong while trying to verify ReCaptcha."
-})
-
-
 export const refreshToken = () => ({
   types: ['NO_LOADING', 'LOGIN_SUCCESS', 'LOGIN_FAILED'],
   payload: {

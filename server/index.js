@@ -62,15 +62,6 @@ app.all('*', async function(req, res, next) {
 })
 
 
-// Google ReCaptcha
-app.post('/api/verifyCaptcha', function (req, res) {
-  axios.post(`https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${req.body.token}`)
-  .then(response=>{   
-    if (response.data.success) return res.status(200).json(response.data)
-    else return res.status(422).json({error: 'Unable to verify ReCaptcha'})
-  })
-});
-
 
 // Check offline status endpoint
 app.get('/api/checkStatus', function (req, res) {

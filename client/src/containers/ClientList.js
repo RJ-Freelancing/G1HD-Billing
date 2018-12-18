@@ -39,7 +39,7 @@ class ClientList extends Component {
   componentDidMount = () => {
     for (let client of this.props.clients) {      
       if (this.props.authUserType === 'reseller' && !this.state.showReactivateFilter && client.accountBalance > 0 && client.status === 1) {       
-        this.setState({showReactivateFilter: true})
+        this.setState({showReactivateFilter: true, filter: 'reactivate'})
         break
       } 
     }   
@@ -60,7 +60,7 @@ class ClientList extends Component {
   componentDidMount = () => {
     for (let client of this.props.clients) {      
       if (this.props.authUserType === 'reseller' && !this.state.showReactivateFilter && client.accountBalance > 0 && client.status === 1) {       
-        this.setState({showReactivateFilter: true})
+        this.setState({showReactivateFilter: true, filter: 'reactivate'})
         break
       } 
     }   
