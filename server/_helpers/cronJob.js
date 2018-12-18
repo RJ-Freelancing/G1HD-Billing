@@ -11,19 +11,20 @@ import dateFns from 'date-fns'
 export async function nightlyCronJob(){
     winstonLoggerCron.info('Started Daily Maintenance Cron Job...')
     winstonLoggerCron.info('Updating runningCron value to true to stop API calls...')
-    // await configRepo.findOneAndUpdate({ configName : 'runningCron' }, { configValue : true })
+    await configRepo.findOneAndUpdate({ configName : 'runningCron' }, { configValue : true })
     winstonLoggerCron.info('Delaying 1 Minute till starting activities...')
     await delay(3000).then();
     winstonLoggerCron.info('Completed Delay...')
     const ministraClients = await getClientsCron()
     const mongoClients = await clientRepo.find({})
     const mergedClients = mergeArrayObjectsByKey(mongoClients, ministraClients, 'clientMac', 'stb_mac')
+  
+    // Removing below block to ensure client can be able to login with username/password combination
+    /*winstonLoggerCron.info('Starting Deletion of Extra Clients on Mongo : ' + extrasOnMongo)
     let ministraMacMap = ministraClients.map(x => x.stb_mac)
     let mongoMacMap = mongoClients.map(x => x.clientMac)
     let extrasOnMinistra = ministraMacMap.filter(x => !mongoMacMap.includes(x))
     let extrasOnMongo = mongoMacMap.filter(x => !ministraMacMap.includes(x))
-  
-    winstonLoggerCron.info('Starting Deletion of Extra Clients on Mongo : ' + extrasOnMongo)
     await asyncForEach(extrasOnMongo, async (element) => {
       const delClient = await clientRepo.findOne({ clientMac : element })
       await userRepo.findOneAndUpdate({ username: delClient.parentUsername }, { $pull: { childUsernames: delClient.clientMac } })
@@ -39,15 +40,15 @@ export async function nightlyCronJob(){
             winstonLoggerCron.info('Deleted : ' + element)
         }
       })
-    })
+    })*/
 
     //Actual Logic Starts Here
     await asyncForEach(mergedClients, async (element) => {
       const cronCheckDate = dateFns.subMonths(element.tariff_expired_date, element.accountBalance)
       const parent = await userRepo.findOne({ username : element.parentUsername })
 
-      // Delete client if expiry date is more than a month
-      let deletingMinistraClient
+      // Delete client if expiry date is more than a month - Commenting out on request from G1 team
+      /*let deletingMinistraClient
       if(dateFns.isBefore(element.tariff_expired_date, dateFns.subMonths(new Date(), 1)) && element.accountBalance == 0){
         console.log("RUNNING");
         await axios.delete(ministraAPI + 'accounts/' + element.stb_mac, config)
@@ -65,9 +66,8 @@ export async function nightlyCronJob(){
           const deletedMongoClient = await clientRepo.findOneAndRemove({ clientMac : element.clientMac })
           if(deletedMongoClient) winstonLoggerCron.info('Deleted Client : ' + element.clientMac + ' from DB')
         }
-      }
+      }*/
 
-      // in db status = 1 means inactive
       if (element.accountBalance > 0 && dateFns.isToday(cronCheckDate)){
         if( parent.creditsAvailable > 0 ){
           await userRepo.findOneAndUpdate({ username : element.parentUsername }, { $inc: { creditsAvailable : -1, creditsOwed : -1 } })
@@ -81,7 +81,7 @@ export async function nightlyCronJob(){
             })
         }
       }
-      else if(element.accountBalance > 0 && element.status == 1){
+      else if(element.accountBalance > 0 && element.status == 0){
         if( parent.creditsAvailable > 0 ){
           await axios.put(ministraAPI + 'accounts/' + element.stb_mac,
             'status=1', config)
@@ -95,7 +95,7 @@ export async function nightlyCronJob(){
     })
 
     winstonLoggerCron.info('Updating runningCron value to false to allow back API calls...')
-    // await configRepo.findOneAndUpdate({ configName : 'runningCron' }, { configValue : false })
+    await configRepo.findOneAndUpdate({ configName : 'runningCron' }, { configValue : false })
     winstonLoggerCron.info('Daily Maintenance Cron Job is Completed Successfully...')
   }
   

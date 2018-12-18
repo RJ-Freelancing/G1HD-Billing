@@ -36,9 +36,9 @@ export async function validateMAC(req, res, next) {
 
 export async function checkMac(req, res, next) {
   winstonLogger.info("Running checkMac Operation.")
-  const existingClient = await clientRepo.findOne({ clientMac: req.params.id })
+  /*const existingClient = await clientRepo.findOne({ clientMac: req.params.id })
   if (!existingClient)
-    await checkAndDeleteUnwantedClient(req.params.id)
+    await checkAndDeleteUnwantedClient(req.params.id)*/
   await axios.get(ministraAPI + 'accounts/' + req.params.id, config)
     .then(response => {
       if (response.data.status !== 'OK') return res.status(200).json({ mac: req.params.id, status: "Available." })
@@ -47,14 +47,15 @@ export async function checkMac(req, res, next) {
     })
 }
 
-async function checkAndDeleteUnwantedClient(stb_mac){
+// Removing on purpose.
+/*async function checkAndDeleteUnwantedClient(stb_mac){
   winstonLogger.info("Running checkAndDeleteUnwantedClient Operation.")
   await axios.delete(ministraAPI + 'accounts/' + stb_mac, config)
     .then(response => {
       if(response.data.status == 'OK')
         console.log("Fake Client From Ministra Deleted.")
     })
-}
+}*/
 
 export async function addClient(req, res, next) {
   winstonLogger.info("Running addClient Operation.")
@@ -67,15 +68,16 @@ export async function addClient(req, res, next) {
     .then(response => {
       res.locals.existingDeletingClient = response.data
     })
-    if(new Date(res.locals.existingDeletingClient.results[0].tariff_expired_date) < new Date()){
+    return res.status(422).json({ error: `Client already exists with macAddress: ${stb_mac}` })
+    /*if(new Date(res.locals.existingDeletingClient.results[0].tariff_expired_date) < new Date()){
       await checkAndDeleteUnwantedClient(stb_mac)
       await existingClient.remove()
     }
     else {
-      return res.status(422).json({ error: `Client already exists with macAddress: ${stb_mac}` })
-    }
+
+     }*/
   }
-  await checkAndDeleteUnwantedClient(stb_mac)
+  // await checkAndDeleteUnwantedClient(stb_mac)
   await axios.post(ministraAPI + 'accounts/',
     ministraPayLoad, config)
     .then(response => {
@@ -110,15 +112,16 @@ export async function updateClient(req, res, next) {
       .then(response => {
         res.locals.existingDeletingUPClient = response.data
       })
-      if(new Date(res.locals.existingDeletingUPClient.results[0].tariff_expired_date) < new Date()){
+      return res.status(422).json({ error: `Client already exists with macAddress: ${returnMac}` })
+      /*if(new Date(res.locals.existingDeletingUPClient.results[0].tariff_expired_date) < new Date()){
         await checkAndDeleteUnwantedClient(returnMac)
         await existingClient.remove()
       }
       else {
-        return res.status(422).json({ error: `Client already exists with macAddress: ${returnMac}` })
-      }
+
+      }*/
     }
-    await checkAndDeleteUnwantedClient(returnMac)
+    // await checkAndDeleteUnwantedClient(returnMac)
     await axios.get(ministraAPI + 'accounts/' + returnMac, config)
       .then(response => {
         if (response.data.status == 'OK') return res.status(422).json("Mac Already Exists on the System. Please delete that mac before proceeding")

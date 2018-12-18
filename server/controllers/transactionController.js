@@ -46,25 +46,29 @@ export async function addTransaction(req, res, next) {
   winstonLogger.info("Running Operation addTransaction...")
   const transactionFrom = req.user.username
   const { credits, description, transactionTo } = req.value.body
-  if (!req.user.childUsernames.includes(transactionTo) && req.user.userType !== "superAdmin" ) return res.status(403).json(`You cant add credits to the user ${transactionTo}`)
+  if (!req.user.childUsernames.includes(transactionTo) && req.user.userType !== "superAdmin" ) return res.status(403).json(`You can't add credits to the user ${transactionTo}`)
   if (req.user.userType == "reseller") {
     // Mongo transactions
     const client = await clientRepo.findOne({ clientMac: transactionTo })
+    if (credits == 0) return res.status(400).json('You cant add/recover 0 credits...')
     if (credits > 0 && req.user.creditsAvailable == 0  && client.accountBalance == 0) return res.status(400).json(`You have no enough credits to transfer.`)
     if (credits < 0 && client.accountBalance < (-1 * credits)) return res.status(400).json("Not enough balance to recover the credits. Try again with lesser credits.")
     if (client.accountBalance == 0 && credits > 0){
       await req.user.update({ creditsAvailable: (req.user.creditsAvailable - 1), creditsOwed: (req.user.creditsOwed + (credits-1))  })
+      await clientRepo.findOneAndUpdate({ clientMac: transactionTo }, { $inc: { accountBalance: credits-1 } })
     }
     if (client.accountBalance > 0 && credits > 0){
       await req.user.update({ creditsOwed: (req.user.creditsOwed + credits)  })
+      await clientRepo.findOneAndUpdate({ clientMac: transactionTo }, { $inc: { accountBalance: credits } })
     }
     if ((client.accountBalance + credits) == 0 && credits < 0){
       await req.user.update({ creditsAvailable: (req.user.creditsAvailable + 1), creditsOwed: (req.user.creditsOwed + (credits+1))  })
+      await clientRepo.findOneAndUpdate({ clientMac: transactionTo }, { $inc: { accountBalance: credits } })
     }
     if ((client.accountBalance + credits) > 0 && credits < 0){
       await req.user.update({ creditsOwed: (req.user.creditsOwed + credits)  })
+      await clientRepo.findOneAndUpdate({ clientMac: transactionTo }, { $inc: { accountBalance: credits } })
     }
-    await clientRepo.findOneAndUpdate({ clientMac: transactionTo }, { $inc: { accountBalance: credits } })
 
     // Ministra Transactions
     await axios.get(ministraAPI + 'accounts/' + transactionTo, config)
